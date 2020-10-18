@@ -1,8 +1,21 @@
-﻿using System.Collections;
+﻿// Copyright(c) 2020 arcturus125 & StrangeDevTeam
+// Free to use and modify as you please, Not to be published, distributed, licenced or sold without permission from StrangeDevTeam
+// Requests for the above to be made here: https://www.reddit.com/r/StrangeDev/
+
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
+
+/// <summary>
+///     Developer Note:
+///         "the only reason i included this in the repository is so that the project isnt littered with errors.
+///             feel free to delete this class and write your own.
+///             
+///             if you are using this class, i'd advise managing all your UI panels in this class assuming you make more.
+/// </summary>
 
 public class UIController : MonoBehaviour
 {

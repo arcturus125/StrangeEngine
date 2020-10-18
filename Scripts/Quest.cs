@@ -13,9 +13,9 @@ public class Quest
 
     public bool complete = false; // becomes true when all steps of the quest are complete
     public bool started = false; // becomes true when the quest has been given to the player
-    public bool isTurnedIn = false;
-    public string title = "quest title";
-    public string info = "quest info";
+    public bool isTurnedIn = false; // true when the player has turned inthe quest for its rewards
+    public string title = "quest title"; // the title of the quest
+    public string info = "quest info"; // the Info of the quest - this would appear ina quest log if you choose to make one
     public List<QuestObjective> objectives = new List<QuestObjective>(); //the different objectives of the quest
     Item[] rewards; // the items given to the user on completion of the quest 
 
@@ -82,10 +82,19 @@ public class Quest
             return null;
         }
     }
+
+    /// <summary>
+    /// used to set an item as a reward for a quest
+    /// </summary>
+    /// <param name="pItem"> this item will be put in the players inventory when the quest is turned in</param>
     public void setReward(Item pItem)
     {
         rewards = new Item[1] { pItem };
     }
+    /// <summary>
+    /// used to set multiple items as rewards for a quest
+    /// </summary>
+    /// <param name="pItem"> these items will be put in the players inventory when the quest is turned in</param>
     public void setRewards(Item[] pitems)
     {
         rewards = pitems;
@@ -112,7 +121,9 @@ public class Quest
             OnComplete();
         }
     }
-    //turns the quest in for rewards - can only be done once
+    /// <summary>
+    /// turns the quest in for rewards - can only be done once
+    /// </summary>
     public void TurnInQuest()
     {
         if (!isTurnedIn)
@@ -130,6 +141,7 @@ public class Quest
     {
         Debug.Log(title+" Completed");
     }
+    // run when the use turns in the quest succesfully
     void GiveRewards()
     {
         foreach( Item reward in rewards)
@@ -208,6 +220,14 @@ public class TalkQuest : QuestObjective
 {
     public Dialogue questedDialogue; // the dialogue to run to complete the quest 
 
+    /// <summary>
+    /// create a Quest objective (NOT A QUEST) which will only be set to complete when a specific dialogue is run...
+    /// 
+    /// developer note:
+    /// "to properly use this, you must create a dialogue and make it public and static. then pass the reference to that static variable as a parameter in this function"
+    /// </summary>
+    /// <param name="pTitle"> the name of the Quest objective (will appear in quest helper)</param>
+    /// <param name="pQuestedDialogue"> the dialogue that will complete the quest</param>
     public TalkQuest(string pTitle, Dialogue pQuestedDialogue)  : base(pTitle)
     {
         questedDialogue = pQuestedDialogue;

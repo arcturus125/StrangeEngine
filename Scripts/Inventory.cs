@@ -41,11 +41,13 @@ public class Inventory
             //if found
             if(found != -1)
             {
+                // increase the quantity of the item already in the inventory
                 inv[found].quantity++;
             }
             //if not found
             else
             {
+                // add the item to the inventory
                 InventorySlot newSlot = new InventorySlot(pItem);
                 inv.Add(newSlot);
             }
@@ -57,7 +59,7 @@ public class Inventory
             inv.Add(newSlot);
         }
 
-        InventoryMenu.singleton.UpdateInventoryUI(); // update the UI for the inventory
+        InventoryMenu.singleton.UpdateInventoryUI(); // update the UI for the inventory // you may delete this if you are not using the InventoryMenu class i made
     }
     //remove and item from the inventory
     public void RemoveItem(Item pItem)

@@ -11,7 +11,7 @@ using UnityEngine;
 public class Enemy : ScriptableObject
 {
     public int health = 100;
-    public string enemyName = "geoff";
+    public string enemyName = "geoff"; // default name geoff 'cuz why not?
 
     /// <summary>
     /// create an enemy with a name and health

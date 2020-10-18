@@ -8,14 +8,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-//IMPORT:: attatch this script to a gameobject that is always active in the scene- either the player or camera
+//IMPORT:: if you want to utilise this script attatch this script to a gameobject that is always active in the scene- either the player or camera
 public class Dialogue : MonoBehaviour
 {
     /// Static
     public static bool isInDialogue = false; // is the user currently in a dialogue with an entitiy?
     public static KeyCode nextKey = KeyCode.F; // the key the user presses to move on to the next dialogue
     public static Dialogue currentDialogue; // a link to the current or last dialogue the user has active
-    public static int nextID = 0;
+    private static int nextID = 0; // used to increment the ID of the dialogues 
 
     /// public 
     [HideInInspector]
@@ -23,14 +23,14 @@ public class Dialogue : MonoBehaviour
     [HideInInspector]
     public Dialogue nextDialogue = null; // the link to the next dialogue if there is one
     [HideInInspector]
-    public bool pauseForFrame = true; // stops the program from ruching ahead, when true the program will wait 1 frame before monitoring inputs
+    public bool pauseForFrame = true; // stops the program from rushing ahead, when true the program will wait 1 frame before monitoring inputs again
     [HideInInspector]
-    public int dialogueID = -1;
-    public Quest triggeredQuest = null; // the tuest to be triggered on this dialogue, if there is one
+    public int dialogueID = -1; // used in if statements to check if the user is currently in a specific dialogue
+    public Quest triggeredQuest = null; // the quest to be triggered on this dialogue, if there is one
 
     void LateUpdate()
     {
-        //if Dialogue is DialogueChoice
+        //if Dialogue is DialogueChoice // Developer Note: " yes i realise now this is badly written, fow now just go with it and i will rework it at some point later"
         try
         {
             DialogueChoice currentDialogueChoice = (DialogueChoice)currentDialogue;
@@ -125,7 +125,7 @@ public class Dialogue : MonoBehaviour
                 {
                     if (isInDialogue)
                     {
-                        // when the 'next key' is pressed, show the next dialogue. or hide the window if there is no next dialogue
+                        // when the 'next key' (default "F") is pressed, show the next dialogue. or hide the window if there is no next dialogue
                         if (Input.GetKeyDown(nextKey))
                         {
                             try
@@ -163,7 +163,7 @@ public class Dialogue : MonoBehaviour
         nextID++;
     }
     /// <summary>
-    /// create a dialogue which will trigger a quest when run. After willing the window will close.
+    /// create a dialogue which will trigger a quest when run. After running the window will close.
     /// </summary>
     /// <param name="dialogueText"> the dialogue text</param>
     /// <param name="QuestLinkedToDialogue"> the quest to give the player once this dialogue is run</param>
@@ -187,11 +187,11 @@ public class Dialogue : MonoBehaviour
         nextID++;
     }
     /// <summary>
-    /// create a dialogue which will trigger a quest when run. afte rinning the linked dialogue will show.
+    /// create a dialogue which will trigger a quest when run. after running the linked dialogue will show.
     /// </summary>
     /// <param name="dialogueText">the dialogue text</param>
     /// <param name="linkedDialogue"> the dialogue to run after this one ends</param>
-    /// <param name="QuestLinkedToDialogue"> the quest to give the plaeyr once this dialogue is run</param>
+    /// <param name="QuestLinkedToDialogue"> the quest to give the player once this dialogue is run</param>
     public Dialogue(string dialogueText, Dialogue linkedDialogue, Quest QuestLinkedToDialogue)
     {
         text = dialogueText;
@@ -229,16 +229,20 @@ public class Dialogue : MonoBehaviour
         }
     }
 
+    //check if the player is currently in a dialogue which is part of a quest
     public void CheckForQuestDialogue()
     {
-        //index through all quest objectives and if they can be converted to a TalkQuest, complete the quest
+        //index through all quest objectives
         for(int i = 0; i< Quest.ActiveQuest.objectives.Count ; i++ )
         {
+            // if they can be converted to a talkQuest
             TalkQuest activeTalkQuest = Quest.convertToTalkQuest(Quest.ActiveQuest.objectives[i]);
             if( activeTalkQuest !=null)
             {
+                // and the current dialogue ID matches the one they need to ru nto complete the quest
                 if(activeTalkQuest.questedDialogue.dialogueID == currentDialogue.dialogueID)
                 {
+                    // complete the quest
                     Debug.Log("Quest match!");
                     activeTalkQuest.QuestedDialogueRun();
                 }
@@ -266,13 +270,17 @@ public class DialogueChoice : Dialogue
     /// </summary>
     /// <param name="dialogueText">the dialogue text</param>
     /// <param name="dialogueChoices">an array of dialogue options the user may choose, written as a string</param>
-    /// <param name="nextDialogueBranches">an array of dialogues ro be run after the respeoctive dialogueChoice is selected by the player</param>
+    /// <param name="nextDialogueBranches">an array of dialogues to be run after the respective dialogueChoice is selected by the player</param>
     public DialogueChoice( string dialogueText, string[] dialogueChoices , Dialogue[] nextDialogueBranches) : base(dialogueText)
     {
         choices = dialogueChoices;
         nextBranches = nextDialogueBranches;
     }
 
+
+    /// <summary>
+    /// run the dialogue (only works for DialogueChoice, not Dialogue)
+    /// </summary>
     new public void ShowDialogue()
     {
         currentDialogue = this;

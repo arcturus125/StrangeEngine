@@ -6,11 +6,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Developer note:
+///     " to use this correctly, you need to create an Enemy in unity
+///         right click > create > StrangeEngine > enemy
+///         then you should attach this component to the gameobject for your enemy
+///         and in the inspector for unity under "EnemyReference", drag in the enemy you just created"
+/// </summary>
+
 public class EnemyComponent : MonoBehaviour
 {
+
+    /// <summary>
+    /// a reference to the Enemy ScriptableObject you (should have) made in the unity file explorer
+    /// </summary>
     public Enemy enemyReference;
 
 
+    // runs when the user presses "F" or the Use Key within interaction distance of the enemy (see PlayerInteraction.cs)
     public void Use()
     {
         enemyReference.health = 0; //TODO: this needs changing
@@ -20,6 +33,7 @@ public class EnemyComponent : MonoBehaviour
             Kill();
         }
     }
+    //runs when the enemy is killed
     void Kill()
     {
         Destroy(this.gameObject);
