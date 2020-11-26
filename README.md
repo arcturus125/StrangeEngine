@@ -32,4 +32,5 @@ the documentation on how to use this engine properly can be found here: https://
 # Example Projects
 here is a list of projects usign the engine:
 
+ - [StrangeDev demo](https://github.com/arcturus125/StrangeEngine-Demo)
  - [VoxelDungeons](https://github.com/StrangeDevTeam/Voxel-Dungeons-V2 "VoxelDungeons V2 is a voxel based adventure game made by StrangeDevTeam")
