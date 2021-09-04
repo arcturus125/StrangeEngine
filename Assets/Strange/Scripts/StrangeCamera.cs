@@ -4,9 +4,12 @@ using UnityEngine;
 
 public class StrangeCamera : MonoBehaviour
 {
+    [Header("set this to the target you want the camera to follow")]
     public Transform target; // camera's pivot point will follow this target
+    [Header("set this to the player so the player will turn with mouse movement")]
     public Transform player; // when mouse is moved along x axis, player is rotated
 
+    [Header("")] // used for a gap in the inspector
     public float turningSpeed = 1.0f;
 
     // Start is called before the first frame update
