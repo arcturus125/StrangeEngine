@@ -25,7 +25,8 @@ public class StrangeChatSystem : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(isInDialogue)
+        if(currentDialogue == null) isInDialogue = false; // by changing this at the start of the frame rather than the end of the frame, this shoudl stop dialogue loops
+        if (isInDialogue)
         {
             if(Input.GetKeyDown(chatKey))
             {
@@ -50,7 +51,6 @@ public class StrangeChatSystem : MonoBehaviour
     }
     void HideDialogue()
     {
-        isInDialogue = false;
         chatWindow.SetActive(false);
         currentDialogue = null;
     }
