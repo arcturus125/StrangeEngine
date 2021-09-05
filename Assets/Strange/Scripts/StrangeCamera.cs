@@ -12,23 +12,30 @@ public class StrangeCamera : MonoBehaviour
     [Header("")] // used for a gap in the inspector
     public float turningSpeed = 1.0f;
 
+    public float maxCameraClamp = 80;
+    public float minCameraClamp = -20;
+
     // Start is called before the first frame update
     void Start()
     {
         
     }
 
+    float oldRotY = 0.0f;
+    float rotY = 0.0f;
     // Update is called once per frame
     void Update()
     {
         this.transform.position = target.position;
 
 
-
-
-
         float mouseX = Input.GetAxis("Mouse X");
         float mouseY = Input.GetAxis("Mouse Y");
+
+        // accumulate Y rotation for clamping
+        rotY += mouseY;
+        rotY = Mathf.Clamp(rotY, -maxCameraClamp, -minCameraClamp);
+
         if (mouseX != 0)
         {
             player.Rotate(0, mouseX * turningSpeed, 0);
@@ -36,23 +43,11 @@ public class StrangeCamera : MonoBehaviour
         }
         if (mouseY != 0)
         {
-            transform.RotateAround(target.position, target.transform.right, -mouseY);
+            // rotate the camera back to default, then to the new location
+            transform.RotateAround(target.position, target.transform.right, oldRotY);
+            transform.RotateAround(target.position, target.transform.right, -rotY);
         }
 
-
-        // basic clipping
-
-        if ( (transform.rotation.eulerAngles.x > 80.0f) && (transform.rotation.eulerAngles.x < 100.0f) )
-        {
-            transform.rotation = Quaternion.Euler(80,
-                                                  transform.rotation.eulerAngles.y,
-                                                  transform.rotation.eulerAngles.z);
-        }
-        if (transform.rotation.eulerAngles.x < 1.0f)
-        {
-            transform.rotation = Quaternion.Euler(1.0f,
-                                                  transform.rotation.eulerAngles.y,
-                                                  transform.rotation.eulerAngles.z);
-        }
+        oldRotY = rotY;
     }
 }

@@ -123,6 +123,28 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!114 &143129561 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 143129561, guid: da0a69a46a560064f97f26bf34900296, type: 3}
+  m_PrefabInstance: {fileID: 1465174027853015223}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &536959062 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 536959062, guid: da0a69a46a560064f97f26bf34900296, type: 3}
+  m_PrefabInstance: {fileID: 1465174027853015223}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -252,6 +274,28 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1377607768 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1377607768, guid: da0a69a46a560064f97f26bf34900296, type: 3}
+  m_PrefabInstance: {fileID: 1465174027853015223}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1452646193 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1452646193, guid: da0a69a46a560064f97f26bf34900296, type: 3}
+  m_PrefabInstance: {fileID: 1465174027853015223}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1460807928
 GameObject:
   m_ObjectHideFlags: 0
@@ -455,6 +499,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f94a41e4b4314484ab8e3f53e0b92776, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1577964109 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1577964109, guid: da0a69a46a560064f97f26bf34900296, type: 3}
+  m_PrefabInstance: {fileID: 1465174027853015223}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1732224252 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1732224252, guid: da0a69a46a560064f97f26bf34900296, type: 3}
+  m_PrefabInstance: {fileID: 1465174027853015223}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!850595691 &1873483728
@@ -661,6 +727,30 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 143129561, guid: da0a69a46a560064f97f26bf34900296, type: 3}
+      propertyPath: m_FontData.m_BestFit
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 536959062, guid: da0a69a46a560064f97f26bf34900296, type: 3}
+      propertyPath: m_FontData.m_BestFit
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1377607768, guid: da0a69a46a560064f97f26bf34900296, type: 3}
+      propertyPath: m_FontData.m_BestFit
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1452646193, guid: da0a69a46a560064f97f26bf34900296, type: 3}
+      propertyPath: m_FontData.m_BestFit
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1577964109, guid: da0a69a46a560064f97f26bf34900296, type: 3}
+      propertyPath: m_FontData.m_BestFit
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1732224252, guid: da0a69a46a560064f97f26bf34900296, type: 3}
+      propertyPath: m_FontData.m_BestFit
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1465174026758040468, guid: da0a69a46a560064f97f26bf34900296, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -745,6 +835,42 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1465174026758040488, guid: da0a69a46a560064f97f26bf34900296, type: 3}
+      propertyPath: choice3
+      value: 51
+      objectReference: {fileID: 0}
+    - target: {fileID: 1465174026758040488, guid: da0a69a46a560064f97f26bf34900296, type: 3}
+      propertyPath: choice5
+      value: 53
+      objectReference: {fileID: 0}
+    - target: {fileID: 1465174026758040488, guid: da0a69a46a560064f97f26bf34900296, type: 3}
+      propertyPath: choiceButtonKeyConfigs.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1465174026758040488, guid: da0a69a46a560064f97f26bf34900296, type: 3}
+      propertyPath: choiceButtonKeyConfigs.Array.data[0]
+      value: 
+      objectReference: {fileID: 536959062}
+    - target: {fileID: 1465174026758040488, guid: da0a69a46a560064f97f26bf34900296, type: 3}
+      propertyPath: choiceButtonKeyConfigs.Array.data[1]
+      value: 
+      objectReference: {fileID: 1577964109}
+    - target: {fileID: 1465174026758040488, guid: da0a69a46a560064f97f26bf34900296, type: 3}
+      propertyPath: choiceButtonKeyConfigs.Array.data[2]
+      value: 
+      objectReference: {fileID: 1452646193}
+    - target: {fileID: 1465174026758040488, guid: da0a69a46a560064f97f26bf34900296, type: 3}
+      propertyPath: choiceButtonKeyConfigs.Array.data[3]
+      value: 
+      objectReference: {fileID: 1377607768}
+    - target: {fileID: 1465174026758040488, guid: da0a69a46a560064f97f26bf34900296, type: 3}
+      propertyPath: choiceButtonKeyConfigs.Array.data[4]
+      value: 
+      objectReference: {fileID: 1732224252}
+    - target: {fileID: 1465174026758040488, guid: da0a69a46a560064f97f26bf34900296, type: 3}
+      propertyPath: choiceButtonKeyConfigs.Array.data[5]
+      value: 
+      objectReference: {fileID: 143129561}
     - target: {fileID: 1465174026758040489, guid: da0a69a46a560064f97f26bf34900296, type: 3}
       propertyPath: m_Name
       value: Strange Chat

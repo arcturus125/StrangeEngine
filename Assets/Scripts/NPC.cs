@@ -3,9 +3,8 @@
 public class NPC : MonoBehaviour
 {
 
-    DialogueChoice d;
     Dialogue hi;
-    // Start is called before the first frame update
+
     void Start()
     {
         Dialogue d3 = new Dialogue("Okay bye");
@@ -13,14 +12,17 @@ public class NPC : MonoBehaviour
 
         string[] replies = { "What's your name?", "Go away"};
         Dialogue[] linkedDialogues = {d2, d3 };
-        d = new DialogueChoice("Hello there",replies, linkedDialogues);
+        DialogueChoice d = new DialogueChoice("Hello there",replies, linkedDialogues);
 
 
         hi = new Dialogue("Hi", d);
 
-        //   |====|       |====|      |====|
-        //   |  d | --->  | d2 | ---> | d3 |
-        //   |====|       |====|      |====|
+        //  |====|      |====|       |====|
+        //  | hi | ---> |  d | --->  | d2 |
+        //  |====|      |====|       |====|
+        //                 |         |====|
+        //                 |-------> | d3 |
+        //                           |====|
     }
 
     void Update()

@@ -20,13 +20,15 @@ public class StrangeChatSystem : MonoBehaviour
     public static bool isInDialogue = false; // true only when the player has a dialogue on their screen
     public static Dialogue currentDialogue; // holds the instance of dialogue the player is in
 
-    public GameObject chatWindow;
-    public GameObject dialogueWheel;
+    public GameObject chatWindow; // the panel that shows the basic chat box
+    public GameObject dialogueWheel; // the panel that shows the advanced chat box (with the dialogue wheel)
+    public GameObject chatTooltip; // the panel that shows the tooltip to remind the user what key to press when chatting
+
+
     public Text[] choiceTexts;
     public Button[] choiceButtons;
-
+    public Text[] choiceButtonKeyConfigs;
     public Text chatButtonTooltipText;
-    public GameObject chatTooltip;
 
 
     // Start is called before the first frame update
@@ -37,8 +39,9 @@ public class StrangeChatSystem : MonoBehaviour
         dialogueWheel.SetActive(false);
 
         Debug.Log(chatKey.ToString());
-        chatButtonTooltipText.text = chatKey.ToString();
         chatTooltip.SetActive(false);
+
+        UpdateUIKeyConfigs();
     }
 
     // Update is called once per frame
@@ -101,8 +104,9 @@ public class StrangeChatSystem : MonoBehaviour
     void ShowDialogueChoices(DialogueChoice dialogue)
     {
         dialogueWheel.SetActive(true);
+        chatTooltip.SetActive(false);
         // show choices
-        for(int i = 0; i < dialogue.choices.Length;i++)
+        for (int i = 0; i < dialogue.choices.Length;i++)
         {
             // show button
             choiceTexts[i].gameObject.SetActive(true);
@@ -129,6 +133,20 @@ public class StrangeChatSystem : MonoBehaviour
                 dialogueCast.branches[dialogueNumber - 1].Play();
             }
         }
+    }
+
+    // just incase the key configurations have been changed. running this function will make all the tooltips in the chat match the key configs the user has set
+    void UpdateUIKeyConfigs()
+    {
+        chatButtonTooltipText.text = chatKey.ToString();
+        choiceButtonKeyConfigs[0].text = choice1.ToString().Replace("Alpha", "");
+        choiceButtonKeyConfigs[1].text = choice2.ToString().Replace("Alpha", "");
+        choiceButtonKeyConfigs[2].text = choice3.ToString().Replace("Alpha", "");
+        choiceButtonKeyConfigs[3].text = choice4.ToString().Replace("Alpha", "");
+        choiceButtonKeyConfigs[4].text = choice5.ToString().Replace("Alpha", "");
+        choiceButtonKeyConfigs[5].text = choice6.ToString().Replace("Alpha", "");
+
+
     }
 
 }
