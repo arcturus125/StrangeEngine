@@ -2,12 +2,25 @@
 
 public class NPC : MonoBehaviour
 {
-    Dialogue d;
 
+    DialogueChoice d;
+    Dialogue hi;
     // Start is called before the first frame update
     void Start()
     {
-        d = new Dialogue("Hello there");
+        Dialogue d3 = new Dialogue("Okay bye");
+        Dialogue d2 = new Dialogue("My name is jeff");
+
+        string[] replies = { "What's your name?", "Go away"};
+        Dialogue[] linkedDialogues = {d2, d3 };
+        d = new DialogueChoice("Hello there",replies, linkedDialogues);
+
+
+        hi = new Dialogue("Hi", d);
+
+        //   |====|       |====|      |====|
+        //   |  d | --->  | d2 | ---> | d3 |
+        //   |====|       |====|      |====|
     }
 
     void Update()
@@ -45,7 +58,7 @@ public class NPC : MonoBehaviour
     {
         if (!StrangeChatSystem.isInDialogue)
         {
-            d.Play();
+            hi.Play();
         }
     }
 }

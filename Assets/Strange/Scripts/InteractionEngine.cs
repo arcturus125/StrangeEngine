@@ -118,11 +118,11 @@ public class InteractionEngine : MonoBehaviour
     //          managing interactibles
     // =========================================
 
-    public static GameObject ClosestInteractible;
-    public static List<GameObject> interactibles = new List<GameObject>();
-    public static GameObject interactionSymbol;
+    public static GameObject ClosestInteractible; // a reference to the interactibel closest to the player
+    public static List<GameObject> interactibles = new List<GameObject>(); // a list of all interactibles within range of the player
+    public static GameObject interactionSymbol; // a reference to the interaction symbol on the screen (null when no interactibles in range)
     [HideInInspector]
-    public Transform interactionButtonLocation = null;
+    public Transform interactionButtonLocation = null; //the WORLD location (target) of the interactible button ::set in interactible boilder-plate code
 
     // add an object to a list of interactibles, the closest interactable within range of the player will have an interaction icon on it
     public static void AddInteractible(GameObject obj)

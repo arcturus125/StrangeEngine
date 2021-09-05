@@ -44,6 +44,16 @@ public class DialogueChoice : Dialogue
 
     public DialogueChoice(string dialogueText, string[] dialogueChoices, Dialogue[] dialogueBranches) : base(dialogueText)
     {
+        isDialogueChoice = true;
+
+        // warnings to the user if invalid data is inputted
+        if ((dialogueChoices.Length > 6) || (dialogueBranches.Length > 6))
+            Debug.LogWarning("STRANGE ERROR: User attempting to create a dialogue choice with more then 6 branches - 6 is the maximum");
+        else if ((dialogueChoices.Length == 0) || (dialogueBranches.Length == 0))
+            Debug.LogWarning("STRANGE ERROR: User attempting to create a dialogue choice with zero branches - There must be at least one!");
+        if (dialogueChoices.Length != dialogueBranches.Length)
+            Debug.LogWarning("STRANGE ERROR: User attempting to create a dialogue choice with a missmached number of dialogueChoices and dialogueBranches");
+
         choices  = dialogueChoices;
         branches = dialogueBranches;
     }
