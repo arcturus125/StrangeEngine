@@ -2,8 +2,6 @@ using UnityEngine;
 
 public class #SCRIPTNAME# : MonoBehaviour
 {
-    public Transform interactionButtonLocation;
-
 
     void Start()
     {
@@ -17,7 +15,7 @@ public class #SCRIPTNAME# : MonoBehaviour
             if (this.gameObject == InteractionEngine.ClosestInteractible)
             {
                 //display the  UI interaction button
-                InteractionEngine.singleton.interactionButtonLocation = this.interactionButtonLocation;
+                InteractionEngine.singleton.interactionButtonLocation = this.transform;
             }
         }
     

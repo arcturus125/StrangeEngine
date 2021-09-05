@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class StrangePlayer : MonoBehaviour
 {
+    [HideInInspector]
     public Rigidbody rb;
     public float walkSpeed = 1.0f;
 

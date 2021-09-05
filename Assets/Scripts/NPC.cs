@@ -2,18 +2,12 @@
 
 public class NPC : MonoBehaviour
 {
-    public Transform interactionButtonLocation;
-
-
-
     Dialogue d;
 
     // Start is called before the first frame update
     void Start()
     {
-        Dialogue d2 = new Dialogue("dialogue two");
-        d = new Dialogue("dialogue one", d2);
-
+        d = new Dialogue("Hello there");
     }
 
     void Update()
@@ -24,7 +18,7 @@ public class NPC : MonoBehaviour
             if (this.gameObject == InteractionEngine.ClosestInteractible)
             {
                 //display the  UI interaction button
-                InteractionEngine.singleton.interactionButtonLocation = this.interactionButtonLocation;
+                InteractionEngine.singleton.interactionButtonLocation = this.transform;
             }
         }
     
@@ -49,6 +43,9 @@ public class NPC : MonoBehaviour
     }
     public void Use()
     {
-        if (!StrangeChatSystem.isInDialogue) d.Play();
+        if (!StrangeChatSystem.isInDialogue)
+        {
+            d.Play();
+        }
     }
 }
