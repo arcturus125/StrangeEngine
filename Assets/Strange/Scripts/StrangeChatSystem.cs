@@ -38,7 +38,6 @@ public class StrangeChatSystem : MonoBehaviour
         chatWindow.SetActive(false);
         dialogueWheel.SetActive(false);
 
-        Debug.Log(chatKey.ToString());
         chatTooltip.SetActive(false);
 
         UpdateUIKeyConfigs();
@@ -98,6 +97,7 @@ public class StrangeChatSystem : MonoBehaviour
     {
         chatWindow.SetActive(false);
         currentDialogue = null;
+        dialogueWheel.SetActive(false);
     }
 
 
