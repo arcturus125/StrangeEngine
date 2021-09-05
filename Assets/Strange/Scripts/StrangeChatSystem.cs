@@ -25,6 +25,9 @@ public class StrangeChatSystem : MonoBehaviour
     public Text[] choiceTexts;
     public Button[] choiceButtons;
 
+    public Text chatButtonTooltipText;
+    public GameObject chatTooltip;
+
 
     // Start is called before the first frame update
     void Start()
@@ -32,6 +35,10 @@ public class StrangeChatSystem : MonoBehaviour
         Singleton = this;
         chatWindow.SetActive(false);
         dialogueWheel.SetActive(false);
+
+        Debug.Log(chatKey.ToString());
+        chatButtonTooltipText.text = chatKey.ToString();
+        chatTooltip.SetActive(false);
     }
 
     // Update is called once per frame
@@ -79,7 +86,10 @@ public class StrangeChatSystem : MonoBehaviour
         if (dialogue.isDialogueChoice)
             ShowDialogueChoices((DialogueChoice)dialogue);
         else
+        {
             dialogueWheel.SetActive(false);
+            chatTooltip.SetActive(true);
+        }
     }
     void HideDialogue()
     {
@@ -109,7 +119,7 @@ public class StrangeChatSystem : MonoBehaviour
         }
     }
 
-    void ChooseDialogue(int dialogueNumber)
+    public void ChooseDialogue(int dialogueNumber)
     {
         if(currentDialogue.isDialogueChoice)
         {
