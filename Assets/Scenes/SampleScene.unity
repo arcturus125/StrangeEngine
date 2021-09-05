@@ -714,6 +714,14 @@ PrefabInstance:
       propertyPath: target
       value: 
       objectReference: {fileID: 2049642253}
+    - target: {fileID: 304635795456803123, guid: 2c235fcc885888e4aa53a7de909dd951, type: 3}
+      propertyPath: antiClip
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 304635795456803123, guid: 2c235fcc885888e4aa53a7de909dd951, type: 3}
+      propertyPath: minCameraClamp
+      value: -45
+      objectReference: {fileID: 0}
     - target: {fileID: 304635795456803124, guid: 2c235fcc885888e4aa53a7de909dd951, type: 3}
       propertyPath: m_Name
       value: StrangeCamera

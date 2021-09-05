@@ -12,8 +12,13 @@ public class StrangeCamera : MonoBehaviour
     [Header("")] // used for a gap in the inspector
     public float turningSpeed = 1.0f;
 
-    public float maxCameraClamp = 80;
-    public float minCameraClamp = -20;
+    [Header("Camera clamps")]
+    public float maxCameraClamp = 80.0f;
+    public float minCameraClamp = -20.0f;
+
+    [Header("Springarm variables")]
+    public float maxSpringarmLength = 10.0f;
+    public float antiClip = 0.2f;
 
     // Start is called before the first frame update
     void Start()
@@ -49,5 +54,16 @@ public class StrangeCamera : MonoBehaviour
         }
 
         oldRotY = rotY;
+
+        // springarm
+        RaycastHit hitInfo;
+        if(Physics.Raycast(this.transform.position, -this.transform.forward, out hitInfo))
+        {
+            float length = hitInfo.distance;
+            if(length < maxSpringarmLength)
+            {
+                GetComponentInChildren<Camera>().gameObject.transform.localPosition = new Vector3(0, 0, -length + antiClip);
+            }
+        }
     }
 }
