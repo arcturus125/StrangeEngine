@@ -1,6 +1,6 @@
 ﻿// Code taken from here:
 // https://stackoverflow.com/questions/63117045/unity-buttons-non-rectangular-shape
-//
+// fixes bug with glitghy dialogue wheel
 
 using UnityEngine;
 using UnityEngine.UI;
