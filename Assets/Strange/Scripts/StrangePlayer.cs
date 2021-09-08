@@ -28,21 +28,22 @@ public class StrangePlayer : MonoBehaviour
 
     private void PlayerMovement()
     {
+        // start with no force
+        Vector3 movementForce = Vector3.zero;
+
+        // if buttons are pressed, accumulate force in that direction - opposite directions cancel out
         if (Input.GetKey(walkForward))
-        {
-            rb.AddRelativeForce(Vector3.forward * walkSpeed);
-        }
+            movementForce += Vector3.forward;
         if (Input.GetKey(walkBack))
-        {
-            rb.AddRelativeForce(Vector3.back * walkSpeed);
-        }
+            movementForce += Vector3.back;
         if (Input.GetKey(strafeLeft))
-        {
-            rb.AddRelativeForce(Vector3.left * walkSpeed);
-        }
+            movementForce += Vector3.left;
         if (Input.GetKey(strafeRight))
-        {
-            rb.AddRelativeForce(Vector3.right * walkSpeed);
-        }
+            movementForce += Vector3.right;
+
+        // normalise movementForce so that moving diagonal does not move the player faster
+        Vector3 finalForce = transform.TransformDirection(movementForce.normalized * walkSpeed);
+        // move the player
+        rb.MovePosition(transform.position + finalForce);
     }
 }

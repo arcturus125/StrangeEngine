@@ -791,6 +791,10 @@ PrefabInstance:
       value: -45
       objectReference: {fileID: 0}
     - target: {fileID: 304635795456803124, guid: 2c235fcc885888e4aa53a7de909dd951, type: 3}
+      propertyPath: m_Icon
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 304635795456803124, guid: 2c235fcc885888e4aa53a7de909dd951, type: 3}
       propertyPath: m_Name
       value: StrangeCamera
       objectReference: {fileID: 0}
@@ -1200,6 +1204,10 @@ PrefabInstance:
     - target: {fileID: 4039313419394577811, guid: b048af488868742418ee07b15bd5ea86, type: 3}
       propertyPath: m_Name
       value: StrangePlayer
+      objectReference: {fileID: 0}
+    - target: {fileID: 4039313419394577813, guid: b048af488868742418ee07b15bd5ea86, type: 3}
+      propertyPath: walkSpeed
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 4039313419394577814, guid: b048af488868742418ee07b15bd5ea86, type: 3}
       propertyPath: m_RootOrder

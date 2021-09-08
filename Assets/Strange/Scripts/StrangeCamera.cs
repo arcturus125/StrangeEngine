@@ -17,6 +17,7 @@ public class StrangeCamera : MonoBehaviour
     public float minCameraClamp = -20.0f;
 
     [Header("Springarm variables")]
+    [Tooltip("If you want to switch to first person, set this number to 0")] 
     public float maxSpringarmLength = 10.0f;
     public float antiClip = 0.2f;
 
@@ -65,5 +66,13 @@ public class StrangeCamera : MonoBehaviour
                 GetComponentInChildren<Camera>().gameObject.transform.localPosition = new Vector3(0, 0, -length + antiClip);
             }
         }
+
+
+        // if the maxSpringarmLength is changed during runtime. this will update the camera's position immediately if neccessary
+        if(GetComponentInChildren<Camera>().gameObject.transform.position.z < -maxSpringarmLength)
+        {
+            GetComponentInChildren<Camera>().gameObject.transform.localPosition = new Vector3(0, 0, -maxSpringarmLength);
+        }
+
     }
 }
