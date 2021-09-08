@@ -36,7 +36,7 @@ public class NPC : MonoBehaviour
                 InteractionEngine.singleton.interactionButtonLocation = this.transform;
             }
         }
-    
+
     
     }
 

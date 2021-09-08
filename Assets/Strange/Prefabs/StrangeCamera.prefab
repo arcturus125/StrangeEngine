@@ -130,3 +130,7 @@ MonoBehaviour:
   target: {fileID: 0}
   player: {fileID: 0}
   turningSpeed: 1
+  maxCameraClamp: 80
+  minCameraClamp: -45
+  maxSpringarmLength: 10
+  antiClip: 0.5
