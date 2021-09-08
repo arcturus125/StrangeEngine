@@ -28,3 +28,10 @@ it is also Free to use, fully open source and it teaches you the basics of Objec
 the hardest part about making a game with this package is finding/making assets, and thinking up a good storyline.
 
 if you are a video game artist/modeller and know even just a little of programming, this tool is perfect for you - you can combine all of your assets in your own custom made world to tell a story
+
+## Licencing
+You are free to use and modify this code as you please in your private projects. This is an educational tool for programmers and game developers alike.
+
+I'd recommend leaving the comments at the top of each script so that if you break it, you can find the link to the original file at the top.
+
+If you are to publish, distribute, licence or sell this software without permission, *i will find you. I have a very particular set of skills* ... Ok, seriously do whatever you want with this code as long as you accept responsibility for the use of this code (dont stick this code in a nuclear reactor and then blame me) and dont make money from this software without first asking permission from us on reddit.com/r/StrangeDev/
