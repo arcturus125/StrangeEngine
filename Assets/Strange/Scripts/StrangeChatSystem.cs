@@ -98,6 +98,34 @@ public class StrangeChatSystem : MonoBehaviour
             dialogueWheel.SetActive(false);
             chatTooltip.SetActive(true);
         }
+
+        // complete any quests for running this dialogue
+        CheckForQuestedDialogues(dialogue);
+
+        // trigger any quests attached to this dialogue
+        if(dialogue.triggeredQuest != null)
+            dialogue.triggeredQuest.TriggerQuest();
+    }
+
+    // when a dialogue is run, check if the user has a quest where an objective is to run this dialogue, if so, complete that objective in the quest
+    private static void CheckForQuestedDialogues(Dialogue dialogue)
+    {
+        // loop through all quests given to the player
+        foreach (Quest q in StrangeQuestSystem.activeQuests)
+        {
+            // of those quests, loop through all the questObjectives
+            foreach (QuestObjective qo in q.objectives)
+            {
+                // if any of these objectives are TalkQuests, run the follwoing code
+                if (qo.objectiveType == QuestObjective.ObjectiveType.TalkQuest)
+                {
+                    if(((TalkQuest)qo).questedDialogue == dialogue)
+                    {
+                        ((TalkQuest)qo).QuestedDialogueRun();
+                    }
+                }
+            }
+        }
     }
     void HideDialogue()
     {

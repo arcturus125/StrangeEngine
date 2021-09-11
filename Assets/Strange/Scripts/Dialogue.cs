@@ -12,6 +12,7 @@ public class Dialogue
 
     public Dialogue previousDialogue = null;
     public Dialogue nextDialogue = null;
+    public Quest triggeredQuest = null;
 
     public string text;
 
@@ -20,19 +21,49 @@ public class Dialogue
     {
         text = dialogueText;
     }
+    // Create a basic dialogue with no linked dialogues and triggers a quest
+    public Dialogue(string dialogueText, Quest questToTrigger)
+    {
+        text = dialogueText;
+
+        QuestCheck(questToTrigger);
+    }
 
     // create a dialogue with a linked dialogue. once the chat key is pressed the linked dialogue will be played
     public Dialogue(string dialogueText, Dialogue linkedDialogue)
     {
         text = dialogueText;
         nextDialogue = linkedDialogue;
-        if(linkedDialogue.previousDialogue == null)
+        if (linkedDialogue.previousDialogue == null)
             linkedDialogue.previousDialogue = this;
         else
         {
-            Debug.LogWarning("STRANGE ERROR: User attempting to link  a dialogue that is already linked");
+            StrangeLogger.LogError("User attempting to link  a dialogue that is already linked");
         }
     }
+    // create a dialogue with a linked dialogue. and triggers a quest
+    public Dialogue(string dialogueText, Dialogue linkedDialogue, Quest questToTrigger)
+    {
+        text = dialogueText;
+        nextDialogue = linkedDialogue;
+        if (linkedDialogue.previousDialogue == null)
+            linkedDialogue.previousDialogue = this;
+        else
+        {
+            StrangeLogger.LogError("User attempting to link  a dialogue that is already linked");
+        }
+        QuestCheck(questToTrigger);
+    }
+
+    protected void QuestCheck(Quest q)
+    {
+        if(q == null)
+        {
+            StrangeLogger.LogError("The Quest passed into Dialogue '" + text + "' is null... Please check the order of your code and make sure that you create and define the quest before you attach it to the dialogue");
+        }
+        triggeredQuest = q;
+    }
+
 
     public void Play()
     {
@@ -52,14 +83,31 @@ public class DialogueChoice : Dialogue
 
         // warnings to the user if invalid data is inputted
         if ((dialogueChoices.Length > 6) || (dialogueBranches.Length > 6))
-            Debug.LogWarning("STRANGE ERROR: User attempting to create a dialogue choice with more then 6 branches - 6 is the maximum");
+            StrangeLogger.LogError("User attempting to create a dialogue choice with more then 6 branches - 6 is the maximum");
         else if ((dialogueChoices.Length == 0) || (dialogueBranches.Length == 0))
-            Debug.LogWarning("STRANGE ERROR: User attempting to create a dialogue choice with zero branches - There must be at least one!");
+            StrangeLogger.LogError("User attempting to create a dialogue choice with zero branches - There must be at least one!");
         if (dialogueChoices.Length != dialogueBranches.Length)
-            Debug.LogWarning("STRANGE ERROR: User attempting to create a dialogue choice with a missmached number of dialogueChoices and dialogueBranches");
+            StrangeLogger.LogError("User attempting to create a dialogue choice with a missmached number of dialogueChoices and dialogueBranches");
 
         choices  = dialogueChoices;
         branches = dialogueBranches;
+    }
+
+    public DialogueChoice(string dialogueText, string[] dialogueChoices, Dialogue[] dialogueBranches, Quest questToTrigger = null) : base(dialogueText)
+    {
+        isDialogueChoice = true;
+
+        // warnings to the user if invalid data is inputted
+        if ((dialogueChoices.Length > 6) || (dialogueBranches.Length > 6))
+            StrangeLogger.LogError("User attempting to create a dialogue choice with more then 6 branches - 6 is the maximum");
+        else if ((dialogueChoices.Length == 0) || (dialogueBranches.Length == 0))
+            StrangeLogger.LogError("User attempting to create a dialogue choice with zero branches - There must be at least one!");
+        if (dialogueChoices.Length != dialogueBranches.Length)
+            StrangeLogger.LogError("User attempting to create a dialogue choice with a missmached number of dialogueChoices and dialogueBranches");
+
+        choices = dialogueChoices;
+        branches = dialogueBranches;
+        QuestCheck(questToTrigger);
     }
 
 }
