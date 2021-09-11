@@ -50,7 +50,7 @@ public class Quest
     {
         if (StrangeQuestSystem.activeQuests.Contains(this))
         {
-            StrangeLogger.LogError("STRANGE ERROR: user attempting to give player a quest they already have, aborting");
+            StrangeLogger.LogError("user attempting to give player a quest they already have, aborting");
         }
         else
         {

@@ -23,6 +23,7 @@ public class NPC : MonoBehaviour
         q = new Quest("Baby's first quest", "this is the firat quest you ever recieve", tq);
 
         DialogueChoice d = new DialogueChoice("Hello there",replies, linkedDialogues,q);
+        d.allowMultipleChoices = true;
 
 
 

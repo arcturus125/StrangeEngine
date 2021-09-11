@@ -8,11 +8,14 @@ using UnityEngine;
 
 public class Dialogue
 {
+    public bool allowMultipleChoices = false;
     public bool isDialogueChoice = false;
 
     public Dialogue previousDialogue = null;
     public Dialogue nextDialogue = null;
     public Quest triggeredQuest = null;
+
+    public bool firstRun = true; // after this dialogue has been run for the first time, this changes to false
 
     public string text;
 
@@ -67,15 +70,16 @@ public class Dialogue
 
     public void Play()
     {
-        StrangeChatSystem.Singleton.ShowDialogue(this);
-    }
-    public void Replay()
-    {
-        StrangeChatSystem.Singleton.ShowDialogue(this, true);
+        if(firstRun)
+            StrangeChatSystem.Singleton.ShowDialogue(this);
+        else
+            StrangeChatSystem.Singleton.ShowDialogue(this, true);
+        firstRun = false;
     }
 }
 public class DialogueChoice : Dialogue
 {
+    public int lastChoice = -1; // remembers the last choice, -1 is rogue value: means no choice has been made yet
 
     // common index used: choice [1] will run branch [1]
     public string[]   choices;
