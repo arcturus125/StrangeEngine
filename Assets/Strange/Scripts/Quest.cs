@@ -128,6 +128,11 @@ public class TalkQuest : QuestObjective
     {
         objectiveType = ObjectiveType.TalkQuest;
         questedDialogue = pQuestedDialogue;
+
+        if(pQuestedDialogue == null)
+        {
+            StrangeLogger.LogError("The Dialogue passed into TalkQuest '" + title + "' is null... Please check the order of your code and make sure that you create and define the Dialogue before you attach it to the dialogue");
+        }
     }
     public void QuestedDialogueRun()
     {

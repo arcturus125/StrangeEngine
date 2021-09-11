@@ -18,11 +18,12 @@ public class NPC : MonoBehaviour
         Dialogue[] linkedDialogues = {d2, d3 };
 
 
-        DialogueChoice d = new DialogueChoice("Hello there",replies, linkedDialogues,q);
-
 
         TalkQuest tq = new TalkQuest("ask me my name", d2);
         q = new Quest("Baby's first quest", "this is the firat quest you ever recieve", tq);
+
+        DialogueChoice d = new DialogueChoice("Hello there",replies, linkedDialogues,q);
+
 
 
         hi = new Dialogue("Hi", d);

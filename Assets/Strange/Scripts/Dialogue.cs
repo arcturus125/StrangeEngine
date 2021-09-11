@@ -69,6 +69,10 @@ public class Dialogue
     {
         StrangeChatSystem.Singleton.ShowDialogue(this);
     }
+    public void Replay()
+    {
+        StrangeChatSystem.Singleton.ShowDialogue(this, true);
+    }
 }
 public class DialogueChoice : Dialogue
 {
@@ -91,6 +95,11 @@ public class DialogueChoice : Dialogue
 
         choices  = dialogueChoices;
         branches = dialogueBranches;
+
+        foreach(Dialogue d in dialogueBranches)
+        {
+            d.previousDialogue = this;
+        }
     }
 
     public DialogueChoice(string dialogueText, string[] dialogueChoices, Dialogue[] dialogueBranches, Quest questToTrigger = null) : base(dialogueText)
@@ -108,6 +117,12 @@ public class DialogueChoice : Dialogue
         choices = dialogueChoices;
         branches = dialogueBranches;
         QuestCheck(questToTrigger);
+
+
+        foreach (Dialogue d in dialogueBranches)
+        {
+            d.previousDialogue = this;
+        }
     }
 
 }

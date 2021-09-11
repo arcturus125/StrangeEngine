@@ -20,6 +20,7 @@ public class StrangeChatSystem : MonoBehaviour
     public KeyCode choice4 = KeyCode.Alpha4;  //
     public KeyCode choice5 = KeyCode.Alpha5;  //
     public KeyCode choice6 = KeyCode.Alpha6;  //
+    public KeyCode backKey = KeyCode.Backspace;
 
     public static bool isInDialogue = false; // true only when the player has a dialogue on their screen
     public static Dialogue currentDialogue; // holds the instance of dialogue the player is in
@@ -33,6 +34,7 @@ public class StrangeChatSystem : MonoBehaviour
     public Button[] choiceButtons; // the buttons of all the choices
     public Text[] choiceButtonKeyConfigs; // the text on top of each choicebutton
     public Text chatButtonTooltipText; // the text on top of the chat tooltip
+
 
 
     // Start is called before the first frame update
@@ -80,10 +82,16 @@ public class StrangeChatSystem : MonoBehaviour
                 if (Input.GetKeyDown(choice5)) ChooseDialogue(5);
                 if (Input.GetKeyDown(choice6)) ChooseDialogue(6);
             }
+            // back key pressed
+            if(Input.GetKeyDown(backKey))
+            {
+                if(currentDialogue.previousDialogue != null)
+                    currentDialogue.previousDialogue.Replay();
+            }
         }
     }
 
-    public void ShowDialogue(Dialogue dialogue)
+    public void ShowDialogue(Dialogue dialogue, bool isReplay = false)
     {
         isInDialogue = true;
         chatWindow.SetActive(true);
@@ -99,12 +107,17 @@ public class StrangeChatSystem : MonoBehaviour
             chatTooltip.SetActive(true);
         }
 
-        // complete any quests for running this dialogue
-        CheckForQuestedDialogues(dialogue);
 
-        // trigger any quests attached to this dialogue
-        if(dialogue.triggeredQuest != null)
-            dialogue.triggeredQuest.TriggerQuest();
+        // stops a quest being given/completed twice when going back through dialogues - stops errors
+        if (!isReplay)
+        {
+            // complete any quests for running this dialogue
+            CheckForQuestedDialogues(dialogue);
+
+            // trigger any quests attached to this dialogue
+            if (dialogue.triggeredQuest != null)
+                dialogue.triggeredQuest.TriggerQuest();
+        }
     }
 
     // when a dialogue is run, check if the user has a quest where an objective is to run this dialogue, if so, complete that objective in the quest
