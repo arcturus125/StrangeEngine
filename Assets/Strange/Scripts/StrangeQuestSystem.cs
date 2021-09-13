@@ -24,5 +24,10 @@ public class StrangeQuestSystem : MonoBehaviour
             StrangeLogger.LogError("StrangeQuestSystem has no access to the players inventory, this will cause errors when you try and turn in quests... please drag StrangePlayer into the 'PlayerInventory' box inthe inspector");
     }
 
+    public static void SetTrackedQuest(Quest q)
+    {
+        trackedQuest = q;
+    }
+
     void Update() {}
 }

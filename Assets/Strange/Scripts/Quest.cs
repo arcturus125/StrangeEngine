@@ -57,6 +57,11 @@ public class Quest
             StrangeLogger.Log("Quest '" + title+"' triggered");
             started = true;
             StrangeQuestSystem.activeQuests.Add(this);
+            if(StrangeQuestSystem.trackedQuest == null)
+            {
+                StrangeQuestSystem.SetTrackedQuest(this);
+                QuestHelper.singleton.UpdateGUI();
+            }
         }
     }
 
@@ -75,6 +80,7 @@ public class Quest
         {
             OnComplete();
         }
+        QuestHelper.singleton.UpdateGUI();
     }
 
     private void OnComplete()

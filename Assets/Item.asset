@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Item
   m_EditorClassIdentifier: 
   ID: 0
-  itemName: 
+  itemName: Stick
   info: 
   worth: 0
   isStackable: 0
