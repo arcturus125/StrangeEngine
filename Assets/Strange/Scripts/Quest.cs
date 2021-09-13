@@ -12,7 +12,7 @@ public class Quest
     public string title = "Quest Title";
     public string info = "Quest Info";
     public List<QuestObjective> objectives = new List<QuestObjective>();
-    Item[] rewards;
+    public List<Item> rewards = new List<Item>();
 
     public Quest(string pTitle, string pInfo, List<QuestObjective> questObjectives)
     {

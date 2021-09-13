@@ -1,14 +1,17 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class NPC : MonoBehaviour
 {
+    public Item test;
 
     Dialogue hi;
     Quest q;
+    Dialogue quest;
 
     void Start()
     {
-
+        quest = new Dialogue("Thanks for Completing my Quest");
 
         Dialogue d3 = new Dialogue("Okay bye");
         Dialogue d2 = new Dialogue("My name is jeff");
@@ -17,10 +20,8 @@ public class NPC : MonoBehaviour
         string[] replies = { "What's your name?", "Go away"};
         Dialogue[] linkedDialogues = {d2, d3 };
 
-
-
-        TalkQuest tq = new TalkQuest("ask me my name", d2);
-        q = new Quest("Baby's first quest", "this is the firat quest you ever recieve", tq);
+        q = new Quest("baby's first quest", "info", new TalkQuest("tell me to go away", d3));
+        q.rewards.Add(test);
 
         DialogueChoice d = new DialogueChoice("Hello there",replies, linkedDialogues,q);
         d.allowMultipleChoices = true;
@@ -73,8 +74,12 @@ public class NPC : MonoBehaviour
         if (!StrangeChatSystem.isInDialogue)
         {
             if (q.complete)
+            {
                 q.TurnIn();
-            hi.Play();
+                quest.Play();
+            }
+            else
+                hi.Play();
         }
     }
 }

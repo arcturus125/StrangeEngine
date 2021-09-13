@@ -19,6 +19,9 @@ public class StrangeQuestSystem : MonoBehaviour
     void Start() 
     {
         singleton = this;
+
+        if (playerInventory == null)
+            StrangeLogger.LogError("StrangeQuestSystem has no access to the players inventory, this will cause errors when you try and turn in quests... please drag StrangePlayer into the 'PlayerInventory' box inthe inspector");
     }
 
     void Update() {}

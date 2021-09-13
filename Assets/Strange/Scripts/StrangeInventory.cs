@@ -9,12 +9,24 @@ using UnityEngine;
 public class StrangeInventory : MonoBehaviour
 {
     public List<InventorySlot> inv;
+    public bool printInventory = false; // for debugging purposes
 
     private void Awake()
     {
          inv = new List<InventorySlot>();
     }
-
+    public void Update()
+    {
+        if (printInventory)
+        {
+            string log = "";
+            foreach (InventorySlot i in inv)
+            {
+                log += i.item.itemName + ", ";
+            }
+            Debug.Log(log);
+        }
+    }
     //search for an item in the inventory and return its index
     public int searchInvByItem(Item pItem)
     {

@@ -2,6 +2,7 @@
 // Free to use and modify as you please, Not to be published, distributed, licenced or sold without permission from StrangeDevTeam
 // Requests for the above to be made here: https://www.reddit.com/r/StrangeDev/
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -28,7 +29,8 @@ public class StrangeCamera : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     float oldRotY = 0.0f;
@@ -78,5 +80,16 @@ public class StrangeCamera : MonoBehaviour
             GetComponentInChildren<Camera>().gameObject.transform.localPosition = new Vector3(0, 0, -maxSpringarmLength);
         }
 
+        
+        ESChit();
+    }
+
+    private void ESChit()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
     }
 }
