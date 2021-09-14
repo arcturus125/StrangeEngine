@@ -697,8 +697,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 48.6, y: -16.4}
-  m_SizeDelta: {x: 449.25513, y: 127.87262}
+  m_AnchoredPosition: {x: 130.89, y: -16.4}
+  m_SizeDelta: {x: 1272.1952, y: 127.87262}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7044778820819833439
 CanvasRenderer:
@@ -732,7 +732,7 @@ MonoBehaviour:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
     m_FontSize: 72
     m_FontStyle: 0
-    m_BestFit: 0
+    m_BestFit: 1
     m_MinSize: 0
     m_MaxSize: 72
     m_Alignment: 0
@@ -741,9 +741,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Quest title
-
-'
+  m_Text: Quest title
 --- !u!1 &7044778820854612679
 GameObject:
   m_ObjectHideFlags: 0
@@ -902,7 +900,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0.0000076293945, y: 0.000017994325}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &7044778821650607317
