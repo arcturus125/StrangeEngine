@@ -28,6 +28,14 @@ public class QuestLog : MonoBehaviour
 
     private bool isMenuOpen = false;
 
+    [SerializeField]
+    private int xPos = -145; // used to position the quests in the content window
+    [SerializeField]
+    private int yPos = 10;   // (this script isnt always perfect so beign able to adjust positioning without going into the code is helpful)
+    [SerializeField]
+    private int ContentBottomPadding = 5; // used to edit the gap between the bottom of the content window and the bottom of the quest listings. this it purely for QOL reasons, but it makes it look nicer
+
+
     // Start is called before the first frame update
 
     private void Awake()
@@ -89,12 +97,25 @@ public class QuestLog : MonoBehaviour
         foreach (Quest q in questList)
         {
             QuestLogListing temp = Instantiate(_prefab, _content);
-            temp.GetComponent<RectTransform>().anchoredPosition += new Vector2(0, -listingHeight * listingNumber);
+            RectTransform rt = temp.GetComponent<RectTransform>();
+
+            //anchoring
+            rt.anchorMin = new Vector2(0, 1);
+            rt.anchorMax = new Vector2(0, 1);
+
+            // positioning 
+            temp.GetComponent<RectTransform>().anchoredPosition += new Vector2((rt.sizeDelta.x / 2) + xPos, yPos +(-listingHeight * listingNumber));
+
             temp.quest = q;
             listingNumber++;
             activeprefabs.Add(temp);
         }
-        
+
+
+        //resize content rect
+        _content.GetComponent<RectTransform>().sizeDelta = new Vector2(
+            _content.GetComponent<RectTransform>().sizeDelta.x,
+            listingHeight * listingNumber + ContentBottomPadding);
 
     }
 }
