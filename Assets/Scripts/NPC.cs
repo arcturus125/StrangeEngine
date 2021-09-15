@@ -41,9 +41,9 @@ public class NPC : MonoBehaviour
 
 
 
-
-
-        Quest q1 = new Quest("1baby's first quest", "info", new TalkQuest("tell me to go away", d3));
+        TalkQuest tq = new TalkQuest("tell me to go away", d3);
+        List<QuestObjective> l = new List<QuestObjective> {tq, tq, tq, tq, tq, tq, tq, tq };
+        Quest q1 = new Quest("1baby's first quest", "info", l);
         Quest q2 = new Quest("2baby's first quest", "info", new TalkQuest("tell me to go away", d3));
         Quest q3 = new Quest("3baby's first quest", "info", new TalkQuest("tell me to go away", d3));
         Quest q4 = new Quest("4baby's first quest", "info", new TalkQuest("tell me to go away", d3));
@@ -54,6 +54,8 @@ public class NPC : MonoBehaviour
         q3.TriggerQuest();
         q4.TriggerQuest();
         q5.TriggerQuest();
+
+        q2.FailQuest();
     }
 
     void Update()
