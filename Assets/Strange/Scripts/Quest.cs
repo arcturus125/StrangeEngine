@@ -62,6 +62,8 @@ public class Quest
                 StrangeQuestSystem.SetTrackedQuest(this);
                 QuestHelper.singleton.UpdateGUI();
             }
+
+            QuestLog.singleton.UpdateGUI();
         }
     }
 
@@ -81,12 +83,28 @@ public class Quest
             OnComplete();
         }
         QuestHelper.singleton.UpdateGUI();
+        QuestLog.singleton.UpdateGUI();
     }
 
     private void OnComplete()
     {
         complete = true;
         StrangeLogger.Log("Quest '"+title+"' Complete");
+
+        
+    }
+    public void FailQuest()
+    {
+        if (StrangeQuestSystem.activeQuests.Contains(this))
+        {
+            StrangeQuestSystem.activeQuests.Remove(this);
+            StrangeQuestSystem.failedQuests.Add(this);
+            QuestLog.singleton.UpdateGUI();
+        }
+        else
+        {
+            StrangeLogger.LogError("use trying to fail a quest that is not active!");
+        }
     }
     public void TurnIn()
     {
@@ -101,6 +119,17 @@ public class Quest
         if(StrangeQuestSystem.trackedQuest == this)
         {
             StrangeQuestSystem.trackedQuest = null;
+        }
+
+        // remove the quest from active to completed
+        if (StrangeQuestSystem.activeQuests.Contains(this))
+        {
+            StrangeQuestSystem.activeQuests.Remove(this);
+            StrangeQuestSystem.completedQuests.Add(this);
+        }
+        else
+        {
+            StrangeLogger.LogError("user trying to complete a quest that is not active!");
         }
     }
 }

@@ -12,6 +12,7 @@ public class StrangeQuestSystem : MonoBehaviour
     public static Quest trackedQuest = null; // the quest the user is currently tracking on the quest helper
     public static List<Quest> activeQuests = new List<Quest>(); // all the quests that the player has been given
     public static List<Quest> completedQuests = new List<Quest>(); // all the quests that the player has completed
+    public static List<Quest> failedQuests = new List<Quest>(); // all the quests that the player has failed
 
     [Header("Drag the player into here so that quests can access the players inventory to give rewards")]
     public StrangeInventory playerInventory;

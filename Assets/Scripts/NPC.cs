@@ -36,6 +36,24 @@ public class NPC : MonoBehaviour
         //                 |         |====|
         //                 |-------> | d3 |
         //                           |====|
+
+
+
+
+
+
+
+        Quest q1 = new Quest("1baby's first quest", "info", new TalkQuest("tell me to go away", d3));
+        Quest q2 = new Quest("2baby's first quest", "info", new TalkQuest("tell me to go away", d3));
+        Quest q3 = new Quest("3baby's first quest", "info", new TalkQuest("tell me to go away", d3));
+        Quest q4 = new Quest("4baby's first quest", "info", new TalkQuest("tell me to go away", d3));
+        Quest q5 = new Quest("5baby's first quest", "info", new TalkQuest("tell me to go away", d3));
+
+        q1.TriggerQuest();
+        q2.TriggerQuest();
+        q3.TriggerQuest();
+        q4.TriggerQuest();
+        q5.TriggerQuest();
     }
 
     void Update()
