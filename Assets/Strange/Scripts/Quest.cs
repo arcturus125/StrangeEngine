@@ -96,6 +96,12 @@ public class Quest
         {
             StrangeQuestSystem.singleton.playerInventory.AddItem(i);
         }
+
+        // if the user is tracking this quest when it is turned in, stop tracking the quest (and thus clear the questhelper)
+        if(StrangeQuestSystem.trackedQuest == this)
+        {
+            StrangeQuestSystem.trackedQuest = null;
+        }
     }
 }
 

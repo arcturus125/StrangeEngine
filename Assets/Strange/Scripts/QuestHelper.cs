@@ -28,7 +28,10 @@ public class QuestHelper : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //zUpdateGUI();
+        if (StrangeQuestSystem.trackedQuest == null)
+            this.gameObject.transform.GetChild(0).gameObject.SetActive(false); // you must change the active state of the child,
+        else                                                                   // if you change the active state of this.gameObject
+            this.gameObject.transform.GetChild(0).gameObject.SetActive(true);  // then this script will stop running and the quest helper will never appear again
     }
 
     public void UpdateGUI()
