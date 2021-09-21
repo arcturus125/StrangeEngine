@@ -86,8 +86,13 @@ public class Quest
         {
             OnComplete();
         }
-        QuestHelper.singleton.UpdateGUI();
-        QuestLog.singleton.UpdateGUI();
+        // if the user has not added the questHelper to their scene, do not execute the next line
+        if (QuestHelper.singleton != null)
+            QuestHelper.singleton.UpdateGUI();
+
+        // if the user has not added the questLog to their scene, do not execute the next line
+        if (QuestLog.singleton != null)
+            QuestLog.singleton.UpdateGUI();
     }
 
     private void OnComplete()
@@ -103,7 +108,10 @@ public class Quest
         {
             StrangeQuestSystem.activeQuests.Remove(this);
             StrangeQuestSystem.failedQuests.Add(this);
-            QuestLog.singleton.UpdateGUI();
+
+            // if the user has not added the questLog to their scene, do not execute the next line
+            if (QuestLog.singleton != null)
+                QuestLog.singleton.UpdateGUI();
         }
         else
         {
