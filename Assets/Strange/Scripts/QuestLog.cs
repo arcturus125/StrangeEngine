@@ -61,6 +61,17 @@ public class QuestLog : MonoBehaviour
         {
             isMenuOpen = !isMenuOpen;
             this.transform.GetChild(0).gameObject.SetActive(isMenuOpen);
+
+            if(isMenuOpen)
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = false;
+            }
         }
     }
 
