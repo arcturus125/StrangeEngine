@@ -60,10 +60,14 @@ public class Quest
             if(StrangeQuestSystem.trackedQuest == null)
             {
                 StrangeQuestSystem.SetTrackedQuest(this);
-                QuestHelper.singleton.UpdateGUI();
+                // if the user has not added the questHelper to their scene, do not execute the next line
+                if(QuestHelper.singleton != null)
+                    QuestHelper.singleton.UpdateGUI();
             }
 
-            QuestLog.singleton.UpdateGUI();
+            // if the user has not added the questLog to their scene, do not execute the next line
+            if (QuestLog.singleton != null)
+                QuestLog.singleton.UpdateGUI();
         }
     }
 
