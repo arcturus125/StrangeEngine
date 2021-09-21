@@ -88,8 +88,16 @@ public class StrangeCamera : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            if (Cursor.lockState == CursorLockMode.None)
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
         }
     }
 }
