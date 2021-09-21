@@ -43,7 +43,7 @@ public class NPC : MonoBehaviour
 
         TalkQuest tq = new TalkQuest("tell me to go away", d3);
         List<QuestObjective> l = new List<QuestObjective> {tq, tq, tq, tq, tq, tq, tq, tq };
-        Quest q1 = new Quest("1baby's first quest", "info", l);
+        Quest q1 = new Quest("1baby's first quest", "info test", l);
         Quest q2 = new Quest("2baby's first quest", "info", new TalkQuest("tell me to go away", d3));
         Quest q3 = new Quest("3baby's first quest", "info", new TalkQuest("tell me to go away", d3));
         Quest q4 = new Quest("4baby's first quest", "info", new TalkQuest("tell me to go away", d3));

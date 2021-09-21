@@ -8,6 +8,7 @@ public class QuestLog : MonoBehaviour
     public KeyCode toggleQuestLog = KeyCode.L;
 
     public static QuestLog singleton;
+    public Quest selectedQuest;
 
     public Dropdown dropdown;
     public int listingHeight = 0;
@@ -34,6 +35,12 @@ public class QuestLog : MonoBehaviour
     private int yPos = 10;   // (this script isnt always perfect so beign able to adjust positioning without going into the code is helpful)
     [SerializeField]
     private int ContentBottomPadding = 5; // used to edit the gap between the bottom of the content window and the bottom of the quest listings. this it purely for QOL reasons, but it makes it look nicer
+
+
+    [SerializeField]
+    private Text questTitle;
+    [SerializeField]
+    private Text questInfo;
 
 
     // Start is called before the first frame update
@@ -117,5 +124,24 @@ public class QuestLog : MonoBehaviour
             _content.GetComponent<RectTransform>().sizeDelta.x,
             listingHeight * listingNumber + ContentBottomPadding);
 
+    }
+
+    public void QuestListingClicked(Quest pSelectedQuest)
+    {
+        if(selectedQuest == pSelectedQuest)
+        {
+            // hide menu
+            selectedQuest = null;
+            questTitle.text = "";
+            questInfo.text = "";
+        }
+        else
+        {
+            selectedQuest = pSelectedQuest;
+
+            questTitle.text = pSelectedQuest.title;
+            questInfo.text = pSelectedQuest.info;
+
+        }
     }
 }

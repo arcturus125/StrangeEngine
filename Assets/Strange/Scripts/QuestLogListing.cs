@@ -32,9 +32,8 @@ public class QuestLogListing : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    public void ListingClicked()
     {
-        
+        QuestLog.singleton.QuestListingClicked(quest);
     }
 }
