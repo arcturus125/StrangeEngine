@@ -153,7 +153,8 @@ public class QuestObjective
     public enum ObjectiveType                                //
     {                                                        // instead of casting - which can be very inneficient and typically involves slot try-catch phrases
         Null,                                                // this uses a variable where a simple if statement is run to determine what type of
-        TalkQuest                                            // quest objective this is
+        TalkQuest,                                           // quest objective this is
+        FetchQuest                                           //
     }                                                        //
     public ObjectiveType objectiveType = ObjectiveType.Null; //
 
@@ -192,5 +193,35 @@ public class TalkQuest : QuestObjective
         objectiveComplete = true;
         StrangeLogger.Log("Quested Dialogue run, quest objective '"+title+"' completed for quest: " + parentQuest.title);
         parentQuest.UpdateQuestStatus();
+    }
+}
+public class FetchQuest : QuestObjective
+{
+    public string baseTitle;
+    public Item questedItem; // the item the player should Fetch
+    public int questedQuantity; // the quantity the player should fetch
+
+    public int quantityPlayerCollected; // the quantity the player has fetched
+
+    /// <summary>
+    /// note, your title will be overridden slightly: if you set your title as "Collect Sticks" and it will appear as "Collect Sticks [0/5]"
+    /// </summary>
+    /// <param name="pTitle"></param>
+    public FetchQuest(string pTitle, Item pQuestedItem, int pQuestedQuantity) : base(pTitle)
+    {
+        objectiveType = ObjectiveType.FetchQuest;
+        baseTitle = pTitle;
+        questedItem = pQuestedItem;
+        questedQuantity = pQuestedQuantity;
+    }
+
+    public void ItemCollected(int numberOfItems)
+    {
+        quantityPlayerCollected = numberOfItems;
+
+        if(quantityPlayerCollected >= questedQuantity)
+        {
+            objectiveComplete = true;
+        }
     }
 }

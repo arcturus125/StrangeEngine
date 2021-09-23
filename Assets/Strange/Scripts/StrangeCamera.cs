@@ -86,6 +86,7 @@ public class StrangeCamera : MonoBehaviour
 
     private void ESChit()
     {
+        // whenever ESC is hit, toggle visibility of cursor
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (Cursor.lockState == CursorLockMode.None)

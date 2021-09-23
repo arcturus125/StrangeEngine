@@ -15,7 +15,7 @@ public class StrangeInventory : MonoBehaviour
     {
          inv = new List<InventorySlot>();
     }
-    public void Update()
+    private void Update()
     {
         if (printInventory)
         {
@@ -116,6 +116,26 @@ public class StrangeInventory : MonoBehaviour
             inv.Remove(inv[searchInvByItem(pItem)]);
         }
 
+    }
+
+    public int GetNumberOfItems(Item itemtoSearchFor)
+    {
+        int found = 0;
+        for (int i = 0; i < inv.Count; i++)
+        {
+            if (inv[i].item == itemtoSearchFor)
+            {
+                if (inv[i].isStackable)
+                {
+                    found += inv[i].quantity;
+                }
+                else
+                {
+                    found++;
+                }
+            }
+        }
+        return found;
     }
 }
 public class InventorySlot

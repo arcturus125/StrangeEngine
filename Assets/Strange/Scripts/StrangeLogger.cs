@@ -39,5 +39,6 @@ public class StrangeLogger : MonoBehaviour
             else
                 Debug.LogWarning(StrangeErrorPrefix + logInfo);
         }
+
     }
 }
