@@ -13,8 +13,12 @@ public class StrangeLogger : MonoBehaviour
     public static string StrangeErrorPrefix = "STRANGE ERROR:: ";
     public static string StrangeLogPrefix = "STRANGE LOG:: ";
     public static StrangeLogger singleton;
+
+    [Header("Do you want Strange to spam the console?")]
     [Tooltip("when true, all actions in Strange will be logged directly to the console")]
     public bool showInConsole = false;
+
+    [Header("Do you want Strage Errors to appear as Errors or Warnings? (True = errors)")]
     [Tooltip("when true, StrangeErrors will be prioritised and trigger an errorPause ")]
     public bool priorityErrors = false;
     // Start is called before the first frame update

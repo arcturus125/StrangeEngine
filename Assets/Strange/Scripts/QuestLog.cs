@@ -5,30 +5,26 @@ using UnityEngine.UI;
 
 public class QuestLog : MonoBehaviour
 {
+    public static QuestLog singleton;
+
     public KeyCode toggleQuestLog = KeyCode.L;
 
-    public static QuestLog singleton;
-    public Quest selectedQuest;
 
+
+    [Header("Dont Touch: Advanced Users Only!")]
+    [Header("###You MUST have an EventSystem in your scene for this to work###")]
     public Dropdown dropdown;
     public int listingHeight = 0;
-    enum QuestLists
-    {
-        Active,
-        Completed,
-        Failed
-    }
-    QuestLists selectedQuestList = QuestLists.Active;
-
     [SerializeField]
     private Transform _content;
     [SerializeField]
     private QuestLogListing _prefab;
+    [SerializeField]
+    private Text questTitle;
+    [SerializeField]
+    private Text questInfo;
 
-    private List<QuestLogListing> activeprefabs = new List<QuestLogListing>();
-
-    private bool isMenuOpen = false;
-
+    [Header("Positioning: you may need to change these if you implement your own custom UI")]
     [SerializeField]
     private int xPos = -145; // used to position the quests in the content window
     [SerializeField]
@@ -37,10 +33,17 @@ public class QuestLog : MonoBehaviour
     private int ContentBottomPadding = 5; // used to edit the gap between the bottom of the content window and the bottom of the quest listings. this it purely for QOL reasons, but it makes it look nicer
 
 
-    [SerializeField]
-    private Text questTitle;
-    [SerializeField]
-    private Text questInfo;
+    enum QuestLists
+    {
+        Active,
+        Completed,
+        Failed
+    }
+    QuestLists selectedQuestList = QuestLists.Active;
+    public Quest selectedQuest;
+    private List<QuestLogListing> activeprefabs = new List<QuestLogListing>();
+    private bool isMenuOpen = false;
+
 
 
     // Start is called before the first frame update

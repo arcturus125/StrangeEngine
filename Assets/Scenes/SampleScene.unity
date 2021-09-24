@@ -505,7 +505,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f94a41e4b4314484ab8e3f53e0b92776, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  test: {fileID: 11400000, guid: f8c676a835768f84b814be6725b6b766, type: 2}
+  stick: {fileID: 11400000, guid: f8c676a835768f84b814be6725b6b766, type: 2}
+  playerInventory: {fileID: 382582130}
 --- !u!850595691 &1873483728
 LightingSettings:
   m_ObjectHideFlags: 0
@@ -1217,7 +1218,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8007905472130628852, guid: 38d885a963c4daf4ba27cab34784e2b6, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000004423148
+      value: 0.000001376489
       objectReference: {fileID: 0}
     - target: {fileID: 8007905472189820902, guid: 38d885a963c4daf4ba27cab34784e2b6, type: 3}
       propertyPath: m_AnchorMax.x

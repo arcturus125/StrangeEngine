@@ -7,8 +7,8 @@ public class QuestHelper : MonoBehaviour
 {
     public static QuestHelper singleton;
 
-    public float listingHeight = 0;
-
+    [Header("Dont Touch: Advanced Users Only!")]
+    [Header("###You MUST have an EventSystem in your scene for this to work###")]
     [SerializeField]
     private Transform _content;
     [SerializeField]
@@ -16,11 +16,13 @@ public class QuestHelper : MonoBehaviour
     [SerializeField]
     private Text questTitle;
 
+    [Header("Positioning: you may need to change these if you implement your own custom UI")]
     [SerializeField]
     private int xPos = 10;    // used to position the quest objectives in the content window
     [SerializeField]
     private int yPos = -150;  // (this script isnt always perfect so beign able to adjust positioning without going into the code is helpful)
-
+    [SerializeField]
+    private float listingHeight = 0; // used to position the QuestHelperListings properly
     [SerializeField]
     private int ContentBottomPadding = 5; // used to edit the gap between the bottom of the content window and the bottom of the quest listings. this it purely for QOL reasons, but it makes it look nicer
 

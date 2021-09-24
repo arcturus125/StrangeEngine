@@ -22,9 +22,11 @@ public class StrangeChatSystem : MonoBehaviour
     public KeyCode choice6 = KeyCode.Alpha6;  //
     public KeyCode backKey = KeyCode.Backspace;
 
-    public static bool isInDialogue = false; // true only when the player has a dialogue on their screen
-    public static Dialogue currentDialogue; // holds the instance of dialogue the player is in
 
+
+
+
+    [Header("Dont Touch: Advanced Users Only!")]
     public GameObject chatWindow; // the panel that shows the basic chat box
     public GameObject dialogueWheel; // the panel that shows the advanced chat box (with the dialogue wheel)
     public GameObject chatTooltip; // the panel that shows the tooltip to remind the user what key to press when chatting
@@ -34,6 +36,9 @@ public class StrangeChatSystem : MonoBehaviour
     public Button[] choiceButtons; // the buttons of all the choices
     public Text[] choiceButtonKeyConfigs; // the text on top of each choicebutton
     public Text chatButtonTooltipText; // the text on top of the chat tooltip
+
+    public static bool isInDialogue = false; // true only when the player has a dialogue on their screen
+    public static Dialogue currentDialogue; // holds the instance of dialogue the player is in
 
 
 
