@@ -82,6 +82,8 @@ public class StrangeInventory : MonoBehaviour
             inv.Add(newSlot);
         }
 
+        StrangeQuestSystem.singleton.CheckForFetchQuestCompletion();
+
     }
     //remove and item from the inventory
     public void RemoveItem(Item pItem)

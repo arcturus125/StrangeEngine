@@ -68,6 +68,9 @@ public class Quest
             // if the user has not added the questLog to their scene, do not execute the next line
             if (QuestLog.singleton != null)
                 QuestLog.singleton.UpdateGUI();
+
+            // when a quest is triggered, check if the quest contains any FetchQuests and if so, check if the user already has the neccessary items to complete the objective
+            StrangeQuestSystem.singleton.CheckForFetchQuestCompletion();
         }
     }
 
@@ -215,13 +218,26 @@ public class FetchQuest : QuestObjective
         questedQuantity = pQuestedQuantity;
     }
 
+    // checks the players inventory for the items required by the fetchquest
+    // runs once when the quest is triggered and every time an item is picked up
     public void ItemCollected(int numberOfItems)
     {
         quantityPlayerCollected = numberOfItems;
+        // update objective title
+        title = baseTitle + " [" + quantityPlayerCollected + "/" + questedQuantity + "]"; 
 
         if(quantityPlayerCollected >= questedQuantity)
         {
             objectiveComplete = true;
         }
+
+
+        // if the user has not added the questHelper to their scene, do not execute the next line
+        if (QuestHelper.singleton != null)
+            QuestHelper.singleton.UpdateGUI();
+
+        // if the user has not added the questLog to their scene, do not execute the next line
+        if (QuestLog.singleton != null)
+            QuestLog.singleton.UpdateGUI();
     }
 }

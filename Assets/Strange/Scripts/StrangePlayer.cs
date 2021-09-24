@@ -28,7 +28,6 @@ public class StrangePlayer : MonoBehaviour
     void Update()
     {
         PlayerMovement();
-        CheckForFetchQuestCompletion(); // TODO: run this once when the quest is given and once every time the player picks up an item
     }
 
     private void PlayerMovement()
@@ -50,28 +49,5 @@ public class StrangePlayer : MonoBehaviour
         Vector3 finalForce = transform.TransformDirection(movementForce.normalized * walkSpeed);
         // move the player
         rb.MovePosition(transform.position + finalForce);
-    }
-
-    // because there can be multiple inventories in the scene at once, this code must run on the
-    // player to make sure that this runs exclussively for the players inventory and none of the others
-    private void CheckForFetchQuestCompletion()
-    {
-        StrangeInventory playerInventory =  this.gameObject.GetComponent<StrangeInventory>();
-
-
-        foreach(Quest activeQuest in StrangeQuestSystem.activeQuests)
-        {
-            foreach(QuestObjective qo in activeQuest.objectives)
-            {
-                if(qo.objectiveType == QuestObjective.ObjectiveType.FetchQuest)
-                {
-                    FetchQuest castedQuestObjective = (FetchQuest)qo;
-                    Item itemToCheckFor = castedQuestObjective.questedItem;
-
-                    int numberOfItemsCollected = playerInventory.GetNumberOfItems(itemToCheckFor);
-                    castedQuestObjective.ItemCollected(numberOfItemsCollected);
-                }
-            }
-        }
     }
 }

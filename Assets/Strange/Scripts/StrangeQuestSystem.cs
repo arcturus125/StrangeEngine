@@ -30,5 +30,26 @@ public class StrangeQuestSystem : MonoBehaviour
         trackedQuest = q;
     }
 
-    void Update() {}
+    void Update() 
+    {
+        //CheckForFetchQuestCompletion();
+    }
+
+    public void CheckForFetchQuestCompletion()
+    {
+        foreach (Quest activeQuest in StrangeQuestSystem.activeQuests)
+        {
+            foreach (QuestObjective qo in activeQuest.objectives)
+            {
+                if (qo.objectiveType == QuestObjective.ObjectiveType.FetchQuest)
+                {
+                    FetchQuest castedQuestObjective = (FetchQuest)qo;
+                    Item itemToCheckFor = castedQuestObjective.questedItem;
+
+                    int numberOfItemsCollected = playerInventory.GetNumberOfItems(itemToCheckFor);
+                    castedQuestObjective.ItemCollected(numberOfItemsCollected);
+                }
+            }
+        }
+    }
 }
