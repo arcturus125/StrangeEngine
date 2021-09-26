@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c684abb0ff9862d4db8f11af9a732deb, type: 3}
   m_Name: Enemy
   m_EditorClassIdentifier: 
-  health: 0
-  Name: 
+  health: 1
+  enemyName: enemy
+  aggroRange: 15
+  AI_type: 2
   drops: []
   dropChances: []

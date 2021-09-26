@@ -5,7 +5,6 @@ using UnityEngine;
 public class EnemyComponent : MonoBehaviour
 {
     public Enemy enemyReference; // the reference to the enemy file. contains the default details of the enemy
-    public GameObject Player;
 
     public float currentHealth;
     public bool hit = false; // has the enemy been hit by the player?
@@ -19,8 +18,8 @@ public class EnemyComponent : MonoBehaviour
     {
         position = new Vector2(transform.position.x, transform.position.z);
 
-        //currentHealth = enemyReference.health;
-        //AI_type = enemyReference.AI_type;
+        currentHealth = enemyReference.health;
+        AI_type = enemyReference.AI_type;
 
     }
 
@@ -48,11 +47,30 @@ public class EnemyComponent : MonoBehaviour
         }
         else if (AI_type == Enemy.AIType.Agressive)
         {
-            // check fo LOS  to player
-            // if LOS:
-                // chase player
-            // else:
-                // randomly roam
+            RaycastHit hit;
+            Vector3 direction = StrangeEnemySystem.singleton.playerGameObject.transform.position - this.transform.position;
+            if (Physics.Raycast(this.transform.position,  direction , out hit, enemyReference.aggroRange ))
+            {
+                if(hit.collider.transform.IsChildOf( StrangeEnemySystem.singleton.playerGameObject.transform) )
+                {
+                    // if LOS to player
+                    Debug.DrawRay(this.transform.position, direction, Color.green);
+
+                    ChasePlayer();
+                }
+                else
+                {
+                    // if LOS to player is broken
+                    Debug.DrawRay(this.transform.position, direction, Color.red);
+
+                    Wander();
+                }
+            }
+            else
+            {
+                Wander();
+            }
+
         }
     }
 
@@ -82,7 +100,7 @@ public class EnemyComponent : MonoBehaviour
 
     private void ChasePlayer()
     {
-        desiredDirection = (new Vector2(Player.transform.position.x, Player.transform.position.z) - position).normalized;
+        desiredDirection = (new Vector2(StrangeEnemySystem.singleton.playerGameObject.transform.position.x, StrangeEnemySystem.singleton.playerGameObject.transform.position.z) - position).normalized;
 
         Vector2 desiredVelocity = desiredDirection * maxSpeed;
         Vector2 desiredSteeringForce = (desiredVelocity - velocity) * steerStrength;
