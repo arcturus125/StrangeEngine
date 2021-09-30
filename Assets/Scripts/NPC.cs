@@ -4,6 +4,8 @@ using UnityEngine;
 public class NPC : MonoBehaviour
 {
     public Item stick;
+
+
     public StrangeInventory playerInventory;
 
     Dialogue hi;
@@ -43,7 +45,11 @@ public class NPC : MonoBehaviour
 
 
         TalkQuest tq = new TalkQuest("tell me to go away", d3);
+
+
         FetchQuest fq = new FetchQuest("Collect sticks", stick, 3);
+
+
         List<QuestObjective> l = new List<QuestObjective> {tq, fq };
         Quest q1 = new Quest("1baby's first quest", "info test", l);
         Quest q2 = new Quest("2baby's first quest", "info", new TalkQuest("tell me to go away", d3));

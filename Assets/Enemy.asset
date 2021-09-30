@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 1
   enemyName: enemy
+  speed: 1
   aggroRange: 15
+  enraged: 0
   AI_type: 2
   drops: []
   dropChances: []
