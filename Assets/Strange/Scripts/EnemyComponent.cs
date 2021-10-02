@@ -22,6 +22,7 @@ public class EnemyComponent : MonoBehaviour
     Vector2 velocity;         //} using forces that counter out 
     Vector2 desiredDirection; //} for more realistic movement
     bool returnToSpawner = false;
+    bool isDosile = false;
 
 
 
@@ -33,13 +34,14 @@ public class EnemyComponent : MonoBehaviour
         AI_type = enemyReference.AI_type;
         maxSpeed = enemyReference.speed;
 
+        InvokeRepeating("CalculateGiddiness", 1, enemyReference.agitatedness);
     }
 
     void Update()
     {
-        // if the enemy hs wandered too far from their spawner
+        // if the enemy hs wandered too far from their spawner, tellthe enemy to returnto their spawn area
         float distanceFromSpawner = Vector3.Distance(this.transform.position, parentSpawner.transform.position);
-        if((distanceFromSpawner > parentSpawner.returnToSpawnRadius) && !enemyReference.enraged )
+        if ((distanceFromSpawner > parentSpawner.returnToSpawnRadius) && !enemyReference.enraged)
         {
             returnToSpawner = true;
         }
@@ -48,6 +50,7 @@ public class EnemyComponent : MonoBehaviour
             SpawnerRecall();
         else
             EnemyAI();
+        
     }
 
     void EnemyAI()
@@ -105,8 +108,11 @@ public class EnemyComponent : MonoBehaviour
     // these functions just set the target, then they call Movement(), since the movement code is identical, only the target changes
     private void Wander()
     {
-        desiredDirection = (desiredDirection + Random.insideUnitCircle * wanderStrength).normalized;
-        Movement();
+        if (!isDosile)
+        {
+            desiredDirection = (desiredDirection + Random.insideUnitCircle * wanderStrength).normalized;
+            Movement();
+        }
     }
     private void ChasePlayer()
     {
@@ -124,8 +130,6 @@ public class EnemyComponent : MonoBehaviour
             returnToSpawner = false;
     }
 
-
-
     private void Movement()
     {
         // sebastian lague : ants video
@@ -138,5 +142,20 @@ public class EnemyComponent : MonoBehaviour
 
         float angle = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg;
         transform.SetPositionAndRotation(new Vector3(position.x, transform.position.y, position.y), Quaternion.Euler(0, -angle, 0));
+    }
+
+    private void CalculateGiddiness()
+    {
+        float rng = Random.Range(0, 100);
+        if ((rng/100) > enemyReference.giddiness)
+        {
+            isDosile = true;
+            Debug.Log("dosile");
+        }
+        else
+        {
+            isDosile = false;
+            Debug.Log("giddy");
+        }
     }
 }

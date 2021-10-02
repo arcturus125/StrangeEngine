@@ -17,6 +17,6 @@ MonoBehaviour:
   speed: 1
   aggroRange: 15
   enraged: 0
-  AI_type: 2
+  AI_type: 0
   drops: []
   dropChances: []
