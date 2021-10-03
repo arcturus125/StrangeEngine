@@ -49,9 +49,7 @@ public class EnemyComponent : MonoBehaviour
 
     protected virtual void Update()
     {
-        //EnemyAI();
-        Wander3D();
-        
+        EnemyAI();
     }
 
     /// <summary>
@@ -70,14 +68,22 @@ public class EnemyComponent : MonoBehaviour
             returnToSpawner = true;
         }
         if (returnToSpawner)
-            SpawnerRecall2D();
+        {
+            if (enemyReference.isFlyingEnemy)
+                SpawnerRecall3D();
+            else
+                SpawnerRecall2D();
+        }
 
         // ### Enemy AI ###
         else
         {
             if (AI_type == Enemy.AIType.Passive)
             {
-                Wander2D();
+                if (enemyReference.isFlyingEnemy)
+                    Wander3D();
+                else
+                    Wander2D();
             }
 
 
@@ -85,11 +91,17 @@ public class EnemyComponent : MonoBehaviour
             {
                 if (hit)
                 {
-                    ChasePlayer2D();
+                    if (enemyReference.isFlyingEnemy)
+                        ChasePlayer3D();
+                    else
+                        ChasePlayer2D();
                 }
                 else
                 {
-                    Wander2D();
+                    if (enemyReference.isFlyingEnemy)
+                        Wander3D();
+                    else
+                        Wander2D();
                 }
             }
 
@@ -105,21 +117,42 @@ public class EnemyComponent : MonoBehaviour
                         // if LOS to player
                         Debug.DrawRay(this.transform.position, direction, Color.green);
 
-                        ChasePlayer2D();
+                        if (enemyReference.isFlyingEnemy)
+                            ChasePlayer3D();
+                        else
+                            ChasePlayer2D();
                     }
                     else
                     {
                         // if LOS to player is broken
                         Debug.DrawRay(this.transform.position, direction, Color.red);
-
-                        Wander2D();
+                        if (enemyReference.isFlyingEnemy)
+                            Wander3D();
+                        else
+                            Wander2D();
                     }
                 }
                 else
                 {
-                    Wander2D();
+                    if (enemyReference.isFlyingEnemy)
+                        Wander3D();
+                    else
+                        Wander2D();
                 }
             }
+        }
+    }
+
+    protected virtual void CalculateGiddiness()
+    {
+        float rng = Random.Range(0, 100);
+        if ((rng / 100) > enemyReference.giddiness)
+        {
+            isDosile = true;
+        }
+        else
+        {
+            isDosile = false;
         }
     }
 
@@ -176,18 +209,6 @@ public class EnemyComponent : MonoBehaviour
         transform.SetPositionAndRotation(new Vector3(position.x, transform.position.y, position.y), Quaternion.Euler(0, -angle, 0));
     }
 
-    protected virtual void CalculateGiddiness()
-    {
-        float rng = Random.Range(0, 100);
-        if ((rng/100) > enemyReference.giddiness)
-        {
-            isDosile = true;
-        }
-        else
-        {
-            isDosile = false;
-        }
-    }
 
 
 
@@ -198,9 +219,53 @@ public class EnemyComponent : MonoBehaviour
         if (!isDosile)
         {
             desiredDirection3d = (desiredDirection3d + Random.insideUnitSphere * wanderStrength).normalized;
+
+            // if useWorldHeight is False, offset maxheight and minHeight calculations by the ground height
+            // Note: if there is no ground under enemy, they will remember the offset of las time they were above ground
+            float groundOffset = 0;
+            if(!enemyReference.useWorldHeight)
+            {
+                RaycastHit hit;
+                if(Physics.Raycast(transform.position, Vector3.down, out hit))
+                {
+                    groundOffset = hit.point.y;
+                }
+            }
+
+            // cap maxheight
+            if (desiredDirection3d.y + position3d.y > enemyReference.maxheight + groundOffset)
+            {
+                if (desiredDirection3d.y > 0)
+                {
+                    desiredDirection3d = new Vector3(desiredDirection3d.x, (enemyReference.maxheight + groundOffset) - position3d.y, desiredDirection3d.z);
+                }
+            }
+            // cap minheight
+            else if (desiredDirection3d.y + position3d.y < enemyReference.minheight + groundOffset)
+            {
+                if (desiredDirection3d.y < 0)
+                    desiredDirection3d = new Vector3(desiredDirection3d.x, (enemyReference.minheight + groundOffset) - position3d.y, desiredDirection3d.z);
+            }
+
             Movement3D(desiredDirection3d);
         }
     }
+    protected virtual void ChasePlayer3D()
+    {
+        desiredDirection3d = (StrangeEnemySystem.singleton.playerGameObject.transform.position - position3d).normalized;
+        Movement3D(desiredDirection3d);
+    }
+    protected virtual void SpawnerRecall3D()
+    {
+        desiredDirection3d = (parentSpawner.transform.position - position3d).normalized;
+        Movement2D(desiredDirection3d);
+
+
+        float distanceFromSpawner = Vector3.Distance(this.transform.position, parentSpawner.transform.position);
+        if (distanceFromSpawner < parentSpawner.spawnRadius)
+            returnToSpawner = false;
+    }
+
     protected virtual void Movement3D(Vector3 directionOfMovement)
     {
         Vector3 desiredVelocity = directionOfMovement * maxSpeed;
@@ -210,7 +275,16 @@ public class EnemyComponent : MonoBehaviour
         velocity3d = Vector3.ClampMagnitude(velocity3d + acceleration * Time.deltaTime, maxSpeed);
         position3d += velocity3d * Time.deltaTime;
 
-        transform.SetPositionAndRotation(new Vector3(position3d.x, position3d.y, position3d.z), Quaternion.Euler(0, 0, 0));
-        transform.LookAt(velocity3d + transform.position);
+
+        if (!enemyReference.lockEnemyTilt)
+        {
+            transform.SetPositionAndRotation(new Vector3(position3d.x, position3d.y, position3d.z), Quaternion.Euler(0, 0, 0));
+            transform.LookAt(velocity3d + transform.position);
+        }
+        else
+        {
+            float angle = Mathf.Atan2(velocity3d.y, velocity3d.x) * Mathf.Rad2Deg;
+            transform.SetPositionAndRotation(new Vector3(position3d.x, position3d.y, position3d.z), Quaternion.Euler(0, -angle, 0));
+        }
     }
 }
