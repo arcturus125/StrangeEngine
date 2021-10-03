@@ -18,17 +18,27 @@ public class EnemyComponent : MonoBehaviour
     public EnemySpawner parentSpawner; // the reference to the spawner that spawned this enemy
 
     float currentHealth;
-    Vector2 position;         //} used in enemy movement code
-    Vector2 velocity;         //} using forces that counter out 
-    Vector2 desiredDirection; //} for more realistic movement
     bool returnToSpawner = false;
     bool isDosile = false;
 
+    // movement vectors for grounded enemies
+    Vector2 position;         //} used in enemy movement code
+    Vector2 velocity;         //} using forces that counter out 
+    Vector2 desiredDirection; //} for more realistic movement
+
+    // movement vectors for flying enemies
+    Vector3 position3d;         //} used in enemy movement code for flying enemies
+    Vector3 velocity3d;         //} using forces that counter out 
+    Vector3 desiredDirection3d; //} for more realistic movement
 
 
-    void Start()
+
+
+    protected virtual void Start()
     {
         position = new Vector2(transform.position.x, transform.position.z);
+        position3d = transform.position;
+
 
         currentHealth = enemyReference.health;
         AI_type = enemyReference.AI_type;
@@ -37,92 +47,110 @@ public class EnemyComponent : MonoBehaviour
         InvokeRepeating("CalculateGiddiness", 1, enemyReference.agitatedness);
     }
 
-    void Update()
+    protected virtual void Update()
     {
-        // if the enemy hs wandered too far from their spawner, tellthe enemy to returnto their spawn area
+        //EnemyAI();
+        Wander3D();
+        
+    }
+
+    /// <summary>
+    /// Runs once every frame, decides on the movement patterns of the enemy:
+    /// <para>Passive: ignores player, randomly wanders</para>
+    /// <para>Reactive: ingores player until hit</para>
+    /// <para>Aggressive: randomly wanders, until it has LOS of player, then enemy chases player</para>
+    /// </summary>
+    protected virtual void EnemyAI()
+    {
+        // ### Spawner Recall ###
+        // if the enemy has wandered too far from their spawner, tell the enemy to return to their spawn area
         float distanceFromSpawner = Vector3.Distance(this.transform.position, parentSpawner.transform.position);
         if ((distanceFromSpawner > parentSpawner.returnToSpawnRadius) && !enemyReference.enraged)
         {
             returnToSpawner = true;
         }
-
         if (returnToSpawner)
-            SpawnerRecall();
+            SpawnerRecall2D();
+
+        // ### Enemy AI ###
         else
-            EnemyAI();
-        
-    }
-
-    void EnemyAI()
-    {
-
-        if(AI_type == Enemy.AIType.Passive)
         {
-            Wander();
-        }
-
-
-        else if(AI_type == Enemy.AIType.Reactive)
-        {
-            if (hit)
+            if (AI_type == Enemy.AIType.Passive)
             {
-                ChasePlayer();
+                Wander2D();
             }
-            else
-            {
-                Wander();
-            }
-        }
 
 
-        else if (AI_type == Enemy.AIType.Agressive)
-        {
-            RaycastHit hit;
-            Vector3 direction = StrangeEnemySystem.singleton.playerGameObject.transform.position - this.transform.position;
-            if (Physics.Raycast(this.transform.position,  direction , out hit, enemyReference.aggroRange ))
+            else if (AI_type == Enemy.AIType.Reactive)
             {
-                if(hit.collider.transform.IsChildOf( StrangeEnemySystem.singleton.playerGameObject.transform) )
+                if (hit)
                 {
-                    // if LOS to player
-                    Debug.DrawRay(this.transform.position, direction, Color.green);
-
-                    ChasePlayer();
+                    ChasePlayer2D();
                 }
                 else
                 {
-                    // if LOS to player is broken
-                    Debug.DrawRay(this.transform.position, direction, Color.red);
-
-                    Wander();
+                    Wander2D();
                 }
             }
-            else
+
+
+            else if (AI_type == Enemy.AIType.Agressive)
             {
-                Wander();
+                RaycastHit hit;
+                Vector3 direction = StrangeEnemySystem.singleton.playerGameObject.transform.position - this.transform.position;
+                if (Physics.Raycast(this.transform.position, direction, out hit, enemyReference.aggroRange))
+                {
+                    if (hit.collider.transform.IsChildOf(StrangeEnemySystem.singleton.playerGameObject.transform))
+                    {
+                        // if LOS to player
+                        Debug.DrawRay(this.transform.position, direction, Color.green);
+
+                        ChasePlayer2D();
+                    }
+                    else
+                    {
+                        // if LOS to player is broken
+                        Debug.DrawRay(this.transform.position, direction, Color.red);
+
+                        Wander2D();
+                    }
+                }
+                else
+                {
+                    Wander2D();
+                }
             }
         }
     }
 
+    // ##### 2d Movement ####
 
-
-    // these functions just set the target, then they call Movement(), since the movement code is identical, only the target changes
-    private void Wander()
+    /// <summary>
+    /// selects random directions for the enemy to travel. Enemy only moves if isDosile is false
+    /// </summary>
+    protected virtual void Wander2D()
     {
         if (!isDosile)
         {
             desiredDirection = (desiredDirection + Random.insideUnitCircle * wanderStrength).normalized;
-            Movement();
+            Movement2D(desiredDirection);
         }
     }
-    private void ChasePlayer()
+    /// <summary>
+    /// passes the players position onto Movement()
+    /// </summary>
+    protected virtual void ChasePlayer2D()
     {
         desiredDirection = (new Vector2(StrangeEnemySystem.singleton.playerGameObject.transform.position.x, StrangeEnemySystem.singleton.playerGameObject.transform.position.z) - position).normalized;
-        Movement();
+        Movement2D(desiredDirection);
     }
-    private void SpawnerRecall()
+    /// <summary>
+    /// passes the Spawner's position into Movement()
+    /// </summary>
+    protected virtual void SpawnerRecall2D()
     {
         desiredDirection = (new Vector2(parentSpawner.transform.position.x, parentSpawner.transform.position.z) - position).normalized;
-        Movement();
+        Movement2D(desiredDirection);
 
 
         float distanceFromSpawner = Vector3.Distance(this.transform.position, parentSpawner.transform.position);
@@ -130,10 +158,14 @@ public class EnemyComponent : MonoBehaviour
             returnToSpawner = false;
     }
 
-    private void Movement()
+    /// <summary>
+    /// enemy turns and moves in the desired direction of movement
+    /// </summary>
+    /// <param name="directionOfMovement"> the direction you want the enemy to move</param>
+    protected virtual void Movement2D(Vector2 directionOfMovement)
     {
         // sebastian lague : ants video
-        Vector2 desiredVelocity = desiredDirection * maxSpeed;
+        Vector2 desiredVelocity = directionOfMovement * maxSpeed;
         Vector2 desiredSteeringForce = (desiredVelocity - velocity) * steerStrength;
         Vector2 acceleration = Vector2.ClampMagnitude(desiredSteeringForce, steerStrength) / 1;
 
@@ -144,18 +176,41 @@ public class EnemyComponent : MonoBehaviour
         transform.SetPositionAndRotation(new Vector3(position.x, transform.position.y, position.y), Quaternion.Euler(0, -angle, 0));
     }
 
-    private void CalculateGiddiness()
+    protected virtual void CalculateGiddiness()
     {
         float rng = Random.Range(0, 100);
         if ((rng/100) > enemyReference.giddiness)
         {
             isDosile = true;
-            Debug.Log("dosile");
         }
         else
         {
             isDosile = false;
-            Debug.Log("giddy");
         }
+    }
+
+
+
+    // ##### 3d Movement ####
+
+    protected virtual void Wander3D()
+    {
+        if (!isDosile)
+        {
+            desiredDirection3d = (desiredDirection3d + Random.insideUnitSphere * wanderStrength).normalized;
+            Movement3D(desiredDirection3d);
+        }
+    }
+    protected virtual void Movement3D(Vector3 directionOfMovement)
+    {
+        Vector3 desiredVelocity = directionOfMovement * maxSpeed;
+        Vector3 desiredSteeringForce = (desiredVelocity - velocity3d) * steerStrength;
+        Vector3 acceleration = Vector3.ClampMagnitude(desiredSteeringForce, steerStrength) / 1;
+
+        velocity3d = Vector3.ClampMagnitude(velocity3d + acceleration * Time.deltaTime, maxSpeed);
+        position3d += velocity3d * Time.deltaTime;
+
+        transform.SetPositionAndRotation(new Vector3(position3d.x, position3d.y, position3d.z), Quaternion.Euler(0, 0, 0));
+        transform.LookAt(velocity3d + transform.position);
     }
 }
