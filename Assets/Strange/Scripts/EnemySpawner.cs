@@ -22,6 +22,8 @@ public class EnemySpawner : MonoBehaviour
      */
     public int maxHeightOffset = 10;
 
+    public bool SpawnEnemiesInAir = false;
+
 
 
 
@@ -45,7 +47,17 @@ public class EnemySpawner : MonoBehaviour
 
             // raycast down
             RaycastHit raycastInfo;
-            bool hit = Physics.Raycast(spawnPos, Vector3.down, out raycastInfo, maxHeightOffset);
+            bool hit;
+            if (!SpawnEnemiesInAir)
+            {
+                hit = Physics.Raycast(spawnPos, Vector3.down, out raycastInfo, maxHeightOffset);
+            }
+            else
+            {
+                raycastInfo = new RaycastHit();
+                raycastInfo.point = spawnPos;
+                hit = true;
+            }
 
             // if raycast hits anything, spawn enemy at that location with random roation
             if (hit)
