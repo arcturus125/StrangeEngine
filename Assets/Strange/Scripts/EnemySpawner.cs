@@ -50,7 +50,7 @@ public class EnemySpawner : MonoBehaviour
             // if raycast hits anything, spawn enemy at that location with random roation
             if (hit)
             {
-                GameObject tempEnemy = Instantiate(enemyPrefab, raycastInfo.point , Quaternion.Euler(0, Random.Range(1,360) ,0));
+                GameObject tempEnemy = Instantiate(enemyPrefab, raycastInfo.point + new Vector3(0, enemyPrefab.GetComponent<EnemyComponent>().enemyReference.yOffset, 0) , Quaternion.Euler(0, Random.Range(1,360) ,0));
                 tempEnemy.GetComponent<EnemyComponent>().parentSpawner = this;
                 enemies.Add(tempEnemy);
                 currentNumberOfEnemies++;

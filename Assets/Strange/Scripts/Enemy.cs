@@ -28,6 +28,8 @@ public class Enemy : ScriptableObject
     [Tooltip("The range at which the enemy will target the player")]
     public float aggroRange;
 
+    public float yOffset = 0;
+
     [Tooltip("if true, enemy will chase the player indefinately, regardless of their distance to their spawner.\n\n" +
         " if false, they will chase the player, but when they run out of their spawners 'Return to spawn radius' they will stop chasing the player and return to their spawner")]
     public bool enraged = true;

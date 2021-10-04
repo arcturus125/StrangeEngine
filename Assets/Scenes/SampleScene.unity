@@ -159,7 +159,7 @@ MonoBehaviour:
   enemies: []
   maxNumberofEnemies: 1
   spawnRadius: 4
-  returnToSpawnRadius: 10
+  returnToSpawnRadius: 100
   maxHeightOffset: 10
 --- !u!135 &71854976
 SphereCollider:
@@ -1199,6 +1199,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: StrangePlayer
       objectReference: {fileID: 0}
+    - target: {fileID: 4039313419394577812, guid: b048af488868742418ee07b15bd5ea86, type: 3}
+      propertyPath: m_UseGravity
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4039313419394577813, guid: b048af488868742418ee07b15bd5ea86, type: 3}
+      propertyPath: movementType
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4039313419394577814, guid: b048af488868742418ee07b15bd5ea86, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -1451,7 +1459,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8007905472130628852, guid: 38d885a963c4daf4ba27cab34784e2b6, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.000011062709
+      value: 0.00044165424
       objectReference: {fileID: 0}
     - target: {fileID: 8007905472189820902, guid: 38d885a963c4daf4ba27cab34784e2b6, type: 3}
       propertyPath: m_AnchorMax.x
