@@ -137,7 +137,7 @@ GameObject:
   - component: {fileID: 71854976}
   - component: {fileID: 71854975}
   m_Layer: 0
-  m_Name: Sphere
+  m_Name: Spawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -161,6 +161,7 @@ MonoBehaviour:
   spawnRadius: 4
   returnToSpawnRadius: 100
   maxHeightOffset: 10
+  SpawnEnemiesInAir: 1
 --- !u!135 &71854976
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -1459,7 +1460,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8007905472130628852, guid: 38d885a963c4daf4ba27cab34784e2b6, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.00044165424
+      value: -0.0000076293945
       objectReference: {fileID: 0}
     - target: {fileID: 8007905472189820902, guid: 38d885a963c4daf4ba27cab34784e2b6, type: 3}
       propertyPath: m_AnchorMax.x

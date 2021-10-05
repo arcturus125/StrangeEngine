@@ -143,6 +143,9 @@ public class EnemyComponent : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// decides whether the enemy remains still or not
+    /// </summary>
     protected virtual void CalculateGiddiness()
     {
         float rng = Random.Range(0, 100);
@@ -168,6 +171,8 @@ public class EnemyComponent : MonoBehaviour
             desiredDirection = (desiredDirection + Random.insideUnitCircle * wanderStrength).normalized;
             Movement2D(desiredDirection);
         }
+        else
+            WhileDosile();
     }
     /// <summary>
     /// passes the players position onto Movement()
@@ -205,6 +210,8 @@ public class EnemyComponent : MonoBehaviour
         velocity = Vector2.ClampMagnitude(velocity + acceleration * Time.deltaTime, maxSpeed);
         position += velocity * Time.deltaTime;
 
+        WhileMoving(velocity);
+
         float angle = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg;
         transform.SetPositionAndRotation(new Vector3(position.x, transform.position.y, position.y), Quaternion.Euler(0, -angle, 0));
     }
@@ -223,10 +230,10 @@ public class EnemyComponent : MonoBehaviour
             // if useWorldHeight is False, offset maxheight and minHeight calculations by the ground height
             // Note: if there is no ground under enemy, they will remember the offset of las time they were above ground
             float groundOffset = 0;
-            if(!enemyReference.useWorldHeight)
+            if (!enemyReference.useWorldHeight)
             {
                 RaycastHit hit;
-                if(Physics.Raycast(transform.position, Vector3.down, out hit))
+                if (Physics.Raycast(transform.position, Vector3.down, out hit))
                 {
                     groundOffset = hit.point.y;
                 }
@@ -249,6 +256,8 @@ public class EnemyComponent : MonoBehaviour
 
             Movement3D(desiredDirection3d);
         }
+        else
+            WhileDosile();
     }
     protected virtual void ChasePlayer3D()
     {
@@ -276,6 +285,8 @@ public class EnemyComponent : MonoBehaviour
         position3d += velocity3d * Time.deltaTime;
 
 
+        WhileMoving(velocity);
+
         if (!enemyReference.lockEnemyTilt)
         {
             transform.SetPositionAndRotation(new Vector3(position3d.x, position3d.y, position3d.z), Quaternion.Euler(0, 0, 0));
@@ -287,4 +298,10 @@ public class EnemyComponent : MonoBehaviour
             transform.SetPositionAndRotation(new Vector3(position3d.x, position3d.y, position3d.z), Quaternion.Euler(0, -angle, 0));
         }
     }
+
+
+    // ##### Interface Functions #####
+
+    protected virtual void WhileDosile() { }
+    protected virtual void WhileMoving(Vector3 velocity) { }
 }
