@@ -61,23 +61,27 @@ public class EnemyComponent : MonoBehaviour
     protected virtual void EnemyAI()
     {
         // ### Spawner Recall ###
-        // if the enemy has wandered too far from their spawner, tell the enemy to return to their spawn area
-        float distanceFromSpawner = Vector3.Distance(this.transform.position, parentSpawner.transform.position);
-        if ((distanceFromSpawner > parentSpawner.returnToSpawnRadius) && !enemyReference.enraged)
+        if (parentSpawner)
         {
-            returnToSpawner = true;
-        }
-        if (returnToSpawner)
-        {
-            if (enemyReference.isFlyingEnemy)
-                SpawnerRecall3D();
-            else
-                SpawnerRecall2D();
+            // if the enemy has wandered too far from their spawner, tell the enemy to return to their spawn area
+            float distanceFromSpawner = Vector3.Distance(this.transform.position, parentSpawner.transform.position);
+            if ((distanceFromSpawner > parentSpawner.returnToSpawnRadius) && !enemyReference.enraged)
+            {
+                returnToSpawner = true;
+            }
+            if (returnToSpawner)
+            {
+                if (enemyReference.isFlyingEnemy)
+                    SpawnerRecall3D();
+                else
+                    SpawnerRecall2D();
+            }
         }
 
         // ### Enemy AI ###
         else
         {
+            bool runAgressive = false;
             if (AI_type == Enemy.AIType.Passive)
             {
                 if (enemyReference.isFlyingEnemy)
@@ -86,15 +90,13 @@ public class EnemyComponent : MonoBehaviour
                     Wander2D();
             }
 
-
             else if (AI_type == Enemy.AIType.Reactive)
             {
                 if (hit)
                 {
-                    if (enemyReference.isFlyingEnemy)
-                        ChasePlayer3D();
-                    else
-                        ChasePlayer2D();
+                    // the code here is essentially the same as agressive enemies
+                    // instead of typing it twice, recycle the code
+                    runAgressive = true;
                 }
                 else
                 {
@@ -106,7 +108,7 @@ public class EnemyComponent : MonoBehaviour
             }
 
 
-            else if (AI_type == Enemy.AIType.Agressive)
+            else if (AI_type == Enemy.AIType.Agressive || runAgressive)
             {
                 RaycastHit hit;
                 Vector3 direction = StrangeEnemySystem.singleton.playerGameObject.transform.position - this.transform.position;
