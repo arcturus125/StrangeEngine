@@ -363,7 +363,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1056648366
 Transform:
   m_ObjectHideFlags: 0
@@ -923,10 +923,10 @@ MonoBehaviour:
   mapHeight: 100
   noiseScale: 25
   octaves: 5
-  persistance: 0.511
-  lacunarity: 2
+  persistance: 0.475
+  lacunarity: 3
   seed: 0
-  offset: {x: 9.85, y: 1.26}
+  offset: {x: 9.92, y: 0}
   autoUpdate: 1
   regions:
   - name: Water Deep
@@ -1680,7 +1680,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8007905472130628852, guid: 38d885a963c4daf4ba27cab34784e2b6, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.0000769112
+      value: 2.87752
       objectReference: {fileID: 0}
     - target: {fileID: 8007905472189820902, guid: 38d885a963c4daf4ba27cab34784e2b6, type: 3}
       propertyPath: m_AnchorMax.x

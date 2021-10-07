@@ -60,6 +60,7 @@ public class EnemyComponent : MonoBehaviour
     /// </summary>
     protected virtual void EnemyAI()
     {
+        bool cancelAI = false;
         // ### Spawner Recall ###
         if (parentSpawner)
         {
@@ -75,11 +76,12 @@ public class EnemyComponent : MonoBehaviour
                     SpawnerRecall3D();
                 else
                     SpawnerRecall2D();
+                cancelAI = true;
             }
         }
 
         // ### Enemy AI ###
-        else
+        if(!cancelAI)
         {
             bool runAgressive = false;
             if (AI_type == Enemy.AIType.Passive)
