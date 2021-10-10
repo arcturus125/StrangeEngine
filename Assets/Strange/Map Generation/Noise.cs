@@ -11,7 +11,9 @@ public static class Noise
     public static float[,] GenerateNoiseMap(
         int mapWidth,
         int mapHeight,
-        float scale
+        float scale,
+        float amplitude,
+        float frequency
         )
     {
         // create the grid
@@ -27,11 +29,11 @@ public static class Noise
 
                 // perlin noise outputs are identical when inputs are whole numbers
                 // this devision fixes that problem
-                float sampleX = x / scale;
-                float sampleY = y / scale;
+                float sampleX = x / frequency;
+                float sampleY = y / frequency;
 
                 // using these new sample variables, generate the noise
-                float perlinValue = Mathf.PerlinNoise(sampleX, sampleY);
+                float perlinValue = (Mathf.PerlinNoise(sampleX, sampleY) * 2 - 1.0f) * amplitude;;
                 // add the noise to the grid
                 noiseMap[x, y] = perlinValue;
             }
@@ -63,5 +65,35 @@ public static class Noise
         texture.wrapMode = TextureWrapMode.Clamp;
         texture.Apply();
         return texture;
+    }
+
+    public static float[,] NormalizeNoiseMap(float[,] noiseMap)
+    {
+        int mapWidth = noiseMap.GetLength(0);
+        int mapHeight = noiseMap.GetLength(1);
+
+        float maxValueFound = float.MinValue;
+        float minValueFound = float.MaxValue;
+
+        // first loop through the whole map and find the lowest and highest numbers
+        for (int y = 0; y < mapHeight; y++)
+        {
+            for (int x = 0; x < mapWidth; x++)
+            {
+                if (noiseMap[x, y] < minValueFound) minValueFound = noiseMap[x, y];
+                if (noiseMap[x, y] > maxValueFound) maxValueFound = noiseMap[x, y];
+            }
+        }
+
+        // then loop through the whole map and  find the inverse lerp (the percentage it was between the two)
+        float[,] newNoiseMap = new float[mapWidth, mapHeight];
+        for (int y = 0; y < mapHeight; y++)
+        {
+            for (int x = 0; x < mapWidth; x++)
+            {
+                newNoiseMap[x, y] = Mathf.InverseLerp(minValueFound, maxValueFound, noiseMap[x, y]);
+            }
+        }
+        return newNoiseMap;
     }
 }
