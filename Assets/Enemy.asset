@@ -22,7 +22,7 @@ MonoBehaviour:
   giddiness: 1
   agitatedness: 3
   erraticnessOfMovement: 0.37
-  isFlyingEnemy: 0
+  isFlyingEnemy: 1
   lockEnemyTilt: 0
   useWorldHeight: 0
   maxheight: 10

@@ -363,7 +363,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1056648366
 Transform:
   m_ObjectHideFlags: 0
@@ -451,7 +451,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 9ef3b5711fe9a064a81639147820f1cd, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -902,10 +902,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1651571276}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f3c63020b1334ee4db48d15b8ae875b9, type: 3}
+  m_Script: {fileID: 11500000, guid: 2278d1eb8daaeff4f888ab1a318294d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textureRenderer: {fileID: 1170886749}
+  renderer: {fileID: 1170886749}
+  width: 355
+  height: 229
+  scale: 154.15
+  autoUpdate: 1
 --- !u!114 &1651571279
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -918,41 +922,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2278d1eb8daaeff4f888ab1a318294d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  drawMode: 1
-  mapWidth: 105
-  mapHeight: 100
-  noiseScale: 25
-  octaves: 5
-  persistance: 0.475
-  lacunarity: 3
-  seed: 0
-  offset: {x: 9.92, y: 0}
+  renderer: {fileID: 0}
+  width: 0
+  height: 0
+  scale: 0
   autoUpdate: 1
-  regions:
-  - name: Water Deep
-    height: 0.3
-    colour: {r: 0.12041653, g: 0.34656864, b: 0.7735849, a: 0}
-  - name: Water
-    height: 0.4
-    colour: {r: 0.16313636, g: 0.43332312, b: 0.8867924, a: 0}
-  - name: Sand
-    height: 0.45
-    colour: {r: 0.8508818, g: 0.8962264, b: 0.4523407, a: 0}
-  - name: Grass
-    height: 0.55
-    colour: {r: 0.2369247, g: 0.6415094, b: 0.2208971, a: 0}
-  - name: Grass Hills
-    height: 0.6
-    colour: {r: 0.18024074, g: 0.3773585, b: 0.17265932, a: 0}
-  - name: Rock
-    height: 0.7
-    colour: {r: 0.5566038, g: 0.4147396, b: 0.23891956, a: 0}
-  - name: Rock2
-    height: 0.9
-    colour: {r: 0.3962264, g: 0.28999612, b: 0.23362406, a: 0}
-  - name: Snow
-    height: 1
-    colour: {r: 1, g: 1, b: 1, a: 0}
 --- !u!850595691 &1873483728
 LightingSettings:
   m_ObjectHideFlags: 0
@@ -1680,7 +1654,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8007905472130628852, guid: 38d885a963c4daf4ba27cab34784e2b6, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 2.87752
+      value: -0.00002566334
       objectReference: {fileID: 0}
     - target: {fileID: 8007905472189820902, guid: 38d885a963c4daf4ba27cab34784e2b6, type: 3}
       propertyPath: m_AnchorMax.x
