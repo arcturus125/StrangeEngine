@@ -12,8 +12,7 @@ public static class Noise
         int mapWidth,
         int mapHeight,
         float scale,
-        float amplitude,
-        float frequency
+        float amplitude
         )
     {
         // create the grid
@@ -24,16 +23,16 @@ public static class Noise
         // loop through the grid
         for (int y = 0; y < mapHeight; y++)
         {
-            for(int x = 0; x<mapWidth; x++)
+            for(int x = 0; x < mapWidth; x++)
             {
 
                 // perlin noise outputs are identical when inputs are whole numbers
                 // this devision fixes that problem
-                float sampleX = x / frequency;
-                float sampleY = y / frequency;
+                float sampleX = x / scale;
+                float sampleY = y / scale;
 
                 // using these new sample variables, generate the noise
-                float perlinValue = (Mathf.PerlinNoise(sampleX, sampleY) * 2 - 1.0f) * amplitude;;
+                float perlinValue = (Mathf.PerlinNoise(sampleX, sampleY) * 2 - 1.0f) * amplitude;
                 // add the noise to the grid
                 noiseMap[x, y] = perlinValue;
             }
