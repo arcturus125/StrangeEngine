@@ -6,6 +6,7 @@ public class MapGenerator : MonoBehaviour
 {
     Mesh mesh;
     public MeshFilter mapGameObject;
+    public MeshCollider mapCollider;
 
     [Header("NoiseMap Size settings:")]
     public int noiseMapWidth;
@@ -46,6 +47,7 @@ public class MapGenerator : MonoBehaviour
             mesh.Clear();
         mesh = new Mesh();
         mapGameObject.mesh = mesh;
+        mapCollider.sharedMesh = mesh;
 
         // generate all the octaves
         for (int i = 0; i < octaves.Length; i ++)
