@@ -23,6 +23,7 @@ public class MapGenerator : MonoBehaviour
         public float[,] noiseMap;
         public float amplitude;
         public float frequency;
+        public Vector2 offset;
     }
     public Octave[] octaves;
 
@@ -40,7 +41,7 @@ public class MapGenerator : MonoBehaviour
         // generate all the octaves
         for (int i = 0; i < octaves.Length; i ++)
         {
-            octaves[i].noiseMap = Noise.GenerateNoiseMap(width, height, octaves[i].frequency, octaves[i].amplitude);
+            octaves[i].noiseMap = Noise.GenerateNoiseMap(width, height, octaves[i].frequency, octaves[i].amplitude, octaves[i].offset);
         }
 
         // merge all the octaves
