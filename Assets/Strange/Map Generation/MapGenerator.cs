@@ -135,4 +135,18 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
+    private void OnValidate()
+    {
+        if (width < 1) width = 1;
+        if (height < 1) height = 1;
+        if (scaleY < 0) scaleY = 0;
+        if (scale < 0) scale = 0;
+
+        for(int i = 0; i < octaves.Length;i++)
+        {
+            if (octaves[i].amplitude < 0) octaves[i].amplitude = 0;
+            if (octaves[i].frequency < 0) octaves[i].frequency = 0;
+        }
+    }
+
 }
