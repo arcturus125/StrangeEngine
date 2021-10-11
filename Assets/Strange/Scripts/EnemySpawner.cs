@@ -10,7 +10,7 @@ public class EnemySpawner : MonoBehaviour
     public List<GameObject> enemies; // enemies in the scene that belong to this spawner
 
     public int maxNumberofEnemies = 1;
-    private int currentNumberOfEnemies = 0;
+    public int currentNumberOfEnemies = 0;
 
     public int spawnRadius = 10; // the maximum distance an enemy can spawn from the spawner
     public int returnToSpawnRadius = 15; // while chasing the player, an enemy will forget the player and return to the spawner at this distance

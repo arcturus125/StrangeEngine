@@ -63,6 +63,10 @@ public class MapGenerator : MonoBehaviour
         GenerateMesh(meshData);
     }
 
+    /// <summary>
+    /// merges multiple noise maps into 1
+    /// Warning: output noise map will not range between 0 and 1 and may need normalizing
+    /// </summary>
     float[,] MergeOctaves()
     {
         float[,] temp = new float[noiseMapWidth, noiseMapHeight];
@@ -85,7 +89,8 @@ public class MapGenerator : MonoBehaviour
     MeshData GenerateMeshData(float[,] noiseMap)
     {
         MeshData meshData = new MeshData();
-        // ####### store Vertex positions
+
+        // ####### generate Vertex positions #######
         meshData.vertices = new Vector3[noiseMapWidth * noiseMapHeight];
 
         // loop through noise
@@ -103,7 +108,7 @@ public class MapGenerator : MonoBehaviour
             }
         }
 
-        // ######## make triangles
+        // ####### generate triangles #######
         int xSize = noiseMapWidth - 1;
         int ySize = noiseMapHeight - 1;
         meshData.indices = new int[(noiseMapWidth-1) * (noiseMapHeight-1) * 6];
@@ -113,12 +118,13 @@ public class MapGenerator : MonoBehaviour
         {
             for (int x = 0; x < xSize; x++)
             {
-                meshData.indices[currentTriangle + 0] = currentVertex + 0;
-                meshData.indices[currentTriangle + 1] = currentVertex + xSize + 1;
-                meshData.indices[currentTriangle + 2] = currentVertex + 1;
-                meshData.indices[currentTriangle + 3] = currentVertex + 1;
-                meshData.indices[currentTriangle + 4] = currentVertex + xSize + 1;
-                meshData.indices[currentTriangle + 5] = currentVertex + xSize + 2;
+                meshData.indices[currentTriangle + 0] = currentVertex + 0;           //  +    +
+                meshData.indices[currentTriangle + 1] = currentVertex + xSize + 1;   //  | \
+                meshData.indices[currentTriangle + 2] = currentVertex + 1;           //  +----+
+
+                meshData.indices[currentTriangle + 3] = currentVertex + 1;           //  +----+
+                meshData.indices[currentTriangle + 4] = currentVertex + xSize + 1;   //    \  |
+                meshData.indices[currentTriangle + 5] = currentVertex + xSize + 2;   //  +    +
 
 
                 currentVertex++;
@@ -144,6 +150,8 @@ public class MapGenerator : MonoBehaviour
     {
         if (noiseMapWidth < 1) noiseMapWidth = 1;
         if (noiseMapHeight < 1) noiseMapHeight = 1;
+        if (noiseMapHeight > 255) noiseMapHeight = 255;
+        if (noiseMapWidth > 255) noiseMapWidth = 255;
         if (heightMultiplier < 0) heightMultiplier = 0;
         if (size < 0) size = 0;
         if (useHeightCurve && !normalize) normalize = true;

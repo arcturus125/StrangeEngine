@@ -5,9 +5,8 @@ using UnityEngine;
 public static class Noise
 {
     /// <summary>
-    /// returns a grid of values between 0 and 1
+    /// returns a grid of float values between 0 and 1
     /// </summary>
-    /// <returns></returns>
     public static float[,] GenerateNoiseMap(
         int mapWidth,
         int mapHeight,
@@ -16,7 +15,7 @@ public static class Noise
         Vector2 offset
         )
     {
-        // create the grid
+        // create the grid of floats
         float[,] noiseMap = new float[mapWidth, mapHeight];
 
         if (scale <= 0) scale = 0.0001f; // this line prevents any divide by 0 errors
@@ -26,7 +25,6 @@ public static class Noise
         {
             for(int x = 0; x < mapWidth; x++)
             {
-
                 // perlin noise outputs are identical when inputs are whole numbers
                 // this devision fixes that problem
                 float sampleX = (x / scale) + offset.x;
@@ -38,11 +36,16 @@ public static class Noise
                 noiseMap[x, y] = perlinValue;
             }
         }
-
         return noiseMap;
-
     }
 
+    /// <summary>
+    /// turns the grid of floats into a texture
+    /// each value in the grid will represent a pixel in the texture
+    /// 0 = black pixel
+    /// 1 = white pixel
+    /// 0.834 = somewhere inbetween
+    /// </summary>
     public static Texture GenerateHeightMap(float[,] noiseMap)
     {
         // create a new texture
@@ -57,16 +60,22 @@ public static class Noise
         {
             for (int x = 0; x < width; x++)
             {
+                // for each cell in the grid, set a pixels colour in the texture
                 colorMap[y * width + x] = new Color(noiseMap[y, x], noiseMap[y, x], noiseMap[y, x]);
             }
         }
+        // set the texture we just made
         texture.SetPixels(colorMap);
         texture.filterMode = FilterMode.Point;
         texture.wrapMode = TextureWrapMode.Clamp;
         texture.Apply();
+
         return texture;
     }
-
+    
+    /// <summary>
+    /// takes a noise map that doesn't range between 0 and 1 and makes it range betwen 0 and 1
+    /// </summary>
     public static float[,] NormalizeNoiseMap(float[,] noiseMap)
     {
         int mapWidth = noiseMap.GetLength(0);

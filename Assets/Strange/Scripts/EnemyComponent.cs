@@ -81,7 +81,7 @@ public class EnemyComponent : MonoBehaviour
         }
 
         // ### Enemy AI ###
-        if(!cancelAI)
+        if (!cancelAI)
         {
             bool runAgressive = false;
             if (AI_type == Enemy.AIType.Passive)
@@ -308,4 +308,16 @@ public class EnemyComponent : MonoBehaviour
 
     protected virtual void WhileDosile() { }
     protected virtual void WhileMoving(Vector3 velocity) { }
+
+
+    private void OnDestroy()
+    {
+        OnKilled();
+    }
+    protected void OnKilled()
+    {
+        parentSpawner.enemies.Remove(this.gameObject);
+        parentSpawner.currentNumberOfEnemies--;
+    }
+
 }
