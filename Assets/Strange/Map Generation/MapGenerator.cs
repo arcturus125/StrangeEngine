@@ -5,17 +5,26 @@ using UnityEngine;
 public class MapGenerator : MonoBehaviour
 {
     Mesh mesh;
-    public MeshFilter mapOject;
+    public MeshFilter mapGameObject;
 
-    public int width;
-    public int height;
-    public float scaleY;
-    public float scale;
+    [Header("NoiseMap Size settings:")]
+    public int noiseMapWidth;
+    public int noiseMapHeight;
+    [Header("Mesh Size Settings:")]
+    public float heightMultiplier;
+    public float size;
+    [Header("Additional Settings:")]
+    public bool normalize = false;
+    public AnimationCurve heightCurve;
+    public bool useHeightCurve = false;
 
     public bool autoUpdate = false;
 
-    Vector3[] vertices;
-    int[] triangles;
+    struct MeshData
+    {
+        public Vector3[] vertices;
+        public int[] indices;
+    }
 
     [System.Serializable]
     public struct Octave
@@ -36,30 +45,31 @@ public class MapGenerator : MonoBehaviour
         if (mesh)
             mesh.Clear();
         mesh = new Mesh();
-        mapOject.mesh = mesh;
+        mapGameObject.mesh = mesh;
 
         // generate all the octaves
         for (int i = 0; i < octaves.Length; i ++)
         {
-            octaves[i].noiseMap = Noise.GenerateNoiseMap(width, height, octaves[i].frequency, octaves[i].amplitude, octaves[i].offset);
+            octaves[i].noiseMap = Noise.GenerateNoiseMap(noiseMapWidth, noiseMapHeight, octaves[i].frequency, octaves[i].amplitude, octaves[i].offset);
         }
 
         // merge all the octaves
-        float[,] mergedOctaves = MergeOctaves();
+        float[,] noiseMap = MergeOctaves();
         // normalise the octaves
-        //float[,] normalisedOctaves = Noise.NormalizeNoiseMap(mergedOctaves);
+        if(normalize)
+            noiseMap = Noise.NormalizeNoiseMap(noiseMap);
         // display the map
-        CreateShape(mergedOctaves);
-        GenerateMesh();
+        MeshData meshData = GenerateMeshData(noiseMap);
+        GenerateMesh(meshData);
     }
 
     float[,] MergeOctaves()
     {
-        float[,] temp = new float[width, height];
+        float[,] temp = new float[noiseMapWidth, noiseMapHeight];
 
-        for (int y = 0; y < height; y++)
+        for (int y = 0; y < noiseMapHeight; y++)
         {
-            for (int x = 0; x < width; x++)
+            for (int x = 0; x < noiseMapWidth; x++)
             {
                 float value = 0;
                 foreach (Octave o in octaves)
@@ -72,40 +82,43 @@ public class MapGenerator : MonoBehaviour
         return temp;
     }
 
-    void CreateShape(float[,] noiseMap)
+    MeshData GenerateMeshData(float[,] noiseMap)
     {
-
+        MeshData meshData = new MeshData();
         // ####### store Vertex positions
-        vertices = new Vector3[width * height];
+        meshData.vertices = new Vector3[noiseMapWidth * noiseMapHeight];
 
         // loop through noise
-        for (int i = 0, y = 0; y < height; y++)
+        for (int i = 0, y = 0; y < noiseMapHeight; y++)
         {
-            for (int x = 0; x < width; x++)
+            for (int x = 0; x < noiseMapWidth; x++)
             {
                 // set x and z based on scale
                 // set y based on noise * yScale
-                vertices[i] = new Vector3(x*scale, noiseMap[x,y]*scaleY * scale, y*scale);
+                if(!useHeightCurve)
+                    meshData.vertices[i] = new Vector3(x*size, noiseMap[x,y]*heightMultiplier * size, y*size);
+                else
+                    meshData.vertices[i] = new Vector3(x * size, heightCurve.Evaluate(noiseMap[x, y]) * heightMultiplier * size, y * size);
                 i++;
             }
         }
 
         // ######## make triangles
-        int xSize = width - 1;
-        int ySize = height - 1;
-        triangles = new int[(width-1) * (height-1) * 6];
+        int xSize = noiseMapWidth - 1;
+        int ySize = noiseMapHeight - 1;
+        meshData.indices = new int[(noiseMapWidth-1) * (noiseMapHeight-1) * 6];
         int currentVertex = 0;
         int currentTriangle = 0;
         for (int z = 0; z < ySize; z++)
         {
             for (int x = 0; x < xSize; x++)
             {
-                triangles[currentTriangle + 0] = currentVertex + 0;
-                triangles[currentTriangle + 1] = currentVertex + xSize + 1;
-                triangles[currentTriangle + 2] = currentVertex + 1;
-                triangles[currentTriangle + 3] = currentVertex + 1;
-                triangles[currentTriangle + 4] = currentVertex + xSize + 1;
-                triangles[currentTriangle + 5] = currentVertex + xSize + 2;
+                meshData.indices[currentTriangle + 0] = currentVertex + 0;
+                meshData.indices[currentTriangle + 1] = currentVertex + xSize + 1;
+                meshData.indices[currentTriangle + 2] = currentVertex + 1;
+                meshData.indices[currentTriangle + 3] = currentVertex + 1;
+                meshData.indices[currentTriangle + 4] = currentVertex + xSize + 1;
+                meshData.indices[currentTriangle + 5] = currentVertex + xSize + 2;
 
 
                 currentVertex++;
@@ -115,32 +128,25 @@ public class MapGenerator : MonoBehaviour
         }
 
 
-
+        return meshData;
     }
 
-    void GenerateMesh()
+    void GenerateMesh(MeshData meshData)
     {
         mesh.Clear();
-        mesh.vertices = vertices;
-        mesh.triangles = triangles;
+        mesh.vertices = meshData.vertices;
+        mesh.triangles = meshData.indices;
 
         mesh.RecalculateNormals();
     }
 
-    private void OnDrawGizmos()
-    {
-        for (int i = 0; i < vertices.Length; i++)
-        {
-            Gizmos.DrawSphere(vertices[i], 0.1f);
-        }
-    }
-
     private void OnValidate()
     {
-        if (width < 1) width = 1;
-        if (height < 1) height = 1;
-        if (scaleY < 0) scaleY = 0;
-        if (scale < 0) scale = 0;
+        if (noiseMapWidth < 1) noiseMapWidth = 1;
+        if (noiseMapHeight < 1) noiseMapHeight = 1;
+        if (heightMultiplier < 0) heightMultiplier = 0;
+        if (size < 0) size = 0;
+        if (useHeightCurve && !normalize) normalize = true;
 
         for(int i = 0; i < octaves.Length;i++)
         {

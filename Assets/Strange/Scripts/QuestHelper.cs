@@ -34,7 +34,6 @@ public class QuestHelper : MonoBehaviour
         singleton = this;
     }
 
-    int i = 0;
     // Update is called once per frame
     void Update()
     {
