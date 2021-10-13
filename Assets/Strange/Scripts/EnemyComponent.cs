@@ -318,6 +318,8 @@ public class EnemyComponent : MonoBehaviour
     {
         parentSpawner.enemies.Remove(this.gameObject);
         parentSpawner.currentNumberOfEnemies--;
+
+        // killquest event
     }
 
 }

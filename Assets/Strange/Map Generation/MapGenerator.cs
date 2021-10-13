@@ -25,6 +25,7 @@ public class MapGenerator : MonoBehaviour
     {
         public Vector3[] vertices;
         public int[] indices;
+        public Vector2[] uvs;
     }
 
     [System.Serializable]
@@ -94,6 +95,7 @@ public class MapGenerator : MonoBehaviour
 
         // ####### generate Vertex positions #######
         meshData.vertices = new Vector3[noiseMapWidth * noiseMapHeight];
+        meshData.uvs = new Vector2[noiseMapWidth * noiseMapHeight];
 
         // loop through noise
         for (int i = 0, y = 0; y < noiseMapHeight; y++)
@@ -102,10 +104,16 @@ public class MapGenerator : MonoBehaviour
             {
                 // set x and z based on scale
                 // set y based on noise * yScale
-                if(!useHeightCurve)
-                    meshData.vertices[i] = new Vector3(x*size, noiseMap[x,y]*heightMultiplier * size, y*size);
+                if (!useHeightCurve)
+                {
+                    meshData.vertices[i] = new Vector3(x * size, noiseMap[x, y] * heightMultiplier * size, y * size);
+                }
                 else
+                {
                     meshData.vertices[i] = new Vector3(x * size, heightCurve.Evaluate(noiseMap[x, y]) * heightMultiplier * size, y * size);
+                }
+
+                meshData.uvs[i] = new Vector2(x / (float)noiseMapWidth, y / (float)noiseMapHeight);
                 i++;
             }
         }
@@ -144,6 +152,7 @@ public class MapGenerator : MonoBehaviour
         mesh.Clear();
         mesh.vertices = meshData.vertices;
         mesh.triangles = meshData.indices;
+        mesh.uv = meshData.uvs;
 
         mesh.RecalculateNormals();
     }
