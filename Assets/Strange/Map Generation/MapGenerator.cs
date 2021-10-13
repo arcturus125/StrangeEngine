@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
@@ -19,13 +20,18 @@ public class MapGenerator : MonoBehaviour
     public AnimationCurve heightCurve;
     public bool useHeightCurve = false;
 
+    public Gradient colourGradient;
+    public float colourGradientSensitivity = 4f;
+
     public bool autoUpdate = false;
+
 
     struct MeshData
     {
         public Vector3[] vertices;
         public int[] indices;
         public Vector2[] uvs;
+        public Color[] vertexColours;
     }
 
     [System.Serializable]
@@ -144,15 +150,85 @@ public class MapGenerator : MonoBehaviour
         }
 
 
+
+
+        meshData.vertexColours = new Color[meshData.vertices.Length];
+
+        // ##### calculate ranges #####
+        float[] gradientRange = new float[xSize * ySize];
+        float minRange = float.MaxValue;
+        float maxRange = float.MinValue;
+        for (int i = 0, y = 0; y < xSize; y++)
+        {
+            for (int x = 0; x < xSize; x++)
+            {
+                float[] vertices = new float[4];
+                vertices[0] = meshData.vertices[i].y;
+                vertices[1] = meshData.vertices[i + 1].y;
+                vertices[2] = meshData.vertices[i + noiseMapWidth].y;
+                vertices[3] = meshData.vertices[i + noiseMapWidth + 1].y;
+
+                float range = vertices.Max() - vertices.Min();
+                if (range < minRange) minRange = range;
+                if (range > maxRange) maxRange = range;
+                gradientRange[i] = range;
+
+                i++;
+            }
+        }
+        // ##### normalise ranges #####
+        for (int i = 0; i < gradientRange.Length; i++)
+        {
+            gradientRange[i] = Mathf.InverseLerp(minRange, maxRange, gradientRange[i]) * colourGradientSensitivity;
+        }
+
+        // ##### set colours based on normalised ranges #####
+        for (int i = 0; i < (xSize*ySize); i++)
+        {
+            /* vertex i = gradient i, gradient i-1, gradient - (noisemapwiidth -1 ), i - (noisemapwidth -1)-1
+             */
+            List<Color> colours = new List<Color>();
+            colours.Add (colourGradient.Evaluate(gradientRange[  i  ]));
+            if( !(i % xSize == 0) )
+                colours.Add(colourGradient.Evaluate(gradientRange[  i-1  ]));
+            if( i > xSize)
+                colours.Add (colourGradient.Evaluate(gradientRange[  i-xSize  ]));
+            if( i > xSize + 1)
+                colours.Add (colourGradient.Evaluate(gradientRange[  i-xSize-1  ]));
+
+
+            meshData.vertexColours[i] = AverageColours(colours);
+        }
+
+
+
         return meshData;
     }
+    
+    Color AverageColours(List<Color> colours)
+    {
+        float r = 0;
+        float g = 0;
+        float b = 0;
+
+        for(int i = 0; i < colours.Count; i ++)
+        {
+            r += colours[i].r;
+            g += colours[i].g;
+            b += colours[i].b;
+        }
+
+        return new Color(r / colours.Count, g / colours.Count, b / colours.Count);
+    }
+
 
     void GenerateMesh(MeshData meshData)
     {
         mesh.Clear();
         mesh.vertices = meshData.vertices;
         mesh.triangles = meshData.indices;
-        mesh.uv = meshData.uvs;
+        //mesh.uv = meshData.uvs;
+        mesh.colors = meshData.vertexColours;
 
         mesh.RecalculateNormals();
     }
