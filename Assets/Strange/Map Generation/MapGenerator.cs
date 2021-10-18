@@ -58,31 +58,33 @@ public class MapGenerator : MonoBehaviour
 
     public void GenerateMap()
     {
-
+        // if mesh already exists, clear it before we make a new one
         if (mesh)
             mesh.Clear();
+        // generate a mesh and set/get the required components
         mesh = new Mesh();
         mapGameObject.mesh = mesh;
         mapCollider.sharedMesh = mesh;
 
-        // generate all the octaves
+        // generate all the octaves' noisemaps
         for (int i = 0; i < octaves.Length; i ++)
         {
             octaves[i].noiseMap = Noise.GenerateNoiseMap(vertexWidth, vertexHeight, octaves[i].frequency, octaves[i].amplitude, octaves[i].offset, globalOffset);
         }
 
-        // merge all the octaves
+        // merge all the octaves together into one noisemap
         float[,] noiseMap = MergeOctaves();
-        // normalise the octaves
+        // normalise the noisemap if required
         if(normalize)
             noiseMap = Noise.NormalizeNoiseMap(noiseMap);
-        // display the map
+        // process the noisemap into mesh data (vertices, indices, and vertex colours)
         MeshData meshData = GenerateMeshData(noiseMap);
+        // display the mesh on the screen
         GenerateMesh(meshData);
     }
 
     /// <summary>
-    /// merges multiple noise maps into 1
+    /// <para> merges multiple noise maps into 1 </para>
     /// Warning: output noise map will not range between 0 and 1 and may need normalizing
     /// </summary>
     float[,] MergeOctaves()
@@ -104,6 +106,14 @@ public class MapGenerator : MonoBehaviour
         return temp;
     }
 
+    /// <summary>
+    /// takes in a noisemap and generates meshData
+    /// <para>a vertex and index array which describes how to conect the vertices into triangles</para>
+    /// <para>UV coodrinates in case the user wants to layer a texture on the map</para>
+    /// <para> Vertex Colours based on the steepness of hills</para>
+    /// </summary>
+    /// <param name="noiseMap"> a 2d array of floats, generated via layering perlean noise</param>
+    /// <returns>Meshdata: a struct containing all the details needed to compile a mesh during runtime</returns>
     MeshData GenerateMeshData(float[,] noiseMap)
     {
         MeshData meshData = new MeshData();
@@ -133,21 +143,21 @@ public class MapGenerator : MonoBehaviour
             }
         }
 
-        // ####### generate triangles #######
-        int facesWidth = vertexWidth - 1;                                           // Imortant note:
-        int facesHeight = vertexHeight - 1;                                          //  noiseMapWidth refers to the number of vertices
-        meshData.indices = new int[(vertexWidth-1) * (vertexHeight-1) * 6];  //  xSize refers to the number of faces
-        int currentVertex = 0;                                                   //  
-        int currentTriangle = 0;                                                 //  they are not interchangeable
-        for (int z = 0; z < facesHeight; z++)                                          //
-        {
+        // ####### generate indices #######
+        int facesWidth = vertexWidth - 1;                                            // Imortant note:
+        int facesHeight = vertexHeight - 1;                                          //  -  vertexWidth refers to the number of vertices along the x axis
+        meshData.indices = new int[(vertexWidth-1) * (vertexHeight-1) * 6];          //  -  facesWidth refers to the number of faces along the x axis
+        int currentVertex = 0;                                                       //  
+        int currentTriangle = 0;                                                     //  use vertexWidth/vertexHeight when working with vertices
+        for (int z = 0; z < facesHeight; z++)                                        //  use facesWidth/facesHeight when working with faces
+        {                                                                            //  this helps a lot with confusion
             for (int x = 0; x < facesWidth; x++)
             {
-                meshData.indices[currentTriangle + 0] = currentVertex + 0;           //  +    +
+                meshData.indices[currentTriangle + 0] = currentVertex + 0;                //  +    +
                 meshData.indices[currentTriangle + 1] = currentVertex + facesWidth + 1;   //  | \
-                meshData.indices[currentTriangle + 2] = currentVertex + 1;           //  +----+
+                meshData.indices[currentTriangle + 2] = currentVertex + 1;                //  +----+
 
-                meshData.indices[currentTriangle + 3] = currentVertex + 1;           //  +----+
+                meshData.indices[currentTriangle + 3] = currentVertex + 1;                //  +----+
                 meshData.indices[currentTriangle + 4] = currentVertex + facesWidth + 1;   //    \  |
                 meshData.indices[currentTriangle + 5] = currentVertex + facesWidth + 2;   //  +    +
 
@@ -231,6 +241,9 @@ public class MapGenerator : MonoBehaviour
         return meshData;
     }
     
+    /// <summary>
+    /// processes a list of colours and returns the average of all these colours
+    /// </summary>
     Color AverageColours(List<Color> colours)
     {
         float r = 0;
@@ -247,7 +260,10 @@ public class MapGenerator : MonoBehaviour
         return new Color(r / colours.Count, g / colours.Count, b / colours.Count);
     }
 
-
+    /// <summary>
+    /// using meshdata it compiles a mesh.  can be done at runtime
+    /// </summary>
+    /// <param name="meshData"></param>
     void GenerateMesh(MeshData meshData)
     {
         mesh.Clear();
@@ -259,6 +275,10 @@ public class MapGenerator : MonoBehaviour
         mesh.RecalculateNormals();
     }
 
+    /// <summary>
+    /// if any inspector inputs go out of range, this will set them back inside their range
+    /// <para> for example: it is impossible to have a negative map width</para>
+    /// </summary>
     private void OnValidate()
     {
         if (vertexWidth < 1) vertexWidth = 1;
