@@ -12,20 +12,27 @@ public class MapGenerator : MonoBehaviour
     [Header("NoiseMap Size settings:")]
     public int noiseMapWidth;
     public int noiseMapHeight;
+
     [Header("Mesh Size Settings:")]
     public float heightMultiplier;
     public float size;
+
     [Header("Additional Settings:")]
     public bool normalize = false;
     public AnimationCurve heightCurve;
     public bool useHeightCurve = false;
 
+    [Header("Colour settings:")]
     public Gradient colourGradient;
     public float colourGradientSensitivity = 4f;
 
+    [Header("Global Offsets:")]
+    public Vector2 globalOffset;
+
+
     public bool autoUpdate = false;
 
-
+    // this contains all the data neccessary to generate the mesh of the map
     struct MeshData
     {
         public Vector3[] vertices;
@@ -34,6 +41,8 @@ public class MapGenerator : MonoBehaviour
         public Color[] vertexColours;
     }
 
+    // this contains all the data of each layer of noise
+    // there can be many octaves of noise layered ontop of each other
     [System.Serializable]
     public struct Octave
     {
@@ -59,7 +68,7 @@ public class MapGenerator : MonoBehaviour
         // generate all the octaves
         for (int i = 0; i < octaves.Length; i ++)
         {
-            octaves[i].noiseMap = Noise.GenerateNoiseMap(noiseMapWidth, noiseMapHeight, octaves[i].frequency, octaves[i].amplitude, octaves[i].offset);
+            octaves[i].noiseMap = Noise.GenerateNoiseMap(noiseMapWidth, noiseMapHeight, octaves[i].frequency, octaves[i].amplitude, octaves[i].offset, globalOffset);
         }
 
         // merge all the octaves
@@ -183,18 +192,18 @@ public class MapGenerator : MonoBehaviour
         }
 
         // ##### set colours based on normalised ranges #####
-        for (int i = 0; i < (xSize*ySize); i++)
+        for (int i = 0; i < gradientRange.Length; i++)
         {
             /* vertex i = gradient i, gradient i-1, gradient - (noisemapwiidth -1 ), i - (noisemapwidth -1)-1
              */
             List<Color> colours = new List<Color>();
             colours.Add (colourGradient.Evaluate(gradientRange[  i  ]));
-            if( !(i % xSize == 0) )
+            if (!(i % xSize == 0))
                 colours.Add(colourGradient.Evaluate(gradientRange[  i-1  ]));
             if( i > xSize)
                 colours.Add (colourGradient.Evaluate(gradientRange[  i-xSize  ]));
             if( i > xSize + 1)
-                colours.Add (colourGradient.Evaluate(gradientRange[  i-xSize-1  ]));
+                colours.Add (colourGradient.Evaluate(gradientRange[  i-xSize  ]));
 
 
             meshData.vertexColours[i] = AverageColours(colours);
