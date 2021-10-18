@@ -10,8 +10,8 @@ public class MapGenerator : MonoBehaviour
     public MeshCollider mapCollider;
 
     [Header("NoiseMap Size settings:")]
-    public int noiseMapWidth;
-    public int noiseMapHeight;
+    public int vertexWidth;
+    public int vertexHeight;
 
     [Header("Mesh Size Settings:")]
     public float heightMultiplier;
@@ -68,7 +68,7 @@ public class MapGenerator : MonoBehaviour
         // generate all the octaves
         for (int i = 0; i < octaves.Length; i ++)
         {
-            octaves[i].noiseMap = Noise.GenerateNoiseMap(noiseMapWidth, noiseMapHeight, octaves[i].frequency, octaves[i].amplitude, octaves[i].offset, globalOffset);
+            octaves[i].noiseMap = Noise.GenerateNoiseMap(vertexWidth, vertexHeight, octaves[i].frequency, octaves[i].amplitude, octaves[i].offset, globalOffset);
         }
 
         // merge all the octaves
@@ -87,11 +87,11 @@ public class MapGenerator : MonoBehaviour
     /// </summary>
     float[,] MergeOctaves()
     {
-        float[,] temp = new float[noiseMapWidth, noiseMapHeight];
+        float[,] temp = new float[vertexWidth, vertexHeight];
 
-        for (int y = 0; y < noiseMapHeight; y++)
+        for (int y = 0; y < vertexHeight; y++)
         {
-            for (int x = 0; x < noiseMapWidth; x++)
+            for (int x = 0; x < vertexWidth; x++)
             {
                 float value = 0;
                 foreach (Octave o in octaves)
@@ -109,13 +109,13 @@ public class MapGenerator : MonoBehaviour
         MeshData meshData = new MeshData();
 
         // ####### generate Vertex positions #######
-        meshData.vertices = new Vector3[noiseMapWidth * noiseMapHeight];
-        meshData.uvs = new Vector2[noiseMapWidth * noiseMapHeight];
+        meshData.vertices = new Vector3[vertexWidth * vertexHeight];
+        meshData.uvs = new Vector2[vertexWidth * vertexHeight];
 
         // loop through noise
-        for (int i = 0, y = 0; y < noiseMapHeight; y++)
+        for (int i = 0, y = 0; y < vertexHeight; y++)
         {
-            for (int x = 0; x < noiseMapWidth; x++)
+            for (int x = 0; x < vertexWidth; x++)
             {
                 // set x and z based on scale
                 // set y based on noise * yScale
@@ -128,28 +128,28 @@ public class MapGenerator : MonoBehaviour
                     meshData.vertices[i] = new Vector3(x * size, heightCurve.Evaluate(noiseMap[x, y]) * heightMultiplier * size, y * size);
                 }
 
-                meshData.uvs[i] = new Vector2(x / (float)noiseMapWidth, y / (float)noiseMapHeight);
+                meshData.uvs[i] = new Vector2(x / (float)vertexWidth, y / (float)vertexHeight);
                 i++;
             }
         }
 
         // ####### generate triangles #######
-        int xSize = noiseMapWidth - 1;
-        int ySize = noiseMapHeight - 1;
-        meshData.indices = new int[(noiseMapWidth-1) * (noiseMapHeight-1) * 6];
-        int currentVertex = 0;
-        int currentTriangle = 0;
-        for (int z = 0; z < ySize; z++)
+        int facesWidth = vertexWidth - 1;                                           // Imortant note:
+        int facesHeight = vertexHeight - 1;                                          //  noiseMapWidth refers to the number of vertices
+        meshData.indices = new int[(vertexWidth-1) * (vertexHeight-1) * 6];  //  xSize refers to the number of faces
+        int currentVertex = 0;                                                   //  
+        int currentTriangle = 0;                                                 //  they are not interchangeable
+        for (int z = 0; z < facesHeight; z++)                                          //
         {
-            for (int x = 0; x < xSize; x++)
+            for (int x = 0; x < facesWidth; x++)
             {
                 meshData.indices[currentTriangle + 0] = currentVertex + 0;           //  +    +
-                meshData.indices[currentTriangle + 1] = currentVertex + xSize + 1;   //  | \
+                meshData.indices[currentTriangle + 1] = currentVertex + facesWidth + 1;   //  | \
                 meshData.indices[currentTriangle + 2] = currentVertex + 1;           //  +----+
 
                 meshData.indices[currentTriangle + 3] = currentVertex + 1;           //  +----+
-                meshData.indices[currentTriangle + 4] = currentVertex + xSize + 1;   //    \  |
-                meshData.indices[currentTriangle + 5] = currentVertex + xSize + 2;   //  +    +
+                meshData.indices[currentTriangle + 4] = currentVertex + facesWidth + 1;   //    \  |
+                meshData.indices[currentTriangle + 5] = currentVertex + facesWidth + 2;   //  +    +
 
 
                 currentVertex++;
@@ -164,52 +164,69 @@ public class MapGenerator : MonoBehaviour
         meshData.vertexColours = new Color[meshData.vertices.Length];
 
         // ##### calculate ranges #####
-        float[] gradientRange = new float[xSize * ySize];
+        float[,] gradientRange = new float[vertexWidth , vertexHeight];
         float minRange = float.MaxValue;
         float maxRange = float.MinValue;
-        for (int i = 0, y = 0; y < xSize; y++)
+        for (int i = 0, y = 0; y < vertexHeight; y++)
         {
-            for (int x = 0; x < xSize; x++)
+            for (int x = 0; x < vertexWidth; x++)
             {
-                float[] vertices = new float[4];
-                vertices[0] = meshData.vertices[i].y;
-                vertices[1] = meshData.vertices[i + 1].y;
-                vertices[2] = meshData.vertices[i + noiseMapWidth].y;
-                vertices[3] = meshData.vertices[i + noiseMapWidth + 1].y;
+                List<float> vertices = new List<float>();
+                // center
+                vertices.Add(meshData.vertices[i].y);
+                // right  
+                if (x < vertexWidth - 1)                     
+                    vertices.Add(meshData.vertices[i + 1].y);
+                // left
+                if (x > 0)
+                    vertices.Add(meshData.vertices[i - 1].y);
+                // top left
+                if (y < vertexHeight - 1 && x > 0)
+                    vertices.Add(meshData.vertices[i + vertexWidth - 1].y);
+                // up
+                if(y < vertexHeight - 1)
+                    vertices.Add(meshData.vertices[i + vertexWidth].y);
+                // top right
+                if (y < vertexHeight - 1 && x < vertexWidth - 1)
+                    vertices.Add(meshData.vertices[i + vertexWidth + 1].y);
+                // bottom left
+                if (y > 0 && x > 0)
+                    vertices.Add(meshData.vertices[i - vertexWidth - 1].y);
+                // bottom
+                if(y > 0)
+                    vertices.Add(meshData.vertices[i - vertexWidth].y);
+                // bottom right
+                if(y > 0 && x < vertexWidth - 1)
+                    vertices.Add(meshData.vertices[i - vertexWidth + 1].y);   
 
                 float range = vertices.Max() - vertices.Min();
                 if (range < minRange) minRange = range;
                 if (range > maxRange) maxRange = range;
-                gradientRange[i] = range;
+                gradientRange[x,y] = range;
 
                 i++;
             }
         }
         // ##### normalise ranges #####
-        for (int i = 0; i < gradientRange.Length; i++)
+        for (int y = 0; y < gradientRange.GetLength(1); y++)
         {
-            gradientRange[i] = Mathf.InverseLerp(minRange, maxRange, gradientRange[i]) * colourGradientSensitivity;
+            for (int x = 0; x < gradientRange.GetLength(0); x++)
+            {
+                gradientRange[x,y] = Mathf.InverseLerp(minRange, maxRange, gradientRange[x,y]) * colourGradientSensitivity;
+            }
         }
 
         // ##### set colours based on normalised ranges #####
-        for (int i = 0; i < gradientRange.Length; i++)
+        for (int i=0, y = 0; y < vertexHeight; y++)
         {
-            /* vertex i = gradient i, gradient i-1, gradient - (noisemapwiidth -1 ), i - (noisemapwidth -1)-1
-             */
-            List<Color> colours = new List<Color>();
-            colours.Add (colourGradient.Evaluate(gradientRange[  i  ]));
-            if (!(i % xSize == 0))
-                colours.Add(colourGradient.Evaluate(gradientRange[  i-1  ]));
-            if( i > xSize)
-                colours.Add (colourGradient.Evaluate(gradientRange[  i-xSize  ]));
-            if( i > xSize + 1)
-                colours.Add (colourGradient.Evaluate(gradientRange[  i-xSize  ]));
+            for (int x = 0; x < vertexWidth; x++)
+            {
 
-
-            meshData.vertexColours[i] = AverageColours(colours);
+                meshData.vertexColours[i] = colourGradient.Evaluate(gradientRange[x, y]);
+                i++;
+            }
+            //i++;
         }
-
-
 
         return meshData;
     }
@@ -244,13 +261,14 @@ public class MapGenerator : MonoBehaviour
 
     private void OnValidate()
     {
-        if (noiseMapWidth < 1) noiseMapWidth = 1;
-        if (noiseMapHeight < 1) noiseMapHeight = 1;
-        if (noiseMapHeight > 255) noiseMapHeight = 255;
-        if (noiseMapWidth > 255) noiseMapWidth = 255;
+        if (vertexWidth < 1) vertexWidth = 1;
+        if (vertexHeight < 1) vertexHeight = 1;
+        if (vertexHeight > 255) vertexHeight = 255;
+        if (vertexWidth > 255) vertexWidth = 255;
         if (heightMultiplier < 0) heightMultiplier = 0;
         if (size < 0) size = 0;
         if (useHeightCurve && !normalize) normalize = true;
+        if (colourGradientSensitivity < 0) colourGradientSensitivity = 0;
 
         for(int i = 0; i < octaves.Length;i++)
         {
