@@ -319,7 +319,20 @@ public class EnemyComponent : MonoBehaviour
         parentSpawner.enemies.Remove(this.gameObject);
         parentSpawner.currentNumberOfEnemies--;
 
-        // killquest event
+        // ####### killquest event
+        // search through all the active quests
+        for (int i = 0; i < StrangeQuestSystem.activeQuests.Count; i++)
+        {
+            // seach through the objectives of each quest
+            for (int y = 0; y < StrangeQuestSystem.activeQuests[i].objectives.Count; y++)
+            {
+                if(StrangeQuestSystem.activeQuests[i].objectives[y].objectiveType == QuestObjective.ObjectiveType.KillQuest)
+                {
+                    KillQuest typecast = (KillQuest)(StrangeQuestSystem.activeQuests[i].objectives[y]);
+                    typecast.CheckEnemyKill(enemyReference);
+                }
+            }
+        }
     }
 
 }

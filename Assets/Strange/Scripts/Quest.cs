@@ -154,15 +154,17 @@ public class QuestObjective
     protected Quest parentQuest = null;
 
     public enum ObjectiveType                                //
-    {                                                        // instead of casting - which can be very inneficient and typically involves slot try-catch phrases
+    {                                                        // instead of casting - which can be very inneficient and typically involves a lot try-catch phrases
         Null,                                                // this uses a variable where a simple if statement is run to determine what type of
         TalkQuest,                                           // quest objective this is
-        FetchQuest                                           //
+        FetchQuest,                                          //
+        KillQuest                                            //
     }                                                        //
     public ObjectiveType objectiveType = ObjectiveType.Null; //
 
     public bool objectiveComplete = false; // true when this objective is complete
-    public string title = "task title"; // the title of the objective
+    public string baseTitle = "task title"; // the title of the objective with no added suffixes
+    public string title = "task title"; // the title of the objective including suffixes
     public bool showTitle = true; // whether or not the title should show on the UI
 
 
@@ -175,6 +177,26 @@ public class QuestObjective
     public void attachParent(Quest parent)
     {
         parentQuest = parent;
+    }
+
+    protected void UpdateObjectiveTitle(string newSuffix)
+    {
+        title = baseTitle + newSuffix;
+
+
+        // if the user has not added the questHelper to their scene, do not execute the next line
+        if (QuestHelper.singleton != null)
+            QuestHelper.singleton.UpdateGUI();
+
+        // if the user has not added the questLog to their scene, do not execute the next line
+        if (QuestLog.singleton != null)
+            QuestLog.singleton.UpdateGUI();
+    }
+
+    protected void CompleteObjective()
+    {
+        objectiveComplete = true;
+        parentQuest.UpdateQuestStatus();
     }
 }
 public class TalkQuest : QuestObjective
@@ -200,7 +222,6 @@ public class TalkQuest : QuestObjective
 }
 public class FetchQuest : QuestObjective
 {
-    public string baseTitle;
     public Item questedItem; // the item the player should Fetch
     public int questedQuantity; // the quantity the player should fetch
 
@@ -224,20 +245,60 @@ public class FetchQuest : QuestObjective
     {
         quantityPlayerCollected = numberOfItems;
         // update objective title
-        title = baseTitle + " [" + quantityPlayerCollected + "/" + questedQuantity + "]"; 
+        UpdateObjectiveTitle(" [" + quantityPlayerCollected + "/" + questedQuantity + "]"); 
 
         if(quantityPlayerCollected >= questedQuantity)
         {
-            objectiveComplete = true;
+            CompleteObjective();
         }
 
+    }
+}
+public class KillQuest : QuestObjective
+{
+    public List<Enemy> targetEnemies;
+    public int requiredKills;
+    public int killCounter;
 
-        // if the user has not added the questHelper to their scene, do not execute the next line
-        if (QuestHelper.singleton != null)
-            QuestHelper.singleton.UpdateGUI();
+    // create a killquest with one target
+    public KillQuest(string pTitle, Enemy target, int pRequiredkills) : base(pTitle)
+    {
+        if (target == null)
+            StrangeLogger.LogError("the target is null on the killquest '" + pTitle + ". please check the inspector of the entity");
+        objectiveType = ObjectiveType.KillQuest;
+        targetEnemies = new List<Enemy>();
+        targetEnemies.Add(target);
 
-        // if the user has not added the questLog to their scene, do not execute the next line
-        if (QuestLog.singleton != null)
-            QuestLog.singleton.UpdateGUI();
+        requiredKills = pRequiredkills;
+        killCounter = 0;
+        baseTitle = pTitle;
+        UpdateObjectiveTitle(" [" + killCounter + "/" + requiredKills + "]");
+    }
+    // create a killquest with multiple targets
+    public KillQuest(string pTitle, List<Enemy> targets, int pRequiredkills) : base(pTitle)
+    {
+        if (targets == null || targets.Count == 0)
+            StrangeLogger.LogError("the target is null on the killquest '" + pTitle + ". please check the inspector of the entity");
+        objectiveType = ObjectiveType.KillQuest;
+        targetEnemies = targets;
+
+        requiredKills = pRequiredkills;
+        killCounter = 0;
+        baseTitle = pTitle;
+        UpdateObjectiveTitle(" [" + killCounter + "/" + requiredKills + "]");
+    }
+
+    // check if this enemy should increment the killquest kill counter
+    public void CheckEnemyKill(Enemy enemyType)
+    {
+        if(targetEnemies.Contains(enemyType))
+        {
+            killCounter++;
+            if(killCounter >= requiredKills)
+            {
+                CompleteObjective();
+            }
+            UpdateObjectiveTitle(" [" + killCounter + "/" + requiredKills + "]");
+        }
     }
 }

@@ -12,6 +12,8 @@ public class NPC : MonoBehaviour
     Quest q;
     Dialogue quest;
 
+    public Enemy enemySquare;
+
     void Start()
     {
         quest = new Dialogue("Thanks for Completing my Quest");
@@ -49,8 +51,10 @@ public class NPC : MonoBehaviour
 
         FetchQuest fq = new FetchQuest("Collect sticks", stick, 3);
 
+        KillQuest kq = new KillQuest("Kill square", enemySquare, 3);
 
-        List<QuestObjective> l = new List<QuestObjective> {tq, fq };
+
+        List<QuestObjective> l = new List<QuestObjective> {tq, fq ,kq};
         Quest q1 = new Quest("1baby's first quest", "info test", l);
         Quest q2 = new Quest("2baby's first quest", "info", new TalkQuest("tell me to go away", d3));
 

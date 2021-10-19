@@ -46,37 +46,41 @@ public class QuestHelper : MonoBehaviour
 
     public void UpdateGUI()
     {
-        if (StrangeQuestSystem.trackedQuest.complete)
-            questTitle.text = "[COMPLETE] "+StrangeQuestSystem.trackedQuest.title;
-        else 
-            questTitle.text = StrangeQuestSystem.trackedQuest.title;
-
-        // delete previous listings
-        foreach(QuestHelperListing qhl in listings)
+        // error checks
+        if (StrangeQuestSystem.trackedQuest != null)
         {
-            Destroy(qhl.gameObject);
-        }
-        listings.Clear();
-        // create new listings
-        int listingNumber = 0;
-        foreach(QuestObjective qo in StrangeQuestSystem.trackedQuest.objectives)
-        {
-            QuestHelperListing temp = Instantiate(_listing,_content);
-            RectTransform rt = temp.GetComponent<RectTransform>();
-            //anchoring
-            rt.anchorMin = new Vector2(0, 1);
-            rt.anchorMax = new Vector2(0, 1);
-            //positioning
-            rt.anchoredPosition += new Vector2( (rt.sizeDelta.x/2)+xPos, yPos + (-listingHeight * listingNumber));
-            temp.objective = qo;
-            listingNumber++;
-            listings.Add(temp);
-        }
+            if (StrangeQuestSystem.trackedQuest.complete)
+                questTitle.text = "[COMPLETE] " + StrangeQuestSystem.trackedQuest.title;
+            else
+                questTitle.text = StrangeQuestSystem.trackedQuest.title;
+
+            // delete previous listings
+            foreach (QuestHelperListing qhl in listings)
+            {
+                Destroy(qhl.gameObject);
+            }
+            listings.Clear();
+            // create new listings
+            int listingNumber = 0;
+            foreach (QuestObjective qo in StrangeQuestSystem.trackedQuest.objectives)
+            {
+                QuestHelperListing temp = Instantiate(_listing, _content);
+                RectTransform rt = temp.GetComponent<RectTransform>();
+                //anchoring
+                rt.anchorMin = new Vector2(0, 1);
+                rt.anchorMax = new Vector2(0, 1);
+                //positioning
+                rt.anchoredPosition += new Vector2((rt.sizeDelta.x / 2) + xPos, yPos + (-listingHeight * listingNumber));
+                temp.objective = qo;
+                listingNumber++;
+                listings.Add(temp);
+            }
 
 
-        //resize content rect
-        _content.GetComponent<RectTransform>().sizeDelta = new Vector2(
-            _content.GetComponent<RectTransform>().sizeDelta.x,
-            listingHeight * listingNumber + ContentBottomPadding);
+            //resize content rect
+            _content.GetComponent<RectTransform>().sizeDelta = new Vector2(
+                _content.GetComponent<RectTransform>().sizeDelta.x,
+                listingHeight * listingNumber + ContentBottomPadding);
+        }
     }
 }
