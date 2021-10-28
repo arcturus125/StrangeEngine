@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
 {
-    Mesh mesh;
-    public MeshFilter mapGameObject;
-    public MeshCollider mapCollider;
+    public GameObject MapPrefab;
+
+    private List<GameObject> mapGameObjects;
 
     [Header("NoiseMap Size settings:")]
     public int vertexWidth;
@@ -54,17 +54,46 @@ public class MapGenerator : MonoBehaviour
     public Octave[] octaves;
 
 
-
-
     public void GenerateMap()
     {
-        // if mesh already exists, clear it before we make a new one
-        if (mesh)
-            mesh.Clear();
+        // delete all game object before making more TODO: find a way to dynamically update these instead of creating and destroying them
+        for (int i = 0; i < mapGameObjects.Count; i++)
+        {
+            DestroyImmediate(mapGameObjects[i]); // Destoy() kills and object at the beginning of the next frame - because this script runs in edit mode, we must use DestroyImmediate() instead
+        }
+        mapGameObjects.Clear();
+
+        GenerateMapChunk(0, 0);
+        GenerateMapChunk(0, 1);
+        GenerateMapChunk(0, -1);
+
+        GenerateMapChunk(-1, 0);
+        GenerateMapChunk(-1, 1);
+        GenerateMapChunk(-1, -1);
+
+        GenerateMapChunk(1, 0);
+        GenerateMapChunk(1, 1);
+        GenerateMapChunk(1, -1);
+
+    }
+
+    public void GenerateMapChunk(int x, int y)
+    {
+        GameObject chunkGameObject = Instantiate(MapPrefab);
+        chunkGameObject.transform.SetPositionAndRotation(new Vector3(x* vertexWidth * size, 0, y * vertexHeight * size), Quaternion.identity);
+        mapGameObjects.Add(chunkGameObject);
+
+        globalOffset = new Vector2(vertexWidth * x, vertexHeight*y);
+
+        //// if mesh already exists, clear it before we make a new one
+        //if (mesh)
+        //    mesh.Clear();
         // generate a mesh and set/get the required components
-        mesh = new Mesh();
-        mapGameObject.mesh = mesh;
-        mapCollider.sharedMesh = mesh;
+
+        Mesh mesh = new Mesh();
+        chunkGameObject.GetComponent<MeshFilter>().mesh = mesh;
+        MeshCollider chunkCollider = chunkGameObject.GetComponent<MeshCollider>();
+        chunkCollider.sharedMesh = mesh;
 
         // generate all the octaves' noisemaps
         for (int i = 0; i < octaves.Length; i ++)
@@ -80,7 +109,7 @@ public class MapGenerator : MonoBehaviour
         // process the noisemap into mesh data (vertices, indices, and vertex colours)
         MeshData meshData = GenerateMeshData(noiseMap);
         // display the mesh on the screen
-        GenerateMesh(meshData);
+        GenerateMesh(meshData, mesh);
     }
 
     /// <summary>
@@ -264,7 +293,7 @@ public class MapGenerator : MonoBehaviour
     /// using meshdata it compiles a mesh.  can be done at runtime
     /// </summary>
     /// <param name="meshData"></param>
-    void GenerateMesh(MeshData meshData)
+    void GenerateMesh(MeshData meshData, Mesh mesh)
     {
         mesh.Clear();
         mesh.vertices = meshData.vertices;
