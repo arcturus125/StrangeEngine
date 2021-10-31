@@ -1,15 +1,18 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
 {
-    [Header("The 'folder' that all map chunks will be a child of")]
-    public GameObject mapParent;
-    public GameObject MapPrefab;
 
-    private List<GameObject> mapGameObjects;
+    // ###############################################################################
+    // #                                Settings                                     #
+    // ###############################################################################
+    [Header("The 'folder' that all map chunks will be a child of")]
+    public Transform mapParent;
+    public GameObject MapPrefab;
 
     [Header("NoiseMap Size settings:")]
     public int vertexWidth;
@@ -30,18 +33,8 @@ public class MapGenerator : MonoBehaviour
 
     [Header("Global Offsets:")]
     public Vector2 globalOffset;
-
-
     public bool autoUpdate = false;
 
-    // this contains all the data neccessary to generate the mesh of the map
-    struct MeshData
-    {
-        public Vector3[] vertices;
-        public int[] indices;
-        public Vector2[] uvs;
-        public Color[] vertexColours;
-    }
 
     // this contains all the data of each layer of noise
     // there can be many octaves of noise layered ontop of each other
@@ -56,258 +49,24 @@ public class MapGenerator : MonoBehaviour
     public Octave[] octaves;
 
 
+    // ###############################################################################
+    // #                                chunk manager                                #
+    // ###############################################################################
+
+
     public void GenerateMap()
     {
-        // delete all game object before making more TODO: find a way to dynamically update these instead of creating and destroying them
-        for (int i = 0; i < mapGameObjects.Count; i++)
-        {
-            DestroyImmediate(mapGameObjects[i]); // Destoy() kills and object at the beginning of the next frame - because this script runs in edit mode, we must use DestroyImmediate() instead
-        }
-        mapGameObjects.Clear();
+        ChunkManager.Generate(0, 0, this);
+        ChunkManager.Generate(0,-1, this);
+        ChunkManager.Generate(0, 1, this);
 
-        GenerateMapChunk(0, 0);
-        GenerateMapChunk(0, 1);
-        GenerateMapChunk(0, -1);
+        ChunkManager.Generate(1, 0, this);
+        ChunkManager.Generate(1, -1, this);
+        ChunkManager.Generate(1, 1, this);
 
-        GenerateMapChunk(-1, 0);
-        GenerateMapChunk(-1, 1);
-        GenerateMapChunk(-1, -1);
-
-        GenerateMapChunk(1, 0);
-        GenerateMapChunk(1, 1);
-        GenerateMapChunk(1, -1);
-
-    }
-
-    public void GenerateMapChunk(int x, int y)
-    {
-        GameObject chunkGameObject;
-        if (mapParent)
-            chunkGameObject = Instantiate(MapPrefab, mapParent.transform);
-        else
-            chunkGameObject = Instantiate(MapPrefab);
-        chunkGameObject.transform.SetPositionAndRotation(new Vector3(x* vertexWidth * size, 0, y * vertexHeight * size), Quaternion.identity);
-        mapGameObjects.Add(chunkGameObject);
-
-        globalOffset = new Vector2(vertexWidth * x, vertexHeight*y);
-
-        //// if mesh already exists, clear it before we make a new one
-        //if (mesh)
-        //    mesh.Clear();
-        // generate a mesh and set/get the required components
-
-        Mesh mesh = new Mesh();
-        chunkGameObject.GetComponent<MeshFilter>().mesh = mesh;
-        MeshCollider chunkCollider = chunkGameObject.GetComponent<MeshCollider>();
-        chunkCollider.sharedMesh = mesh;
-
-        // generate all the octaves' noisemaps
-        for (int i = 0; i < octaves.Length; i ++)
-        {
-            octaves[i].noiseMap = Noise.GenerateNoiseMap(vertexWidth, vertexHeight, octaves[i].frequency, octaves[i].amplitude, octaves[i].offset, globalOffset);
-        }
-
-        // merge all the octaves together into one noisemap
-        float[,] noiseMap = MergeOctaves();
-        // normalise the noisemap if required
-        if(normalize)
-            noiseMap = Noise.NormalizeNoiseMap(noiseMap);
-        // process the noisemap into mesh data (vertices, indices, and vertex colours)
-        MeshData meshData = GenerateMeshData(noiseMap);
-        // display the mesh on the screen
-        GenerateMesh(meshData, mesh);
-    }
-
-    /// <summary>
-    /// <para> merges multiple noise maps into 1 </para>
-    /// Warning: output noise map will not range between 0 and 1 and may need normalizing
-    /// </summary>
-    float[,] MergeOctaves()
-    {
-        float[,] temp = new float[vertexWidth, vertexHeight];
-
-        for (int y = 0; y < vertexHeight; y++)
-        {
-            for (int x = 0; x < vertexWidth; x++)
-            {
-                float value = 0;
-                foreach (Octave o in octaves)
-                {
-                    value += o.noiseMap[x, y];
-                }
-                temp[x, y] = value;
-            }
-        }
-        return temp;
-    }
-
-    /// <summary>
-    /// takes in a noisemap and generates meshData
-    /// <para>a vertex and index array which describes how to conect the vertices into triangles</para>
-    /// <para>UV coodrinates in case the user wants to layer a texture on the map</para>
-    /// <para> Vertex Colours based on the steepness of hills</para>
-    /// </summary>
-    /// <param name="noiseMap"> a 2d array of floats, generated via layering perlean noise</param>
-    /// <returns>Meshdata: a struct containing all the details needed to compile a mesh during runtime</returns>
-    MeshData GenerateMeshData(float[,] noiseMap)
-    {
-        MeshData meshData = new MeshData();
-
-        // ####### generate Vertex positions #######
-        meshData.vertices = new Vector3[vertexWidth * vertexHeight];
-        meshData.uvs = new Vector2[vertexWidth * vertexHeight];
-
-        // loop through noise
-        for (int i = 0, y = 0; y < vertexHeight; y++)
-        {
-            for (int x = 0; x < vertexWidth; x++)
-            {
-                // set x and z based on scale
-                // set y based on noise * yScale
-                if (!useHeightCurve)
-                {
-                    meshData.vertices[i] = new Vector3(x * size, noiseMap[x, y] * heightMultiplier * size, y * size);
-                }
-                else
-                {
-                    meshData.vertices[i] = new Vector3(x * size, heightCurve.Evaluate(noiseMap[x, y]) * heightMultiplier * size, y * size);
-                }
-
-                meshData.uvs[i] = new Vector2(x / (float)vertexWidth, y / (float)vertexHeight);
-                i++;
-            }
-        }
-
-        // ####### generate indices #######
-        int facesWidth = vertexWidth - 1;                                            // Imortant note:
-        int facesHeight = vertexHeight - 1;                                          //  -  vertexWidth refers to the number of vertices along the x axis
-        meshData.indices = new int[(vertexWidth-1) * (vertexHeight-1) * 6];          //  -  facesWidth refers to the number of faces along the x axis
-        int currentVertex = 0;                                                       //  
-        int currentTriangle = 0;                                                     //  use vertexWidth/vertexHeight when working with vertices
-        for (int z = 0; z < facesHeight; z++)                                        //  use facesWidth/facesHeight when working with faces
-        {                                                                            //  this helps a lot with confusion
-            for (int x = 0; x < facesWidth; x++)
-            {
-                meshData.indices[currentTriangle + 0] = currentVertex + 0;                //  +    +
-                meshData.indices[currentTriangle + 1] = currentVertex + facesWidth + 1;   //  | \
-                meshData.indices[currentTriangle + 2] = currentVertex + 1;                //  +----+
-
-                meshData.indices[currentTriangle + 3] = currentVertex + 1;                //  +----+
-                meshData.indices[currentTriangle + 4] = currentVertex + facesWidth + 1;   //    \  |
-                meshData.indices[currentTriangle + 5] = currentVertex + facesWidth + 2;   //  +    +
-
-
-                currentVertex++;
-                currentTriangle += 6;
-            }
-            currentVertex++;
-        }
-
-
-
-
-        meshData.vertexColours = new Color[meshData.vertices.Length];
-
-        // ##### calculate ranges #####
-        float[,] gradientRange = new float[vertexWidth , vertexHeight];
-        float minRange = float.MaxValue;
-        float maxRange = float.MinValue;
-        for (int i = 0, y = 0; y < vertexHeight; y++)
-        {
-            for (int x = 0; x < vertexWidth; x++)
-            {
-                List<float> vertices = new List<float>();
-                // center
-                vertices.Add(meshData.vertices[i].y);
-                // right  
-                if (x < vertexWidth - 1)                     
-                    vertices.Add(meshData.vertices[i + 1].y);
-                // left
-                if (x > 0)
-                    vertices.Add(meshData.vertices[i - 1].y);
-                // top left
-                if (y < vertexHeight - 1 && x > 0)
-                    vertices.Add(meshData.vertices[i + vertexWidth - 1].y);
-                // up
-                if(y < vertexHeight - 1)
-                    vertices.Add(meshData.vertices[i + vertexWidth].y);
-                // top right
-                if (y < vertexHeight - 1 && x < vertexWidth - 1)
-                    vertices.Add(meshData.vertices[i + vertexWidth + 1].y);
-                // bottom left
-                if (y > 0 && x > 0)
-                    vertices.Add(meshData.vertices[i - vertexWidth - 1].y);
-                // bottom
-                if(y > 0)
-                    vertices.Add(meshData.vertices[i - vertexWidth].y);
-                // bottom right
-                if(y > 0 && x < vertexWidth - 1)
-                    vertices.Add(meshData.vertices[i - vertexWidth + 1].y);   
-
-                float range = vertices.Max() - vertices.Min();
-                if (range < minRange) minRange = range;
-                if (range > maxRange) maxRange = range;
-                gradientRange[x,y] = range;
-
-                i++;
-            }
-        }
-        // ##### normalise ranges #####
-        for (int y = 0; y < gradientRange.GetLength(1); y++)
-        {
-            for (int x = 0; x < gradientRange.GetLength(0); x++)
-            {
-                gradientRange[x,y] = Mathf.InverseLerp(minRange, maxRange, gradientRange[x,y]) * colourGradientSensitivity;
-            }
-        }
-
-        // ##### set colours based on normalised ranges #####
-        for (int i=0, y = 0; y < vertexHeight; y++)
-        {
-            for (int x = 0; x < vertexWidth; x++)
-            {
-
-                meshData.vertexColours[i] = colourGradient.Evaluate(gradientRange[x, y]);
-                i++;
-            }
-            //i++;
-        }
-
-        return meshData;
-    }
-    
-    /// <summary>
-    /// processes a list of colours and returns the average of all these colours
-    /// </summary>
-    Color AverageColours(List<Color> colours)
-    {
-        float r = 0;
-        float g = 0;
-        float b = 0;
-
-        for(int i = 0; i < colours.Count; i ++)
-        {
-            r += colours[i].r;
-            g += colours[i].g;
-            b += colours[i].b;
-        }
-
-        return new Color(r / colours.Count, g / colours.Count, b / colours.Count);
-    }
-
-    /// <summary>
-    /// using meshdata it compiles a mesh.  can be done at runtime
-    /// </summary>
-    /// <param name="meshData"></param>
-    void GenerateMesh(MeshData meshData, Mesh mesh)
-    {
-        mesh.Clear();
-        mesh.vertices = meshData.vertices;
-        mesh.triangles = meshData.indices;
-        //mesh.uv = meshData.uvs;
-        mesh.colors = meshData.vertexColours;
-
-        mesh.RecalculateNormals();
+        ChunkManager.Generate(-1, 0, this);
+        ChunkManager.Generate(-1, -1, this);
+        ChunkManager.Generate(-1, 1, this);
     }
 
     /// <summary>
@@ -333,3 +92,68 @@ public class MapGenerator : MonoBehaviour
     }
 
 }
+static class ChunkManager
+{
+    public static List<MapGenChunk> savedChunks = new List<MapGenChunk>();
+
+    public static bool DoesChunkExist(int x, int y)
+    {
+        foreach (MapGenChunk chunk in savedChunks)
+        {
+            if(chunk.x == x && chunk.y == y)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    public static MapGenChunk GetChunk(int x, int y)
+    {
+        foreach (MapGenChunk chunk in savedChunks)
+        {
+            if(chunk.x == x && chunk.y == y)
+            {
+                return chunk;
+            }
+        }
+        return null;
+    }
+
+    public static void Generate(int x ,int y, MapGenerator mapGen)
+    {
+        if (!DoesChunkExist(x, y))
+        {
+            MapGenChunk chunk = new MapGenChunk(mapGen);
+            chunk.x = x;
+            chunk.y = y;
+            chunk.GenerateMapChunk();
+            savedChunks.Add(chunk);
+        }
+        else
+        {
+            try
+            {
+                if (GetChunk(x, y).chunkObject.activeInHierarchy)
+                    GetChunk(x, y).GenerateMapChunk(); // reloads the chunk
+                else
+                    GetChunk(x, y).chunkObject.SetActive(true);
+            }
+            catch(Exception exc) // if there is an exception in the above code. then unity has forgotten about a gameobjtct, or remembered a gameobject that isnt there anymore
+            {
+                MapGenChunk chunk = new MapGenChunk(mapGen);
+                chunk.x = x;
+                chunk.y = y;
+                chunk.GenerateMapChunk();
+                savedChunks.Add(chunk);
+            }
+        }   
+    }
+
+    public static void Degenerate(int x, int y)
+    {
+        GetChunk(x, y).chunkObject.SetActive(false);
+    }
+}
+
+
+
