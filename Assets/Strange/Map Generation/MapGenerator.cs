@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
 {
+    [Header("The 'folder' that all map chunks will be a child of")]
+    public GameObject mapParent;
     public GameObject MapPrefab;
 
     private List<GameObject> mapGameObjects;
@@ -79,7 +81,11 @@ public class MapGenerator : MonoBehaviour
 
     public void GenerateMapChunk(int x, int y)
     {
-        GameObject chunkGameObject = Instantiate(MapPrefab);
+        GameObject chunkGameObject;
+        if (mapParent)
+            chunkGameObject = Instantiate(MapPrefab, mapParent.transform);
+        else
+            chunkGameObject = Instantiate(MapPrefab);
         chunkGameObject.transform.SetPositionAndRotation(new Vector3(x* vertexWidth * size, 0, y * vertexHeight * size), Quaternion.identity);
         mapGameObjects.Add(chunkGameObject);
 
