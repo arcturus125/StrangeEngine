@@ -8,7 +8,7 @@ public class MapGenerator : MonoBehaviour
 {
 
     // ###############################################################################
-    // #                                Settings                                     #
+    // #                              INSPECTOR SETTINGS                             #
     // ###############################################################################
     [Header("The 'folder' that all map chunks will be a child of")]
     public Transform mapParent;
@@ -64,8 +64,14 @@ public class MapGenerator : MonoBehaviour
         ChunkManager.Generate(0, 0, this);
         ChunkManager.Generate(0, -1, this);
         ChunkManager.Generate(0, 1, this);
-        ChunkManager.Generate(0, -2, this);
-        ChunkManager.Generate(0, 2, this);
+
+        ChunkManager.Generate(1, 0, this);
+        ChunkManager.Generate(1, -1, this);
+        ChunkManager.Generate(1, 1, this);
+
+        ChunkManager.Generate(-1, 0, this);
+        ChunkManager.Generate(-1, -1, this);
+        ChunkManager.Generate(-1, 1, this);
 
     }
     private void CalculateTheoreticals()
@@ -75,8 +81,7 @@ public class MapGenerator : MonoBehaviour
         {
             max += o.amplitude;
         }
-        float min = -max;
-        theoretical_min = min;
+        theoretical_min = -max;
         theoretical_max = max;
     }
 

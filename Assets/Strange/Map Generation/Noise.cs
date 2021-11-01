@@ -4,6 +4,8 @@ using UnityEngine;
 
 public static class Noise
 {
+
+    public static float farFromZero = 1000; // perlin noise mirrors in negatives. this should keep all noise generated well away form 0
     /// <summary>
     /// returns a grid of float values between 0 and 1
     /// </summary>
@@ -28,8 +30,8 @@ public static class Noise
             {
                 // perlin noise outputs are identical when inputs are whole numbers
                 // this devision fixes that problem
-                float sampleX = (globalOffset.x/scale) + (x / scale) + octaveOffset.x;
-                float sampleY = (globalOffset.y/scale) + (y / scale) + octaveOffset.y;
+                float sampleX = (globalOffset.x/scale) + (x / scale) + octaveOffset.x + farFromZero;
+                float sampleY = (globalOffset.y/scale) + (y / scale) + octaveOffset.y + farFromZero;
 
                 // using these new sample variables, generate the noise
                 float perlinValue = (Mathf.PerlinNoise(sampleX, sampleY) * 2 - 1.0f) * amplitude;
