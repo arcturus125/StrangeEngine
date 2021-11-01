@@ -53,24 +53,33 @@ public class MapGenerator : MonoBehaviour
     // #                                chunk manager                                #
     // ###############################################################################
 
+    public static float theoretical_min;
+    public static float theoretical_max;
 
     public void GenerateMap()
     {
+        CalculateTheoreticals();
         DeleteForgottenChunks();
         
         ChunkManager.Generate(0, 0, this);
-        ChunkManager.Generate(0,-1, this);
+        ChunkManager.Generate(0, -1, this);
         ChunkManager.Generate(0, 1, this);
+        ChunkManager.Generate(0, -2, this);
+        ChunkManager.Generate(0, 2, this);
 
-        ChunkManager.Generate(1, 0, this);
-        ChunkManager.Generate(1, -1, this);
-        ChunkManager.Generate(1, 1, this);
-
-        ChunkManager.Generate(-1, 0, this);
-        ChunkManager.Generate(-1, -1, this);
-        ChunkManager.Generate(-1, 1, this);
-        
     }
+    private void CalculateTheoreticals()
+    {
+        float max = 0;
+        foreach(Octave o in octaves)
+        {
+            max += o.amplitude;
+        }
+        float min = -max;
+        theoretical_min = min;
+        theoretical_max = max;
+    }
+
 
     //if there are map gameobjects attached to the mapFolder that the script doesnt recognise,
     // delete all children and generate them again -- this doesnt happen often, at most every time unity is closed and re-opened

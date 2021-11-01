@@ -73,7 +73,7 @@ public static class Noise
 
         return texture;
     }
-    
+
     /// <summary>
     /// takes a noise map that doesn't range between 0 and 1 and makes it range betwen 0 and 1
     /// </summary>
@@ -95,15 +95,20 @@ public static class Noise
             }
         }
 
+
         // then loop through the whole map and  find the inverse lerp (the percentage it was between the two)
         float[,] newNoiseMap = new float[mapWidth, mapHeight];
         for (int y = 0; y < mapHeight; y++)
         {
             for (int x = 0; x < mapWidth; x++)
             {
-                newNoiseMap[x, y] = Mathf.InverseLerp(minValueFound, maxValueFound, noiseMap[x, y]);
+                //newNoiseMap[x, y] = Mathf.InverseLerp(minValueFound, maxValueFound, noiseMap[x, y]);
+                newNoiseMap[x, y] = Mathf.InverseLerp(MapGenerator.theoretical_min, MapGenerator.theoretical_max, noiseMap[x, y]);
             }
         }
         return newNoiseMap;
     }
+
+
+
 }
