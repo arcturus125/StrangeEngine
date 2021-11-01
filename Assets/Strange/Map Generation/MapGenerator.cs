@@ -56,6 +56,8 @@ public class MapGenerator : MonoBehaviour
 
     public void GenerateMap()
     {
+        DeleteForgottenChunks();
+        
         ChunkManager.Generate(0, 0, this);
         ChunkManager.Generate(0,-1, this);
         ChunkManager.Generate(0, 1, this);
@@ -67,8 +69,24 @@ public class MapGenerator : MonoBehaviour
         ChunkManager.Generate(-1, 0, this);
         ChunkManager.Generate(-1, -1, this);
         ChunkManager.Generate(-1, 1, this);
+        
     }
 
+    //if there are map gameobjects attached to the mapFolder that the script doesnt recognise,
+    // delete all children and generate them again -- this doesnt happen often, at most every time unity is closed and re-opened
+    private void DeleteForgottenChunks()
+    {
+        if(ChunkManager.savedChunks.Count != mapParent.childCount)
+        {
+            int childCount = mapParent.childCount;
+            for (int i = 0; i < childCount; i++)
+            {
+                DestroyImmediate(mapParent.GetChild(0).gameObject);
+            }
+            ChunkManager.savedChunks.Clear();
+        }
+
+    }
     /// <summary>
     /// if any inspector inputs go out of range, this will set them back inside their range
     /// <para> for example: it is impossible to have a negative map width</para>
@@ -131,25 +149,15 @@ static class ChunkManager
         }
         else
         {
-            try
-            {
-                if (GetChunk(x, y).chunkObject.activeInHierarchy)
-                    GetChunk(x, y).GenerateMapChunk(); // reloads the chunk
-                else
-                    GetChunk(x, y).chunkObject.SetActive(true);
-            }
-            catch(Exception exc) // if there is an exception in the above code. then unity has forgotten about a gameobjtct, or remembered a gameobject that isnt there anymore
-            {
-                MapGenChunk chunk = new MapGenChunk(mapGen);
-                chunk.x = x;
-                chunk.y = y;
-                chunk.GenerateMapChunk();
-                savedChunks.Add(chunk);
-            }
+            GetChunk(x, y).GenerateMapChunk(); // reloads the chunk
         }   
     }
 
-    public static void Degenerate(int x, int y)
+    public static void Show(int x, int y)
+    {
+        GetChunk(x, y).chunkObject.SetActive(true);
+    }
+    public static void Hide(int x, int y)
     {
         GetChunk(x, y).chunkObject.SetActive(false);
     }
