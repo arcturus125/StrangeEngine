@@ -21,6 +21,8 @@ public class MapGenerator : MonoBehaviour
     [Header("Mesh Size Settings:")]
     public float heightMultiplier;
     public float size;
+    public float detail;
+    public int renderDistance = 1;
 
     [Header("Additional Settings:")]
     public bool normalize = false;
@@ -60,18 +62,28 @@ public class MapGenerator : MonoBehaviour
     {
         CalculateTheoreticals();
         DeleteForgottenChunks();
-        
-        ChunkManager.Generate(0, 0, this);
-        ChunkManager.Generate(0, -1, this);
-        ChunkManager.Generate(0, 1, this);
 
-        ChunkManager.Generate(1, 0, this);
-        ChunkManager.Generate(1, -1, this);
-        ChunkManager.Generate(1, 1, this);
 
-        ChunkManager.Generate(-1, 0, this);
-        ChunkManager.Generate(-1, -1, this);
-        ChunkManager.Generate(-1, 1, this);
+        for (int Y = -renderDistance; Y <= renderDistance; Y++)
+        {
+            for (int X = -renderDistance; X <= renderDistance; X++)
+            {
+                ChunkManager.Generate(X,Y, this);
+            }
+        }
+
+        //ChunkManager.Generate(0, -1, this);
+        //ChunkManager.Generate(0, 1, this);
+
+        //ChunkManager.Generate(1, 0, this);
+        //ChunkManager.Generate(1, -1, this);
+        //ChunkManager.Generate(1, 1, this);
+
+        //ChunkManager.Generate(-1, 0, this);
+        //ChunkManager.Generate(-1, -1, this);
+        //ChunkManager.Generate(-1, 1, this);
+
+
 
     }
     private void CalculateTheoreticals()
@@ -113,6 +125,7 @@ public class MapGenerator : MonoBehaviour
         if (vertexWidth > 255) vertexWidth = 255;
         if (heightMultiplier < 0) heightMultiplier = 0;
         if (size < 0) size = 0;
+        if (detail < 1) detail = 1; 
         if (useHeightCurve && !normalize) normalize = true;
         if (colourGradientSensitivity < 0) colourGradientSensitivity = 0;
 

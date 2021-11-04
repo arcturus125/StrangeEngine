@@ -15,7 +15,8 @@ public static class Noise
         float scale,
         float amplitude,
         Vector2 octaveOffset,
-        Vector2 globalOffset
+        Vector2 globalOffset,
+        float zoom
         )
     {
         // create the grid of floats
@@ -30,8 +31,8 @@ public static class Noise
             {
                 // perlin noise outputs are identical when inputs are whole numbers
                 // this devision fixes that problem
-                float sampleX = (globalOffset.x/scale) + (x / scale) + octaveOffset.x + farFromZero;
-                float sampleY = (globalOffset.y/scale) + (y / scale) + octaveOffset.y + farFromZero;
+                float sampleX = (globalOffset.x/zoom / scale) + (x/zoom / scale) + octaveOffset.x + farFromZero;
+                float sampleY = (globalOffset.y/zoom / scale) + (y/zoom / scale) + octaveOffset.y + farFromZero;
 
                 // using these new sample variables, generate the noise
                 float perlinValue = (Mathf.PerlinNoise(sampleX, sampleY) * 2 - 1.0f) * amplitude;

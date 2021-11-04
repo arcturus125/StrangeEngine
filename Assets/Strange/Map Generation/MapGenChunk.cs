@@ -45,7 +45,7 @@ public class MapGenChunk : MonoBehaviour
         // generate all the octaves' noisemaps
         for (int i = 0; i < mapGen.octaves.Length; i++)
         {
-            mapGen.octaves[i].noiseMap = Noise.GenerateNoiseMap(mapGen.vertexWidth, mapGen.vertexHeight, mapGen.octaves[i].frequency, mapGen.octaves[i].amplitude, mapGen.octaves[i].offset, chunkOffset);
+            mapGen.octaves[i].noiseMap = Noise.GenerateNoiseMap(mapGen.vertexWidth, mapGen.vertexHeight, mapGen.octaves[i].frequency, mapGen.octaves[i].amplitude, mapGen.octaves[i].offset, chunkOffset, mapGen.detail);
         }
 
         // merge all the octaves together into one noisemap
@@ -190,6 +190,8 @@ public class MapGenChunk : MonoBehaviour
                 float range = vertices.Max() - vertices.Min();
                 if (range < minRange) minRange = range;
                 if (range > maxRange) maxRange = range;
+
+
                 gradientRange[x, y] = range;
 
                 i++;
@@ -200,7 +202,9 @@ public class MapGenChunk : MonoBehaviour
         {
             for (int x = 0; x < gradientRange.GetLength(0); x++)
             {
-                gradientRange[x, y] = Mathf.InverseLerp(minRange, maxRange, gradientRange[x, y]) * mapGen.colourGradientSensitivity;
+                //gradientRange[x, y] = Mathf.InverseLerp(minRange, maxRange, gradientRange[x, y]) * mapGen.colourGradientSensitivity;
+
+                gradientRange[x, y] = Mathf.InverseLerp(0, mapGen.size * 2, gradientRange[x, y]) * mapGen.colourGradientSensitivity;
             }
         }
 
