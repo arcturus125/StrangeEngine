@@ -10,27 +10,40 @@ public class MapGenerator : MonoBehaviour
     // ###############################################################################
     // #                              INSPECTOR SETTINGS                             #
     // ###############################################################################
-    [Header("The 'folder' that all map chunks will be a child of")]
+    [Tooltip("The 'folder' that all map chunks will be a child of - use for hierarchy management of the map")]
     public Transform mapParent;
+    [Tooltip("the prefab that is spawned in and then generated")]
     public GameObject MapPrefab;
 
     [Header("NoiseMap Size settings:")]
+    [Tooltip("The width (x axis) of the noise, max 255")]
     public int vertexWidth;
+    [Tooltip("The height/length (z axis) of the noise, max 255")]
     public int vertexHeight;
 
     [Header("Mesh Size Settings:")]
+    [Tooltip("the Y scale of the map (to control the scale of mountains)")]
     public float heightMultiplier;
+    [Tooltip("the XZ scale of the map")]
     public float size;
+    [Tooltip("The scale of the noise. setting this to 2 will mean you will sample twice as many points from the noise, however this also incidentally scales the map.")]
     public float detail;
+    [Tooltip("The radius of chunks around the player that will be generated")]
     public int renderDistance = 1;
 
     [Header("Additional Settings:")]
+    [Tooltip("clamp all noise values between 0 and 1")]
     public bool normalize = false;
+    [Tooltip("a curve that helps you control the steepness of the map at any noise value")]
     public AnimationCurve heightCurve;
+    [Tooltip("apply the above curve to the map - values must be normalised first!")]
     public bool useHeightCurve = false;
 
     [Header("Colour settings:")]
+    [Tooltip("the colour shading applied to the map. left side is applied to flat areas and the right side is applied to the steep areas")]
     public Gradient colourGradient;
+    [Range(0.1f, 2.0f)]
+    [Tooltip("controls the sensitivity of this colour gradient. the higher this number is, the more values get pushed to the upper end of the colour gradient above")]
     public float colourGradientSensitivity = 4f;
 
     [Header("Global Offsets:")]
@@ -63,26 +76,18 @@ public class MapGenerator : MonoBehaviour
         CalculateTheoreticals();
         DeleteForgottenChunks();
 
-
-        for (int Y = -renderDistance; Y <= renderDistance; Y++)
+        if (renderDistance == 0)
+            ChunkManager.Generate(0, 0, this);
+        else
         {
-            for (int X = -renderDistance; X <= renderDistance; X++)
+            for (int Y = -renderDistance; Y <= renderDistance; Y++)
             {
-                ChunkManager.Generate(X,Y, this);
+                for (int X = -renderDistance; X <= renderDistance; X++)
+                {
+                    ChunkManager.Generate(X, Y, this);
+                }
             }
         }
-
-        //ChunkManager.Generate(0, -1, this);
-        //ChunkManager.Generate(0, 1, this);
-
-        //ChunkManager.Generate(1, 0, this);
-        //ChunkManager.Generate(1, -1, this);
-        //ChunkManager.Generate(1, 1, this);
-
-        //ChunkManager.Generate(-1, 0, this);
-        //ChunkManager.Generate(-1, -1, this);
-        //ChunkManager.Generate(-1, 1, this);
-
 
 
     }
@@ -135,7 +140,7 @@ public class MapGenerator : MonoBehaviour
             if (octaves[i].frequency < 0) octaves[i].frequency = 0;
         }
     }
-
+   
 }
 static class ChunkManager
 {

@@ -10,6 +10,8 @@ public class MapGenChunk : MonoBehaviour
     public int x;
     public int y;
 
+    public float[,] finalNoiseMap;
+
     // this contains all the data neccessary to generate the mesh of the map
     struct MeshData
     {
@@ -45,18 +47,23 @@ public class MapGenChunk : MonoBehaviour
         // generate all the octaves' noisemaps
         for (int i = 0; i < mapGen.octaves.Length; i++)
         {
-            mapGen.octaves[i].noiseMap = Noise.GenerateNoiseMap(mapGen.vertexWidth, mapGen.vertexHeight, mapGen.octaves[i].frequency, mapGen.octaves[i].amplitude, mapGen.octaves[i].offset, chunkOffset, mapGen.detail);
+            mapGen.octaves[i].noiseMap = Noise.GenerateNoiseMap(
+                mapGen.vertexWidth + 2, mapGen.vertexHeight + 2, // add 2 to the width and height to create a layer of padding which is never rendered (fixes colour stitching)
+                mapGen.octaves[i].frequency, mapGen.octaves[i].amplitude, mapGen.octaves[i].offset, // pass the octave's details over
+                chunkOffset, // add the chunk offset so that the chunk gameobject's position lines up with the chunk's noise
+                mapGen.detail // this is kind of like the opposite of LOD tesselation. increasing this number "zooms in" on the noise - its like  a higher resolution image. it has more pixels, but you have to zoom out to see them all
+                );
         }
 
         // merge all the octaves together into one noisemap
-        float[,] noiseMap = MergeOctaves();
+        finalNoiseMap = MergeOctaves();
         // normalise the noisemap if required
         if (mapGen.normalize)
         {
-                noiseMap = Noise.NormalizeNoiseMap(noiseMap); // get the min and max of the homechunk
+            finalNoiseMap = Noise.NormalizeNoiseMap(finalNoiseMap); // get the min and max of the homechunk
         }
         // process the noisemap into mesh data (vertices, indices, and vertex colours)
-        MeshData meshData = GenerateMeshData(noiseMap);
+        MeshData meshData = GenerateMeshData(finalNoiseMap);
         // display the mesh on the screen
         GenerateMesh(meshData, mesh);
     }
@@ -67,11 +74,11 @@ public class MapGenChunk : MonoBehaviour
     /// </summary>
     float[,] MergeOctaves()
     {
-        float[,] temp = new float[mapGen.vertexWidth, mapGen.vertexHeight];
+        float[,] temp = new float[mapGen.vertexWidth+2, mapGen.vertexHeight+2];
 
-        for (int y = 0; y < mapGen.vertexHeight; y++)
+        for (int y = 0; y < mapGen.vertexHeight+2; y++)
         {
-            for (int x = 0; x < mapGen.vertexWidth; x++)
+            for (int x = 0; x < mapGen.vertexWidth+2; x++)
             {
                 float value = 0;
                 foreach (MapGenerator.Octave o in mapGen.octaves)
@@ -100,10 +107,18 @@ public class MapGenChunk : MonoBehaviour
         meshData.vertices = new Vector3[mapGen.vertexWidth * mapGen.vertexHeight];
         meshData.uvs = new Vector2[mapGen.vertexWidth * mapGen.vertexHeight];
 
+
+
+        /* DEV NOTE:
+         *  because of the colour stiching issue, i have added a layer of padding around the noise that serves as an overlap
+         *  this fixes the issue, but makes this block of code significantly harder because i can no longer just iterate through all the
+         *  noise. i have to ignore the padding which requires extra checks and awkward iteration
+         */
+
         // loop through noise
-        for (int i = 0, y = 0; y < mapGen.vertexHeight; y++)
+        for (int i = 0, y = 1; y < (mapGen.vertexHeight+1); y++)
         {
-            for (int x = 0; x < mapGen.vertexWidth; x++)
+            for (int x = 1; x <( mapGen.vertexWidth+1); x++)
             {
                 // set x and z based on scale
                 // set y based on noise * yScale
@@ -122,17 +137,17 @@ public class MapGenChunk : MonoBehaviour
         }
 
         // ####### generate indices #######
-        int facesWidth = mapGen.vertexWidth - 1;                                            // Imortant note:
-        int facesHeight = mapGen.vertexHeight - 1;                                          //  -  vertexWidth refers to the number of vertices along the x axis
-        meshData.indices = new int[(mapGen.vertexWidth - 1) * (mapGen.vertexHeight - 1) * 6];          //  -  facesWidth refers to the number of faces along the x axis
-        int currentVertex = 0;                                                       //  
-        int currentTriangle = 0;                                                     //  use vertexWidth/vertexHeight when working with vertices
-        for (int z = 0; z < facesHeight; z++)                                        //  use facesWidth/facesHeight when working with faces
-        {                                                                            //  this helps a lot with confusion
-            for (int x = 0; x < facesWidth; x++)
+        int facesWidth = mapGen.vertexWidth - 1;                                              // Imortant note:
+        int facesHeight = mapGen.vertexHeight - 1;                                            //  -  vertexWidth refers to the number of vertices along the x axis
+        meshData.indices = new int[(mapGen.vertexWidth - 1) * (mapGen.vertexHeight - 1) * 6]; //  -  facesWidth refers to the number of faces along the x axis
+        int currentVertex = 0;                                                                //  
+        int currentTriangle = 0;                                                              //  use vertexWidth/vertexHeight when working with vertices
+        for (int z = 1; z < facesHeight+1; z++)                                               //  use facesWidth/facesHeight when working with faces
+        {                                                                                     //  this helps a lot with confusion
+            for (int x = 1; x < facesWidth+1; x++)
             {
                 meshData.indices[currentTriangle + 0] = currentVertex + 0;                //  +    +
-                meshData.indices[currentTriangle + 1] = currentVertex + facesWidth + 1;   //  | \
+                meshData.indices[currentTriangle + 1] = currentVertex + facesWidth+ 1;    //  | \
                 meshData.indices[currentTriangle + 2] = currentVertex + 1;                //  +----+
 
                 meshData.indices[currentTriangle + 3] = currentVertex + 1;                //  +----+
@@ -155,46 +170,46 @@ public class MapGenChunk : MonoBehaviour
         float[,] gradientRange = new float[mapGen.vertexWidth, mapGen.vertexHeight];
         float minRange = float.MaxValue;
         float maxRange = float.MinValue;
-        for (int i = 0, y = 0; y < mapGen.vertexHeight; y++)
+        for (int y = 1; y < (mapGen.vertexHeight+1); y++)
         {
-            for (int x = 0; x < mapGen.vertexWidth; x++)
+            for (int x = 1; x < (mapGen.vertexWidth+1); x++)
             {
                 List<float> vertices = new List<float>();
-                // center
-                vertices.Add(meshData.vertices[i].y);
-                // right  
-                if (x < mapGen.vertexWidth - 1)
-                    vertices.Add(meshData.vertices[i + 1].y);
-                // left
-                if (x > 0)
-                    vertices.Add(meshData.vertices[i - 1].y);
-                // top left
-                if (y < mapGen.vertexHeight - 1 && x > 0)
-                    vertices.Add(meshData.vertices[i + mapGen.vertexWidth - 1].y);
-                // up
-                if (y < mapGen.vertexHeight - 1)
-                    vertices.Add(meshData.vertices[i + mapGen.vertexWidth].y);
-                // top right
-                if (y < mapGen.vertexHeight - 1 && x < mapGen.vertexWidth - 1)
-                    vertices.Add(meshData.vertices[i + mapGen.vertexWidth + 1].y);
-                // bottom left
-                if (y > 0 && x > 0)
-                    vertices.Add(meshData.vertices[i - mapGen.vertexWidth - 1].y);
-                // bottom
-                if (y > 0)
-                    vertices.Add(meshData.vertices[i - mapGen.vertexWidth].y);
-                // bottom right
-                if (y > 0 && x < mapGen.vertexWidth - 1)
-                    vertices.Add(meshData.vertices[i - mapGen.vertexWidth + 1].y);
+
+
+                // non height curve multiplied values - may be wrong
+                if (!mapGen.useHeightCurve)
+                {
+                    vertices.Add(noiseMap[x, y] * mapGen.heightMultiplier * mapGen.size);
+                    vertices.Add(noiseMap[x + 1, y] * mapGen.heightMultiplier * mapGen.size);
+                    vertices.Add(noiseMap[x - 1, y] * mapGen.heightMultiplier * mapGen.size);
+                    vertices.Add(noiseMap[x, y + 1] * mapGen.heightMultiplier * mapGen.size);
+                    vertices.Add(noiseMap[x + 1, y + 1] * mapGen.heightMultiplier * mapGen.size);
+                    vertices.Add(noiseMap[x - 1, y + 1] * mapGen.heightMultiplier * mapGen.size);
+                    vertices.Add(noiseMap[x, y - 1] * mapGen.heightMultiplier * mapGen.size);
+                    vertices.Add(noiseMap[x + 1, y - 1] * mapGen.heightMultiplier * mapGen.size);
+                    vertices.Add(noiseMap[x - 1, y - 1] * mapGen.heightMultiplier * mapGen.size);
+                }
+                else
+                {
+                    vertices.Add(mapGen.heightCurve.Evaluate(noiseMap[x, y]) * mapGen.heightMultiplier * mapGen.size);
+                    vertices.Add(mapGen.heightCurve.Evaluate(noiseMap[x + 1, y]) * mapGen.heightMultiplier * mapGen.size);
+                    vertices.Add(mapGen.heightCurve.Evaluate(noiseMap[x - 1, y]) * mapGen.heightMultiplier * mapGen.size);
+                    vertices.Add(mapGen.heightCurve.Evaluate(noiseMap[x, y + 1]) * mapGen.heightMultiplier * mapGen.size);
+                    vertices.Add(mapGen.heightCurve.Evaluate(noiseMap[x + 1, y + 1]) * mapGen.heightMultiplier * mapGen.size);
+                    vertices.Add(mapGen.heightCurve.Evaluate(noiseMap[x - 1, y + 1]) * mapGen.heightMultiplier * mapGen.size);
+                    vertices.Add(mapGen.heightCurve.Evaluate(noiseMap[x, y - 1]) * mapGen.heightMultiplier * mapGen.size);
+                    vertices.Add(mapGen.heightCurve.Evaluate(noiseMap[x + 1, y - 1]) * mapGen.heightMultiplier * mapGen.size);
+                    vertices.Add(mapGen.heightCurve.Evaluate(noiseMap[x - 1, y - 1]) * mapGen.heightMultiplier * mapGen.size);
+                }
 
                 float range = vertices.Max() - vertices.Min();
                 if (range < minRange) minRange = range;
                 if (range > maxRange) maxRange = range;
 
 
-                gradientRange[x, y] = range;
+                gradientRange[x-1, y-1] = range;
 
-                i++;
             }
         }
         // ##### normalise ranges #####
@@ -256,4 +271,6 @@ public class MapGenChunk : MonoBehaviour
 
         mesh.RecalculateNormals();
     }
+
+    
 }
