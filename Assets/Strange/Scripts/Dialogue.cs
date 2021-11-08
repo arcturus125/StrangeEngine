@@ -8,6 +8,14 @@ using UnityEngine;
 
 public class Dialogue
 {
+
+    public struct DialogueMessage
+    {
+        public Dialogue dialogue;
+        public bool firstRun;
+    }
+
+
     public bool allowMultipleChoices = false;
     public bool isDialogueChoice = false;
 
@@ -70,11 +78,15 @@ public class Dialogue
 
     public void Play()
     {
-        if(firstRun)
-            StrangeChatSystem.Singleton.ShowDialogue(this);
-        else
-            StrangeChatSystem.Singleton.ShowDialogue(this, true);
-        firstRun = false;
+        // setup the struct
+        DialogueMessage dm = new DialogueMessage();
+        dm.dialogue = this;
+        dm.firstRun = firstRun;
+
+        foreach(GameObject UI in StrangeChatSystem.singleton.dialogueUI)
+        {
+            UI.SendMessage("ShowDialogue", dm);
+        }
     }
 }
 public class DialogueChoice : Dialogue

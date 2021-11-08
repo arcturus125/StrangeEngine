@@ -101,7 +101,7 @@ public class NPC : MonoBehaviour
     }
     public void Use()
     {
-        if (!StrangeChatSystem.isInDialogue)
+        if (!DialogueWindow.isInDialogue)
         {
             if (q.complete)
             {
