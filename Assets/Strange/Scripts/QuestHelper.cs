@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class QuestHelper : MonoBehaviour
 {
-    public static QuestHelper singleton;
 
     [Header("Dont Touch: Advanced Users Only!")]
     [Header("###You MUST have an EventSystem in your scene for this to work###")]
@@ -31,7 +30,6 @@ public class QuestHelper : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        singleton = this;
     }
 
     // Update is called once per frame

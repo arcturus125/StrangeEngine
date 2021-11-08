@@ -60,14 +60,10 @@ public class Quest
             if(StrangeQuestSystem.trackedQuest == null)
             {
                 StrangeQuestSystem.SetTrackedQuest(this);
-                // if the user has not added the questHelper to their scene, do not execute the next line
-                if(QuestHelper.singleton != null)
-                    QuestHelper.singleton.UpdateGUI();
+              
             }
-
-            // if the user has not added the questLog to their scene, do not execute the next line
-            if (QuestLog.singleton != null)
-                QuestLog.singleton.UpdateGUI();
+            UpdateQuestUI();
+            
 
             // when a quest is triggered, check if the quest contains any FetchQuests and if so, check if the user already has the neccessary items to complete the objective
             StrangeQuestSystem.singleton.CheckForFetchQuestCompletion();
@@ -89,13 +85,17 @@ public class Quest
         {
             OnComplete();
         }
-        // if the user has not added the questHelper to their scene, do not execute the next line
-        if (QuestHelper.singleton != null)
-            QuestHelper.singleton.UpdateGUI();
 
-        // if the user has not added the questLog to their scene, do not execute the next line
-        if (QuestLog.singleton != null)
-            QuestLog.singleton.UpdateGUI();
+        UpdateQuestUI();
+    }
+
+    public void UpdateQuestUI()
+    {
+
+        foreach(GameObject UI in StrangeQuestSystem.singleton.QuestUI)
+        {
+            UI.SendMessage("UpdateGUI");
+        }
     }
 
     private void OnComplete()
@@ -112,9 +112,7 @@ public class Quest
             StrangeQuestSystem.activeQuests.Remove(this);
             StrangeQuestSystem.failedQuests.Add(this);
 
-            // if the user has not added the questLog to their scene, do not execute the next line
-            if (QuestLog.singleton != null)
-                QuestLog.singleton.UpdateGUI();
+            UpdateQuestUI();
         }
         else
         {
@@ -177,20 +175,12 @@ public class QuestObjective
     public void attachParent(Quest parent)
     {
         parentQuest = parent;
+        parentQuest.UpdateQuestUI(); // if the title is changed, it cannot be updated until now
     }
 
     protected void UpdateObjectiveTitle(string newSuffix)
     {
         title = baseTitle + newSuffix;
-
-
-        // if the user has not added the questHelper to their scene, do not execute the next line
-        if (QuestHelper.singleton != null)
-            QuestHelper.singleton.UpdateGUI();
-
-        // if the user has not added the questLog to their scene, do not execute the next line
-        if (QuestLog.singleton != null)
-            QuestLog.singleton.UpdateGUI();
     }
 
     protected void CompleteObjective()

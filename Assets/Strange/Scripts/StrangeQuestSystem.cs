@@ -14,8 +14,14 @@ public class StrangeQuestSystem : MonoBehaviour
     public static List<Quest> completedQuests = new List<Quest>(); // all the quests that the player has completed
     public static List<Quest> failedQuests = new List<Quest>(); // all the quests that the player has failed
 
-    [Header("Drag the player into here so that quests can access the players inventory to give rewards")]
+
+
+    [Header("access to the player's inventory is required to give quest rewards")]
     public StrangeInventory playerInventory;
+
+
+    [Header("Drag all UI scripts Here")]
+    public GameObject[] QuestUI;
 
     void Start() 
     {

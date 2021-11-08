@@ -32,7 +32,6 @@ public class NPC : MonoBehaviour
         d.allowMultipleChoices = true;
 
 
-
         hi = new Dialogue("Hi", d);
 
         //  |====|      |====|       |====|
