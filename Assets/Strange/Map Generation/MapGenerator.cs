@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
@@ -73,11 +74,18 @@ public class MapGenerator : MonoBehaviour
 
     public void GenerateMap()
     {
+        StrangeLogger.Log("Beginning map Generation");
+        System.Diagnostics.Stopwatch timer = System.Diagnostics.Stopwatch.StartNew();
+        int chunksRendered = 0;
+
         CalculateTheoreticals();
-        DeleteForgottenChunks();
+        //DeleteForgottenChunks();
 
         if (renderDistance == 0)
+        {
             ChunkManager.Generate(0, 0, this);
+            chunksRendered ++;
+        }
         else
         {
             for (int Y = -renderDistance; Y <= renderDistance; Y++)
@@ -85,12 +93,21 @@ public class MapGenerator : MonoBehaviour
                 for (int X = -renderDistance; X <= renderDistance; X++)
                 {
                     ChunkManager.Generate(X, Y, this);
+                    chunksRendered++;
                 }
             }
         }
+        ChunkManager.Finalise();
 
+        timer.Stop();
+        StrangeLogger.Log("Generated " + chunksRendered + " chunks in " + timer.ElapsedMilliseconds + "ms");
 
     }
+
+    /// <summary>
+    /// calculate the theoretical max and min values for this given combination of octaves.
+    /// without this, normalisation is inconsistant across chunks - which causes gaps at the seams
+    /// </summary>
     private void CalculateTheoreticals()
     {
         float max = 0;
@@ -112,7 +129,7 @@ public class MapGenerator : MonoBehaviour
             int childCount = mapParent.childCount;
             for (int i = 0; i < childCount; i++)
             {
-                DestroyImmediate(mapParent.GetChild(0).gameObject);
+                //DestroyImmediate(mapParent.GetChild(0).gameObject);
             }
             ChunkManager.savedChunks.Clear();
         }
@@ -144,7 +161,10 @@ public class MapGenerator : MonoBehaviour
 }
 static class ChunkManager
 {
+
+    public static List<MapGenChunk> threadChunks = new List<MapGenChunk>();
     public static List<MapGenChunk> savedChunks = new List<MapGenChunk>();
+    public static List<Thread> threadpool = new List<Thread>();
 
     public static bool DoesChunkExist(int x, int y)
     {
@@ -171,18 +191,42 @@ static class ChunkManager
 
     public static void Generate(int x ,int y, MapGenerator mapGen)
     {
-        if (!DoesChunkExist(x, y))
+        //if (!DoesChunkExist(x, y))
+        if(true)
         {
             MapGenChunk chunk = new MapGenChunk(mapGen);
             chunk.x = x;
             chunk.y = y;
-            chunk.GenerateMapChunk();
-            savedChunks.Add(chunk);
+            if (true)
+            {
+                Thread t = new Thread(new ThreadStart(chunk.GenerateMapChunk));
+                t.Start();
+                threadpool.Add(t);
+            }
+            else
+            {
+                chunk.GenerateMapChunk();
+            }
+            threadChunks.Add(chunk);
         }
         else
         {
             GetChunk(x, y).GenerateMapChunk(); // reloads the chunk
         }   
+    }
+    public static void Finalise()
+    {
+        for (int i = 0; i < threadpool.Count; i++)
+        {
+            threadpool[i].Join();
+        }
+        // one all threads are joined
+        foreach (MapGenChunk chunk in threadChunks)
+        {
+            savedChunks.Add(chunk);
+            chunk.CreateMesh();
+        }
+        threadChunks.Clear();
     }
 
     public static void Show(int x, int y)

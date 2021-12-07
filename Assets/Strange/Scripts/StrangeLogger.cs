@@ -29,7 +29,14 @@ public class StrangeLogger : MonoBehaviour
 
     public static void Log(string logInfo)
     {
-        if(singleton.showInConsole)
+        try
+        {
+            if (singleton.showInConsole)
+            {
+                Debug.Log(StrangeLogPrefix + logInfo);
+            }
+        }
+        catch(System.Exception)
         {
             Debug.Log(StrangeLogPrefix + logInfo);
         }

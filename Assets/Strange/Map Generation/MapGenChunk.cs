@@ -9,11 +9,12 @@ public class MapGenChunk : MonoBehaviour
     public GameObject chunkObject;
     public int x;
     public int y;
+    public MeshData meshdata;
 
     public float[,] finalNoiseMap;
 
     // this contains all the data neccessary to generate the mesh of the map
-    struct MeshData
+    public struct MeshData
     {
         public Vector3[] vertices;
         public int[] indices;
@@ -27,15 +28,13 @@ public class MapGenChunk : MonoBehaviour
     {
         mapGen = mapGenerator;
     }
-    public void GenerateMapChunk()
+    public void CreateMesh()
     {
+
         // if the chunk gameobject already exists, no need to load the prefab
         if (!chunkObject)
             chunkObject = Instantiate(mapGen.MapPrefab, mapGen.mapParent);
-        chunkObject.transform.SetPositionAndRotation(new Vector3(x * (mapGen.vertexWidth-1) * mapGen.size, 0, y * (mapGen.vertexHeight-1) * mapGen.size), Quaternion.identity);
-
-        // calculate position of chunk: global offset + chunk's local space
-        Vector2 chunkOffset = mapGen.globalOffset + new Vector2((mapGen.vertexWidth-1) * x, (mapGen.vertexHeight-1) * y);
+        chunkObject.transform.SetPositionAndRotation(new Vector3(x * (mapGen.vertexWidth - 1) * mapGen.size, 0, y * (mapGen.vertexHeight - 1) * mapGen.size), Quaternion.identity);
 
 
 
@@ -43,6 +42,16 @@ public class MapGenChunk : MonoBehaviour
         chunkObject.GetComponent<MeshFilter>().mesh = mesh;
         MeshCollider chunkCollider = chunkObject.GetComponent<MeshCollider>();
         chunkCollider.sharedMesh = mesh;
+
+        GenerateMesh(meshdata, mesh);
+    }
+    public void GenerateMapChunk()
+    {
+
+        // calculate position of chunk: global offset + chunk's local space
+        Vector2 chunkOffset = mapGen.globalOffset + new Vector2((mapGen.vertexWidth-1) * x, (mapGen.vertexHeight-1) * y);
+
+
 
         // generate all the octaves' noisemaps
         for (int i = 0; i < mapGen.octaves.Length; i++)
@@ -63,9 +72,9 @@ public class MapGenChunk : MonoBehaviour
             finalNoiseMap = Noise.NormalizeNoiseMap(finalNoiseMap); // get the min and max of the homechunk
         }
         // process the noisemap into mesh data (vertices, indices, and vertex colours)
-        MeshData meshData = GenerateMeshData(finalNoiseMap);
+        meshdata = GenerateMeshData(finalNoiseMap);
         // display the mesh on the screen
-        GenerateMesh(meshData, mesh);
+
     }
 
     /// <summary>
