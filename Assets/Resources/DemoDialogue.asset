@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca4a51cbc69c85f4eb0dbbc7838637ef, type: 3}
+  m_Name: DemoDialogue
+  m_EditorClassIdentifier: 
+  nodes:
+  - nodePos:
+      serializedVersion: 2
+      x: 100
+      y: 200
+      width: 87
+      height: 77
+    isEntryPoint: 1
+    guid: 6253ba3e-7093-4eb6-96b3-c41edc3beed6
+    dialogueText: ENTRYPOINT
+    choices: []
+  - nodePos:
+      serializedVersion: 2
+      x: 832
+      y: 94
+      width: 184
+      height: 99
+    isEntryPoint: 0
+    guid: 9b4e9a2b-c9b2-43e6-9c9b-8e9d5c54c8dd
+    dialogueText: new node
+    choices: []
+  - nodePos:
+      serializedVersion: 2
+      x: 357
+      y: 174
+      width: 194
+      height: 123
+    isEntryPoint: 0
+    guid: 56ce6a0b-2c30-4046-946f-def9dccef89e
+    dialogueText: new node
+    choices: []
+  - nodePos:
+      serializedVersion: 2
+      x: 789
+      y: 230
+      width: 184
+      height: 99
+    isEntryPoint: 0
+    guid: e5971ac0-d5b8-438f-b839-f40729384fec
+    dialogueText: new node
+    choices: []
+  connections:
+  - inputID: 56ce6a0b-2c30-4046-946f-def9dccef89e
+    portName: next
+    outputID: 6253ba3e-7093-4eb6-96b3-c41edc3beed6
+  - inputID: 9b4e9a2b-c9b2-43e6-9c9b-8e9d5c54c8dd
+    portName: Output 0
+    outputID: 56ce6a0b-2c30-4046-946f-def9dccef89e
+  - inputID: e5971ac0-d5b8-438f-b839-f40729384fec
+    portName: Output 1
+    outputID: 56ce6a0b-2c30-4046-946f-def9dccef89e
