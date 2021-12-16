@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Quest
+public class Quest : ScriptableObject
 {
     public bool complete = false; // true when all quest objectives have been completed
     public bool started = false; // true when the quest has been given to the player
@@ -210,6 +210,7 @@ public class TalkQuest : QuestObjective
         parentQuest.UpdateQuestStatus();
     }
 }
+
 public class FetchQuest : QuestObjective
 {
     public Item questedItem; // the item the player should Fetch

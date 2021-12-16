@@ -78,6 +78,11 @@ public class Dialogue
 
     public void Play()
     {
+        if(StrangeChatSystem.singleton == null)
+        {
+            StrangeLogger.LogError("You need to Drag StrangeChatSystem into your scene. Find it in Assets>Strange>Drag-N-Drop");
+            return;
+        }
         // setup the struct
         DialogueMessage dm = new DialogueMessage();
         dm.dialogue = this;

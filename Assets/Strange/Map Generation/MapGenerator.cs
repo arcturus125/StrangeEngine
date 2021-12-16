@@ -73,6 +73,11 @@ public class MapGenerator : MonoBehaviour
 
     public void GenerateMap()
     {
+        if(mapParent == null)
+        {
+            mapParent = new GameObject("Map").transform;
+        }
+
         CalculateTheoreticals();
         DeleteForgottenChunks();
 

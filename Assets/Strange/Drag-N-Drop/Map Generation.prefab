@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &5295281524128770476
+--- !u!1 &5295281525010054989
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,36 +8,36 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5295281524128770477}
-  - component: {fileID: 5295281524128770478}
+  - component: {fileID: 5295281525010054990}
+  - component: {fileID: 1152978483835032326}
   m_Layer: 0
-  m_Name: Map Generator
+  m_Name: Map Generation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &5295281524128770477
+--- !u!4 &5295281525010054990
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5295281524128770476}
+  m_GameObject: {fileID: 5295281525010054989}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 372.2, z: 0.8}
+  m_LocalPosition: {x: 0, y: -542, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 5295281525010054990}
+  m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5295281524128770478
+--- !u!114 &1152978483835032326
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5295281524128770476}
+  m_GameObject: {fileID: 5295281525010054989}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2278d1eb8daaeff4f888ab1a318294d0, type: 3}
@@ -56,8 +56,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0
-      value: 0
+      time: 0.0008544922
+      value: -0.09613037
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -65,8 +65,17 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
-      time: 0.36656046
-      value: 0.05797014
+      time: 0.3138212
+      value: 0.019207109
+      inSlope: 0.45169917
+      outSlope: 0.45169917
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.9805621
+      outWeight: 0.18707114
+    - serializedVersion: 3
+      time: 0.44090128
+      value: 0.0657216
       inSlope: 0.285363
       outSlope: 0.285363
       tangentMode: 0
@@ -143,34 +152,3 @@ MonoBehaviour:
   - amplitude: 0.1
     frequency: 5
     offset: {x: 2.6, y: 0}
---- !u!1 &5295281525010054989
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5295281525010054990}
-  m_Layer: 0
-  m_Name: Map Generation
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &5295281525010054990
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5295281525010054989}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -542, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 5295281524128770477}
-  m_Father: {fileID: 0}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
