@@ -7,7 +7,7 @@ using System;
 public class DialogueTree : ScriptableObject
 {
     public NodeSaveState[] nodes;
-    public EdgeSaveState[] connections;
+    //public EdgeSaveState[] connections;
 }
 
 
@@ -18,13 +18,22 @@ public class NodeSaveState
     public bool isEntryPoint; // is this node the entrypoint?
     public string guid; // the ID of this node
     public string dialogueText; // the Text/Title of this node
-    public string[] choices; // choices contained within this node
+    public DialoguePort[] ports;
 }
 
 [Serializable]
-public class EdgeSaveState
+public class DialoguePort
 {
     public string inputID;
     public string portName;
-    public string outputID;
 }
+
+
+
+//[Serializable]
+//public class EdgeSaveState
+//{
+//    public string inputID;
+//    public string portName;
+//    public string outputID;
+//}

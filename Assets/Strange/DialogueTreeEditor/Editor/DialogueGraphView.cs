@@ -65,7 +65,7 @@ public class DialogueGraphView : GraphView
         return node;
     }
 
-    public void GenerateEntryPointNode(string customID = "")
+    public void GenerateEntryPointNode(string customID)
     {
         // Generate a blank node
         DialogueNode node = new DialogueNode
@@ -221,31 +221,34 @@ public class DialogueGraphView : GraphView
     {
 
         List<NodeSaveState> graphNodes = new List<NodeSaveState>();
-        List<EdgeSaveState> graphEdges = new List<EdgeSaveState>();
+        //List<EdgeSaveState> graphEdges = new List<EdgeSaveState>();
 
         nodes.ForEach((node) => // the fancy way of saying 'foreach(var node in nodes)' but for UQueryStates
         {
             // get node data and store it
             NodeSaveState tempNode = new NodeSaveState();
+            List<DialoguePort> ports = new List<DialoguePort>();
+            
             tempNode.nodePos = node.GetPosition();
             tempNode.isEntryPoint = (node as DialogueNode).entrypoint;
             tempNode.dialogueText = (node as DialogueNode).DialogueText;
             tempNode.guid = (node as DialogueNode).GUID;
 
+            // search through all the edges in the graph and gather the ones that connect to this node's output container
+            List<Edge> nodeOutputs = edges.ToList().Where(x => (x.output.node as DialogueNode).GUID == (node as DialogueNode).GUID).ToList();
+            nodeOutputs.Reverse(); // if you dont reverse the order, they are saved backwards from the order they are created, this created tangles in the edges
+            nodeOutputs.ForEach((outputEdge) =>
+            {
+                DialoguePort tempPort = new DialoguePort();
+                tempPort.inputID = (outputEdge.input.node as DialogueNode).GUID;
+                tempPort.portName = outputEdge.output.portName;
+                ports.Add(tempPort);
+            });
+
+            tempNode.ports = ports.ToArray();
+
             // add the node to the list that is saved
             graphNodes.Add(tempNode);
-        });
-
-        edges.ForEach((edge) =>
-        {
-            // get edge data and store it
-            EdgeSaveState tempEdge = new EdgeSaveState();
-            tempEdge.outputID = (edge.output.node as DialogueNode).GUID;
-            tempEdge.inputID = (edge.input.node as DialogueNode).GUID;
-            tempEdge.portName = edge.output.portName;
-
-            // add the edge to the list that is saved
-            graphEdges.Add(tempEdge);
         });
 
 
@@ -254,7 +257,7 @@ public class DialogueGraphView : GraphView
         DialogueTree save = ScriptableObject.CreateInstance<DialogueTree>();
         // set the data to the nodes and edges we have just gathered
         save.nodes = graphNodes.ToArray();
-        save.connections = graphEdges.ToArray();
+        //save.connections = graphEdges.ToArray();
 
         // if a folder does not exist, create one
         if (!AssetDatabase.IsValidFolder("Assets/Resources"))
@@ -269,7 +272,7 @@ public class DialogueGraphView : GraphView
     }
     public void Load(string filename)
     {
-        ClearGraph();
+        ClearAll();
 
         // load the file from the resources folder
         DialogueTree save = Resources.Load<DialogueTree>(filename);
@@ -287,12 +290,12 @@ public class DialogueGraphView : GraphView
                 // create a node and set the GUID so match the one we are loading from the file
                 DialogueNode tempNode = CreateDialogueNode(node.dialogueText);
                 tempNode.GUID = node.guid;
-                AddElement(tempNode);
+                AddElement(tempNode); // actually add the node to the graph view
 
-                // get a list of all the connections that connect to this node's outputs
-                //   and add a port with the name that belongs to the connection
-                List<EdgeSaveState> nodePorts = save.connections.Where(x => x.outputID == node.guid).ToList();
-                nodePorts.ForEach(x => AddChoicePort(tempNode, x.portName));
+                foreach ( DialoguePort port in node.ports)
+                {
+                    AddChoicePort(tempNode, port.portName);
+                }
 
                 tempNode.SetPosition(node.nodePos);
             }
@@ -301,24 +304,38 @@ public class DialogueGraphView : GraphView
         // CONNECT NODES
 
         List<Node> listOfNodes = nodes.ToList();
-        // for each node
+        // for each node on the graph
         for (int i = 0; i < listOfNodes.Count; i++)
         {
-            int k = i;
-            // find edges that are outputted by this node
-            List<EdgeSaveState> connections = save.connections.Where(x => x.outputID == (listOfNodes[k] as DialogueNode).GUID).ToList();
-            for (int j = 0; j < connections.Count(); j++)
+            DialogueNode node = listOfNodes[i] as DialogueNode;
+            //if (node.entrypoint) continue;
+
+            NodeSaveState nodeSave = save.nodes.First(x => x.guid == node.GUID); // get the save state of the node we are connecting up to the graph
+            // loop through the ports saved in the node 
+            foreach( DialoguePort port in nodeSave.ports)
             {
-                string targetNodeGUID = connections[j].inputID;
-                Node targetNode = listOfNodes.First(x => (x as DialogueNode).GUID == targetNodeGUID);
+                // find the input node
+                string targetNodeID = port.inputID;
+                Node targetNode = listOfNodes.First(x => (x as DialogueNode).GUID == targetNodeID);
 
-                LinkNodesTogether(listOfNodes[i].outputContainer[j].Q<Port>(), (Port)targetNode.inputContainer[0]);
-
+                //loop through all this node's port and find the one with the correct name
+                for (int j = 0; j < node.outputContainer.childCount; j++)
+                {
+                    // if the portname on the graph matches the one in the save, draw the edge
+                    if(node.outputContainer[j].Q<Port>().portName == port.portName)
+                    {
+                        LinkNodesTogether(node.outputContainer[j].Q<Port>(), (Port)targetNode.inputContainer[0]);
+                    }
+                }
+                
             }
-
         }
 
     }
+
+    /// <summary>
+    /// clears all nodes and edges from the graph EXCEPT the entrypoint node
+    /// </summary>
     public void ClearGraph()
     {
         // for all the nodes on the graph
@@ -333,6 +350,21 @@ public class DialogueGraphView : GraphView
                 RemoveElement(node);
             }
 
+        });
+    }
+    /// <summary>
+    /// clears all nodes and edges from the graph INCLUDING the entrypoint node
+    /// </summary>
+    public void ClearAll()
+    {
+        // for all the nodes on the graph
+        nodes.ForEach((node) =>
+        {
+            // remove all edges on the node first
+            edges.ToList().Where(x => x.input.node == node).ToList()
+                .ForEach(edge => RemoveElement(edge));
+            // then remove the node
+            RemoveElement(node);
         });
     }
 

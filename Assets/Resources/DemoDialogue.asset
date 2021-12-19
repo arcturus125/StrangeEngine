@@ -20,46 +20,62 @@ MonoBehaviour:
       width: 87
       height: 77
     isEntryPoint: 1
-    guid: 6253ba3e-7093-4eb6-96b3-c41edc3beed6
+    guid: 0209eac9-b47e-48ef-bb75-155d610eab8e
     dialogueText: ENTRYPOINT
-    choices: []
+    ports: []
   - nodePos:
       serializedVersion: 2
-      x: 832
-      y: 94
-      width: 184
-      height: 99
-    isEntryPoint: 0
-    guid: 9b4e9a2b-c9b2-43e6-9c9b-8e9d5c54c8dd
-    dialogueText: new node
-    choices: []
+      x: 100
+      y: 200
+      width: 87
+      height: 77
+    isEntryPoint: 1
+    guid: dd474f95-c449-4aa3-befd-b9336889b401
+    dialogueText: ENTRYPOINT
+    ports: []
   - nodePos:
       serializedVersion: 2
-      x: 357
-      y: 174
-      width: 194
+      x: 100
+      y: 200
+      width: 87
+      height: 77
+    isEntryPoint: 1
+    guid: 3a6efaa2-072d-4bff-a940-e595697893f5
+    dialogueText: ENTRYPOINT
+    ports:
+    - inputID: 4e18b328-29b7-4c5d-8bde-793faad36e35
+      portName: next
+  - nodePos:
+      serializedVersion: 2
+      x: 319
+      y: 165
+      width: 396
       height: 123
     isEntryPoint: 0
-    guid: 56ce6a0b-2c30-4046-946f-def9dccef89e
-    dialogueText: new node
-    choices: []
+    guid: 4e18b328-29b7-4c5d-8bde-793faad36e35
+    dialogueText: Hello there, will you help me with my sidequest?
+    ports:
+    - inputID: b32abcdc-045c-4eef-992c-9d06cfb03db8
+      portName: No i am busy
+    - inputID: 51bb046e-d2c6-4164-96da-ab13b0da5401
+      portName: Sure, Whats up?
   - nodePos:
       serializedVersion: 2
-      x: 789
-      y: 230
-      width: 184
+      x: 806
+      y: 80
+      width: 245
       height: 99
     isEntryPoint: 0
-    guid: e5971ac0-d5b8-438f-b839-f40729384fec
-    dialogueText: new node
-    choices: []
-  connections:
-  - inputID: 56ce6a0b-2c30-4046-946f-def9dccef89e
-    portName: next
-    outputID: 6253ba3e-7093-4eb6-96b3-c41edc3beed6
-  - inputID: 9b4e9a2b-c9b2-43e6-9c9b-8e9d5c54c8dd
-    portName: Output 0
-    outputID: 56ce6a0b-2c30-4046-946f-def9dccef89e
-  - inputID: e5971ac0-d5b8-438f-b839-f40729384fec
-    portName: Output 1
-    outputID: 56ce6a0b-2c30-4046-946f-def9dccef89e
+    guid: b32abcdc-045c-4eef-992c-9d06cfb03db8
+    dialogueText: Fine, be on your way
+    ports: []
+  - nodePos:
+      serializedVersion: 2
+      x: 814
+      y: 244
+      width: 236
+      height: 99
+    isEntryPoint: 0
+    guid: 51bb046e-d2c6-4164-96da-ab13b0da5401
+    dialogueText: Thank You kind sir!
+    ports: []

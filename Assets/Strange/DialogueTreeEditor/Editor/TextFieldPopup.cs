@@ -14,12 +14,13 @@ public class TextFieldPopup : EditorWindow
 
     string filename;
 
+
     private void OnGUI()
     {
-        EditorGUILayout.LabelField("labelText\n", EditorStyles.wordWrappedLabel);
+        EditorGUILayout.LabelField( labelText+"", EditorStyles.wordWrappedLabel);
 
 
-        string temp = EditorGUILayout.TextField("textfieldText", "");
+        string temp = EditorGUILayout.TextField("", GUILayout.ExpandWidth(true));
 
         // textfield is checked for updated every frame. if there are no updates, it will be blank, this fixes that
         if (temp != "")
