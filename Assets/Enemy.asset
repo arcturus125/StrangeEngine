@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c684abb0ff9862d4db8f11af9a732deb, type: 3}
   m_Name: Enemy
   m_EditorClassIdentifier: 
-  AI_type: 0
+  AI_type: 2
   health: 1
   enemyName: enemy
   speed: 1
@@ -22,7 +22,7 @@ MonoBehaviour:
   giddiness: 1
   agitatedness: 3
   erraticnessOfMovement: 0.37
-  isFlyingEnemy: 1
+  isFlyingEnemy: 0
   lockEnemyTilt: 0
   useWorldHeight: 0
   maxheight: 10

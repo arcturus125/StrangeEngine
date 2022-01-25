@@ -88,7 +88,7 @@ public class InteractionEngine : MonoBehaviour
 
         ///Use()
         // while a user is wihtin range of a collider and they haev pressed F. run Use() on it if possible
-        if (!DialogueWindow.isInDialogue)
+        if (!StrangeChatSystem.isInDialogue)
         {
             if (Input.GetKeyDown(useKey))
             {

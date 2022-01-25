@@ -5,6 +5,7 @@ using UnityEngine;
 public class StrangeChatSystem : MonoBehaviour
 {
     public static StrangeChatSystem singleton;
+    public static bool isInDialogue = false; // true only when the player has a dialogue on their screen
     public GameObject[] dialogueUI;
 
     void Start()

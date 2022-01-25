@@ -110,7 +110,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyReference: {fileID: 11400000, guid: 8e5ff71444562e14b84602f392d15574, type: 2}
-  AI_type: 0
+  AI_type: 2
   hit: 0
   maxSpeed: 2
   steerStrength: 2

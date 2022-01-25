@@ -22,5 +22,11 @@ public class MapGeneratorEditor : Editor
             mapGen.GenerateMap();
         }
 
+        // create a button and when it is pressed, run this if statement
+        if (GUILayout.Button("Randomise Octaves"))
+        {
+            mapGen.RandomiseOctaves();
+        }
+
     }
 }

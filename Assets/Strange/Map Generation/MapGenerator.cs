@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
@@ -10,7 +12,7 @@ public class MapGenerator : MonoBehaviour
     // ###############################################################################
     // #                              INSPECTOR SETTINGS                             #
     // ###############################################################################
-    [Tooltip("The 'folder' that all map chunks will be a child of - use for hierarchy management of the map")]
+    [Tooltip("The 'folder' that all map chunks will be a child of - use for hierarchy management of the map. if left blank a folder will be createdd for you")]
     public Transform mapParent;
     [Tooltip("the prefab that is spawned in and then generated")]
     public GameObject MapPrefab;
@@ -48,7 +50,28 @@ public class MapGenerator : MonoBehaviour
 
     [Header("Global Offsets:")]
     public Vector2 globalOffset;
+
+    [Header("Falloff map")]
+    public AnimationCurve falloffCurve;
+    public bool useFalloffMap = true;
+    [HideInInspector]
+    public Vector2 mapOrigin;
+    [HideInInspector]
+    public float falloffDistance;
+
+
+    [Header("Auto Generate")]
     public bool autoUpdate = false;
+
+    private bool forceUpdate = true;
+
+
+    [Header("Octave randomizer")]
+    [Range(3,10)]
+    public int noOfOctaves = 4;
+    [Range(0.1f, 5.0f)]
+    public float Smoothness = 1;
+
 
 
     // this contains all the data of each layer of noise
@@ -78,23 +101,26 @@ public class MapGenerator : MonoBehaviour
             mapParent = new GameObject("Map").transform;
         }
 
+        mapOrigin = new Vector2((vertexWidth * size) / 2, (vertexHeight* size) / 2);
+
+        falloffDistance = Vector2.Distance(mapOrigin, new Vector2(vertexWidth * renderDistance * size, vertexHeight * renderDistance * size));
+
         CalculateTheoreticals();
-        DeleteForgottenChunks();
 
         if (renderDistance == 0)
-            ChunkManager.Generate(0, 0, this);
+            ChunkManager.Generate(0, 0, this, forceUpdate);
         else
         {
             for (int Y = -renderDistance; Y <= renderDistance; Y++)
             {
                 for (int X = -renderDistance; X <= renderDistance; X++)
                 {
-                    ChunkManager.Generate(X, Y, this);
+                    ChunkManager.Generate(X, Y, this, forceUpdate);
                 }
             }
         }
 
-
+        forceUpdate = false;
     }
     private void CalculateTheoreticals()
     {
@@ -108,21 +134,6 @@ public class MapGenerator : MonoBehaviour
     }
 
 
-    //if there are map gameobjects attached to the mapFolder that the script doesnt recognise,
-    // delete all children and generate them again -- this doesnt happen often, at most every time unity is closed and re-opened
-    private void DeleteForgottenChunks()
-    {
-        if(ChunkManager.savedChunks.Count != mapParent.childCount)
-        {
-            int childCount = mapParent.childCount;
-            for (int i = 0; i < childCount; i++)
-            {
-                DestroyImmediate(mapParent.GetChild(0).gameObject);
-            }
-            ChunkManager.savedChunks.Clear();
-        }
-
-    }
     /// <summary>
     /// if any inspector inputs go out of range, this will set them back inside their range
     /// <para> for example: it is impossible to have a negative map width</para>
@@ -144,60 +155,105 @@ public class MapGenerator : MonoBehaviour
             if (octaves[i].amplitude < 0) octaves[i].amplitude = 0;
             if (octaves[i].frequency < 0) octaves[i].frequency = 0;
         }
+
+        forceUpdate = true;
     }
-   
+
+
+
+    public void RandomiseOctaves()
+    {
+        List<Octave> tempList = new List<Octave>();
+
+        int maxAmplitude = UnityEngine.Random.Range(5, 8);
+        int maxFrequency = UnityEngine.Random.Range(150, 280);
+
+        for (int i = 0; i < noOfOctaves; i++)
+        {
+            Octave o = new Octave();
+            if (i != 0)
+            {
+                o.amplitude = maxAmplitude / (Mathf.Pow(i, 2) * (i * Smoothness));
+                o.frequency = maxFrequency / Mathf.Pow(i, 2);
+            }
+            else
+            {
+                o.amplitude = maxAmplitude;
+                o.frequency = maxFrequency;
+            }
+
+            int offset = UnityEngine.Random.Range(100, 1000);
+            o.offset = new Vector2(offset, offset);
+
+            tempList.Add(o);
+        }
+        octaves = tempList.ToArray();
+    }
+
 }
 static class ChunkManager
 {
-    public static List<MapGenChunk> savedChunks = new List<MapGenChunk>();
+    const string MapGenDataParentFolder = "Assets/Resources";
+    const string MapGenDataFolderName = "MapGenData";
 
-    public static bool DoesChunkExist(int x, int y)
-    {
-        foreach (MapGenChunk chunk in savedChunks)
-        {
-            if(chunk.x == x && chunk.y == y)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-    public static MapGenChunk GetChunk(int x, int y)
-    {
-        foreach (MapGenChunk chunk in savedChunks)
-        {
-            if(chunk.x == x && chunk.y == y)
-            {
-                return chunk;
-            }
-        }
-        return null;
-    }
+    const string MapGenDataPath = MapGenDataParentFolder + "/"+ MapGenDataFolderName;
 
-    public static void Generate(int x ,int y, MapGenerator mapGen)
+    public static void Generate(int x ,int y, MapGenerator mapGen, bool forceUpdate)
     {
+        if (!AssetDatabase.IsValidFolder(MapGenDataPath))
+            AssetDatabase.CreateFolder(MapGenDataParentFolder, MapGenDataFolderName);
+
+
+        MapGenChunk chunk;
         if (!DoesChunkExist(x, y))
         {
-            MapGenChunk chunk = new MapGenChunk(mapGen);
+            //chunk = new MapGenChunk(mapGen);
+            chunk = ScriptableObject.CreateInstance<MapGenChunk>();
+            chunk.mapGenSettings = mapGen;
             chunk.x = x;
             chunk.y = y;
+
+            AssetDatabase.CreateAsset(chunk, $"{MapGenDataPath}/chunk {x} {y}.asset");
+            AssetDatabase.SaveAssets();
+
             chunk.GenerateMapChunk();
-            savedChunks.Add(chunk);
         }
         else
         {
-            GetChunk(x, y).GenerateMapChunk(); // reloads the chunk
-        }   
+            chunk = LoadChunk(x, y);
+            if (forceUpdate)
+            {
+                chunk.GenerateMapChunk();
+            }
+            else
+            {
+                //chunk.mapGen = mapGen; // update the settings?
+
+                chunk.GenerateMesh(chunk.meshData, false);
+                Debug.Log($"loading chunk {x} {y} from file");
+            }
+        }
+        
+
     }
 
-    public static void Show(int x, int y)
+    public static bool DoesChunkExist(int x, int y)
     {
-        GetChunk(x, y).chunkObject.SetActive(true);
+        DirectoryInfo dir = new DirectoryInfo(MapGenDataPath);
+        FileInfo[] info = dir.GetFiles("*.*");
+
+        foreach (FileInfo f in info)
+        {
+            if (f.Name == $"chunk {x} {y}.asset") return true;
+        }
+        return false;
     }
-    public static void Hide(int x, int y)
+    public static MapGenChunk LoadChunk(int x, int y)
     {
-        GetChunk(x, y).chunkObject.SetActive(false);
+         return Resources.Load<MapGenChunk>($"{MapGenDataFolderName}/chunk {x} {y}");
     }
+
+
 }
 
 

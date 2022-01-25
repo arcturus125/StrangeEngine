@@ -11,6 +11,10 @@ public class StrangeLogger
     {
         Debug.Log(StrangeLogPrefix + logInfo);
     }
+    public static void LogWarning(string logInfo)
+    {
+        Debug.LogWarning(StrangeErrorPrefix + logInfo);
+    }
     public static void LogError(string logInfo)
     {
         UnityEditor.EditorUtility.DisplayDialog(StrangeErrorPrefix, logInfo, "okay");

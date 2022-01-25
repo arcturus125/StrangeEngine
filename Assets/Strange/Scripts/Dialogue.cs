@@ -15,7 +15,7 @@ public class Dialogue
         public bool firstRun;
     }
 
-
+    public string GUID;
     public bool allowMultipleChoices = false;
     public bool isDialogueChoice = false;
 
@@ -31,11 +31,13 @@ public class Dialogue
     public Dialogue(string dialogueText)
     {
         text = dialogueText;
+        GUID = System.Guid.NewGuid().ToString();
     }
     // Create a basic dialogue with no linked dialogues and triggers a quest
     public Dialogue(string dialogueText, Quest questToTrigger)
     {
         text = dialogueText;
+        GUID = System.Guid.NewGuid().ToString();
 
         QuestCheck(questToTrigger);
     }
@@ -44,6 +46,7 @@ public class Dialogue
     public Dialogue(string dialogueText, Dialogue linkedDialogue)
     {
         text = dialogueText;
+        GUID = System.Guid.NewGuid().ToString();
         nextDialogue = linkedDialogue;
         if (linkedDialogue.previousDialogue == null)
             linkedDialogue.previousDialogue = this;
@@ -56,6 +59,7 @@ public class Dialogue
     public Dialogue(string dialogueText, Dialogue linkedDialogue, Quest questToTrigger)
     {
         text = dialogueText;
+        GUID = System.Guid.NewGuid().ToString();
         nextDialogue = linkedDialogue;
         if (linkedDialogue.previousDialogue == null)
             linkedDialogue.previousDialogue = this;
@@ -90,7 +94,7 @@ public class Dialogue
 
         foreach(GameObject UI in StrangeChatSystem.singleton.dialogueUI)
         {
-            UI.SendMessage("ShowDialogue", dm);
+            UI.SendMessage("ShowDialogue", dm, SendMessageOptions.DontRequireReceiver);
         }
     }
 }

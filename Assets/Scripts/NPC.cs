@@ -3,65 +3,20 @@ using UnityEngine;
 
 public class NPC : MonoBehaviour
 {
-    public Item stick;
+    public DialogueTree dtree;
 
 
-    public StrangeInventory playerInventory;
-
-    Dialogue hi;
-    Quest q;
-    Dialogue quest;
-
-    public Enemy enemySquare;
-
-    void Start()
+    public void Use()
     {
-        quest = new Dialogue("Thanks for Completing my Quest");
-
-        Dialogue d3 = new Dialogue("Okay bye");
-        Dialogue d2 = new Dialogue("My name is jeff");
-
-
-        string[] replies = { "What's your name?", "Go away"};
-        Dialogue[] linkedDialogues = {d2, d3 };
-
-        q = new Quest("baby's first quest", "info", new TalkQuest("tell me to go away", d3));
-        //q.rewards.Add(test);
-
-        DialogueChoice d = new DialogueChoice("Hello there",replies, linkedDialogues,q);
-        d.allowMultipleChoices = true;
-
-
-        hi = new Dialogue("Hi", d);
-
-        //  |====|      |====|       |====|
-        //  | hi | ---> |  d | --->  | d2 |
-        //  |====|      |====|       |====|
-        //                 |         |====|
-        //                 |-------> | d3 |
-        //                           |====|
-
-
-
-
-
-        TalkQuest tq = new TalkQuest("tell me to go away", d3);
-
-
-        FetchQuest fq = new FetchQuest("Collect sticks", stick, 3);
-
-        KillQuest kq = new KillQuest("Kill square", enemySquare, 3);
-
-
-        List<QuestObjective> l = new List<QuestObjective> {tq, fq ,kq};
-        Quest q1 = new Quest("1baby's first quest", "info test", l);
-        Quest q2 = new Quest("2baby's first quest", "info", new TalkQuest("tell me to go away", d3));
-
-
-        q1.TriggerQuest();
-
-
+        if (!StrangeChatSystem.isInDialogue)
+        {
+            dtree.Play();
+        }
     }
+
+
+
+    //boiler plate code
 
     void Update()
     {
@@ -74,13 +29,6 @@ public class NPC : MonoBehaviour
                 InteractionEngine.singleton.interactionButtonLocation = this.transform;
             }
         }
-
-        if(Input.GetKeyDown(KeyCode.H))
-        {
-            playerInventory.AddItem(stick);
-        }
-
-    
     }
 
     public void OnNearby()
@@ -98,18 +46,5 @@ public class NPC : MonoBehaviour
     public void WhileNearby()
     {
 
-    }
-    public void Use()
-    {
-        if (!DialogueWindow.isInDialogue)
-        {
-            if (q.complete)
-            {
-                q.TurnIn();
-                quest.Play();
-            }
-            else
-                hi.Play();
-        }
     }
 }

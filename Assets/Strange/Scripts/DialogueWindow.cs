@@ -36,7 +36,7 @@ public class DialogueWindow : MonoBehaviour
     public Text[] choiceButtonKeyConfigs; // the text on top of each choicebutton
     public Text chatButtonTooltipText; // the text on top of the chat tooltip
 
-    public static bool isInDialogue = false; // true only when the player has a dialogue on their screen
+    //public static bool isInDialogue = false; // true only when the player has a dialogue on their screen
     public static Dialogue currentDialogue; // holds the instance of dialogue the player is in
 
 
@@ -55,10 +55,10 @@ public class DialogueWindow : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(currentDialogue == null) isInDialogue = false; // by changing this at the start of the frame rather than the end of the frame, this shoudl stop dialogue loops
+        if(currentDialogue == null) StrangeChatSystem.isInDialogue = false; // by changing this at the start of the frame rather than the end of the frame, this shoudl stop dialogue loops
 
 
-        if (isInDialogue)
+        if (StrangeChatSystem.isInDialogue)
         {
             // basic dialogue chains
             if (!currentDialogue.isDialogueChoice)
@@ -108,7 +108,7 @@ public class DialogueWindow : MonoBehaviour
         Dialogue dialogue = message.dialogue;
         bool isReplay = !message.firstRun;
 
-        isInDialogue = true;
+        StrangeChatSystem.isInDialogue = true;
         chatWindow.SetActive(true);
         chatWindow.GetComponentInChildren<Text>().text = dialogue.text;
         currentDialogue = dialogue;
@@ -155,7 +155,7 @@ public class DialogueWindow : MonoBehaviour
                 // if any of these objectives are TalkQuests, run the follwoing code
                 if (qo.objectiveType == QuestObjective.ObjectiveType.TalkQuest)
                 {
-                    if(((TalkQuest)qo).questedDialogue == dialogue)
+                    if(((TalkQuest)qo).quetedDialogueGUID == dialogue.GUID)
                     {
                         ((TalkQuest)qo).QuestedDialogueRun();
                     }

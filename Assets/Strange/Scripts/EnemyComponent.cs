@@ -266,6 +266,7 @@ public class EnemyComponent : MonoBehaviour
     protected virtual void ChasePlayer3D()
     {
         desiredDirection3d = (StrangeEnemySystem.singleton.playerGameObject.transform.position - position3d).normalized;
+        Debug.DrawRay(position3d, StrangeEnemySystem.singleton.playerGameObject.transform.position, Color.red);
         Movement3D(desiredDirection3d);
     }
     protected virtual void SpawnerRecall3D()
