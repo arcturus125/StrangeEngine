@@ -36,3 +36,5 @@ sysinfo.txt
 *.apk
 *.unitypackage
 *.log
+Assets/Scenes/MapGen Demo 1.unity
+*.unity

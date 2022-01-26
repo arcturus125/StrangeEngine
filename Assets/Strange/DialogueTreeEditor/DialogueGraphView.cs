@@ -281,6 +281,8 @@ public class DialogueGraphView : GraphView
             tempNode.dialogueText = (node as DialogueNode).DialogueText;
             tempNode.guid = (node as DialogueNode).GUID;
             tempNode.triggeredQuest = (node as DialogueNode).quest;
+            List<Edge> nodeInputs = edges.ToList().Where(x => (x.input.node as DialogueNode).GUID == (node as DialogueNode).GUID).ToList();
+            if (nodeInputs.Count > 1) tempNode.allowloops = true;
 
             // search through all the edges in the graph and gather the ones that connect to this node's output container
             List<Edge> nodeOutputs = edges.ToList().Where(x => (x.output.node as DialogueNode).GUID == (node as DialogueNode).GUID).ToList();

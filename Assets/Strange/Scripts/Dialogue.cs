@@ -123,7 +123,8 @@ public class DialogueChoice : Dialogue
 
         foreach(Dialogue d in dialogueBranches)
         {
-            d.previousDialogue = this;
+            if (d != null)
+                d.previousDialogue = this;
         }
     }
 
@@ -146,7 +147,8 @@ public class DialogueChoice : Dialogue
 
         foreach (Dialogue d in dialogueBranches)
         {
-            d.previousDialogue = this;
+            if(d!=null)
+                d.previousDialogue = this;
         }
     }
 

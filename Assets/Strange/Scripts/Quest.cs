@@ -52,7 +52,7 @@ public class Quest : ScriptableObject
     {
         if (StrangeQuestSystem.activeQuests.Contains(this))
         {
-            StrangeLogger.LogError("user attempting to give player a quest they already have, aborting");
+            StrangeLogger.LogWarning("user attempting to give player a quest they already have, aborting");
         }
         else
         {

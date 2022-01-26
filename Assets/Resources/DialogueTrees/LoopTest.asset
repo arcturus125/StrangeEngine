@@ -1,0 +1,73 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca4a51cbc69c85f4eb0dbbc7838637ef, type: 3}
+  m_Name: LoopTest
+  m_EditorClassIdentifier: 
+  nodes:
+  - nodePos:
+      serializedVersion: 2
+      x: 100
+      y: 200
+      width: 87
+      height: 77
+    isEntryPoint: 1
+    guid: bd694a29-5a7b-4403-93ab-09063bc89223
+    dialogueText: ENTRYPOINT
+    ports:
+    - inputID: ae738070-c530-4aab-bbd1-d6494106592e
+      portName: next
+    triggeredQuest: {fileID: 0}
+    allowloops: 0
+  - nodePos:
+      serializedVersion: 2
+      x: 726
+      y: 52
+      width: 271
+      height: 119
+    isEntryPoint: 0
+    guid: 131c769f-9710-4ffd-ac4f-8e7430cf95c7
+    dialogueText: My name is Jeff
+    ports:
+    - inputID: ae738070-c530-4aab-bbd1-d6494106592e
+      portName: Output 0
+    triggeredQuest: {fileID: 0}
+    allowloops: 0
+  - nodePos:
+      serializedVersion: 2
+      x: 748
+      y: 297
+      width: 271
+      height: 119
+    isEntryPoint: 0
+    guid: 00250207-0b75-4047-893a-0ebdb973bfdc
+    dialogueText: you are in the forest
+    ports:
+    - inputID: ae738070-c530-4aab-bbd1-d6494106592e
+      portName: Output 0
+    triggeredQuest: {fileID: 0}
+    allowloops: 0
+  - nodePos:
+      serializedVersion: 2
+      x: 333
+      y: 168
+      width: 271
+      height: 143
+    isEntryPoint: 0
+    guid: ae738070-c530-4aab-bbd1-d6494106592e
+    dialogueText: What can i do you for?
+    ports:
+    - inputID: 131c769f-9710-4ffd-ac4f-8e7430cf95c7
+      portName: What's your name?
+    - inputID: 00250207-0b75-4047-893a-0ebdb973bfdc
+      portName: Where am i
+    triggeredQuest: {fileID: 0}
+    allowloops: 1
