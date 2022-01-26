@@ -17,6 +17,10 @@ public class DialogueGraphView : GraphView
     public  Vector2 defaultNodeSize = new Vector2(150, 200);
     readonly Vector2 defaultNodePos = new Vector2(100, 100);
 
+    public bool autosave = true;
+    private bool activeFile = false;
+    private string activePath = "";
+
     public DialogueGraphView()
     {
         styleSheets.Add(Resources.Load<StyleSheet>("DialogueGraph"));
@@ -30,6 +34,8 @@ public class DialogueGraphView : GraphView
         GridBackground grid = new GridBackground();
         Insert(0, grid);
         grid.StretchToParentSize();
+        activeFile = false;
+        graphViewChanged = OnGraphChange;
 
         AddElement( GenerateEntryPointNode());
     }
@@ -95,6 +101,7 @@ public class DialogueGraphView : GraphView
     public void CreateNode(string nodename)
     {
         AddElement(CreateDialogueNode(nodename));
+        OnUpdate();
     }
 
     public Quest nodeQuest;
@@ -124,6 +131,7 @@ public class DialogueGraphView : GraphView
             newNode.title = evt.newValue;
             // change the text stored within the node
             newNode.DialogueText = evt.newValue;
+            OnUpdate();
         });
         textField.SetValueWithoutNotify(newNode.title);
         newNode.extensionContainer.Add(textField);
@@ -137,6 +145,7 @@ public class DialogueGraphView : GraphView
         objectfield.RegisterValueChangedCallback((quest) =>
         {
             newNode.quest = quest.newValue as Quest;
+            OnUpdate();
         });
 
         newNode.extensionContainer.Add(objectfield);
@@ -144,17 +153,23 @@ public class DialogueGraphView : GraphView
 
         //          Button              //
         //////////////////////////////////
-        Button newChoiceButton = new Button(() => AddChoicePort(newNode));
+        Button newChoiceButton = new Button(() =>
+        {
+            AddChoicePort(newNode);
+            OnUpdate();
+        });
         newChoiceButton.text = "Add Output";
         newNode.titleContainer.Add(newChoiceButton);
 
         newNode.RegisterCallback((ContextualMenuPopulateEvent evt) =>
         {
+
             evt.menu.AppendAction("Copy GUID to Clipboard", (x) => 
             {
                 Debug.Log("Copied GUID to clipboard: " + newNode.GUID);
                 newNode.GetGUID();
             });
+            OnUpdate();
         });
 
         // refresh whenever changes are made
@@ -185,7 +200,11 @@ public class DialogueGraphView : GraphView
             name = string.Empty,
             value = portName
         };
-        textField.RegisterValueChangedCallback(evt => outputPort.portName = evt.newValue);
+        textField.RegisterValueChangedCallback(evt =>
+        {
+            outputPort.portName = evt.newValue;
+            OnUpdate();
+        });
         outputPort.contentContainer.Add(new Label("  "));
         outputPort.contentContainer.Add(textField);
 
@@ -248,7 +267,6 @@ public class DialogueGraphView : GraphView
 
     public void Save(string path)
     {
-
         List<NodeSaveState> graphNodes = new List<NodeSaveState>();
         //List<EdgeSaveState> graphEdges = new List<EdgeSaveState>();
 
@@ -296,12 +314,17 @@ public class DialogueGraphView : GraphView
         AssetDatabase.SaveAssets();
 
 
-
+        activeFile = true;
+        activePath = path;
     }
+
+
+
     public void Load(string filename)
     {
         ClearAll();
 
+        Debug.Log($"Loading file: {filename}");
         // load the file from the resources folder
         DialogueTree save = Resources.Load<DialogueTree>(filename);
 
@@ -360,6 +383,11 @@ public class DialogueGraphView : GraphView
             }
         }
 
+
+        // P:/Github/StrangeUnity/Assets/Resources/DialogueTrees/test.asset
+        // DialogueTrees/test
+        activeFile = true;
+        activePath = $"{Application.dataPath}/Resources/{filename}.asset";
     }
 
     /// <summary>
@@ -367,6 +395,7 @@ public class DialogueGraphView : GraphView
     /// </summary>
     public void ClearGraph()
     {
+        activeFile = false;
         // for all the nodes on the graph
         nodes.ForEach((node) =>
         {
@@ -413,6 +442,23 @@ public class DialogueGraphView : GraphView
         tempEdge?.input.Connect(tempEdge);
         tempEdge?.output.Connect(tempEdge);
         Add(tempEdge);
+    }
+
+    private GraphViewChange OnGraphChange(GraphViewChange change)
+    {
+        OnUpdate();
+        return change;
+    }
+    private void OnUpdate()
+    {
+        if (autosave)
+        {
+            if (activeFile)
+            {
+                Save(activePath);
+            }
+        }
+        else Debug.Log("Warning: Autosave is off, these changes will not be saved");
     }
 
 }

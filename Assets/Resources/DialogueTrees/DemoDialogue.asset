@@ -36,20 +36,20 @@ MonoBehaviour:
     guid: 4e18b328-29b7-4c5d-8bde-793faad36e35
     dialogueText: Hello there, will you help me with my sidequest?
     ports:
-    - inputID: 51bb046e-d2c6-4164-96da-ab13b0da5401
-      portName: Sure, Whats up?
     - inputID: b32abcdc-045c-4eef-992c-9d06cfb03db8
       portName: No i am busy
+    - inputID: 51bb046e-d2c6-4164-96da-ab13b0da5401
+      portName: Sure, Whats up?
     triggeredQuest: {fileID: 11400000, guid: 9c2aa95c75d419d419a90540d4de6f45, type: 2}
   - nodePos:
       serializedVersion: 2
       x: 806
       y: 80
-      width: 271
+      width: 309
       height: 119
     isEntryPoint: 0
     guid: b32abcdc-045c-4eef-992c-9d06cfb03db8
-    dialogueText: Fine, be on your way
+    dialogueText: Fine, be on your way... how rude!
     ports: []
     triggeredQuest: {fileID: 0}
   - nodePos:

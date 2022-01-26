@@ -85,6 +85,14 @@ public class DialogueGraph : EditorWindow
         // add the button to the toolbar 
         toolbar.Add(toolbarButton);
 
+        Toggle checkbox = new Toggle("                              Autosave");
+
+        checkbox.RegisterValueChangedCallback(evt =>
+        {
+            graphView.autosave = checkbox.value;
+        });
+        toolbar.Add(checkbox);
+
         // add the toolbar to the window
         rootVisualElement.Add(toolbar);
 

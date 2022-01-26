@@ -20,18 +20,20 @@ MonoBehaviour:
       width: 87
       height: 77
     isEntryPoint: 1
-    guid: 0b4c4133-4fa0-4f41-a652-67053414ab0d
+    guid: abd8224a-02dc-4a99-b4b7-2041dc35dfc8
     dialogueText: ENTRYPOINT
-    ports: []
+    ports:
+    - inputID: 639d38a3-c7f0-4952-ab54-ed70efd832a4
+      portName: next
     triggeredQuest: {fileID: 0}
   - nodePos:
       serializedVersion: 2
-      x: 426
-      y: 197
-      width: 274
+      x: 477
+      y: 228
+      width: 271
       height: 119
     isEntryPoint: 0
-    guid: fa896bb3-5b1c-4b18-898c-e681052fb1f8
-    dialogueText: test
+    guid: 639d38a3-c7f0-4952-ab54-ed70efd832a4
+    dialogueText: test 2
     ports: []
-    triggeredQuest: {fileID: 11400000, guid: 9c2aa95c75d419d419a90540d4de6f45, type: 2}
+    triggeredQuest: {fileID: 0}
