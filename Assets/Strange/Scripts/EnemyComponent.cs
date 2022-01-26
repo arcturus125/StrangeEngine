@@ -317,8 +317,11 @@ public class EnemyComponent : MonoBehaviour
     }
     protected void OnKilled()
     {
-        parentSpawner.enemies.Remove(this.gameObject);
-        parentSpawner.currentNumberOfEnemies--;
+        if (parentSpawner)
+        {
+            parentSpawner.enemies.Remove(this.gameObject);
+            parentSpawner.currentNumberOfEnemies--;
+        }
 
         // ####### killquest event
         // search through all the active quests
