@@ -103,20 +103,13 @@ public class DialogueGraph : EditorWindow
     }
     private void SaveBtnCLicked()
     {
-        TextFieldPopup window = ScriptableObject.CreateInstance<TextFieldPopup>();
-        window.position = new Rect(Screen.width / 2, Screen.height / 2, 250, 120);
+        string path  = EditorUtility.SaveFilePanel("Save Dialogue", $"{Application.dataPath}/Resources/DialogueTrees", "DialogueTree", "asset");
 
-        window.OKButtonText = "Save";
-        window.textfieldText = "filename:";
-        window.labelText = "please provide a filename to save the data to";
-        window.functionPointer = SaveData;
+        string filename =  System.IO.Path.GetFileName(path);
+        if(filename == "")
+            Debug.Log("File was not saved!");
+        else
+            graphView.Save(path);
 
-        window.ShowPopup();
-    }
-
-    private int SaveData(string filename)
-    {
-        graphView.Save(filename);
-        return 0;
     }
 }

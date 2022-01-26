@@ -246,7 +246,7 @@ public class DialogueGraphView : GraphView
     //                SAVE AND LOAD                    //
     /////////////////////////////////////////////////////
 
-    public void Save(string filename)
+    public void Save(string path)
     {
 
         List<NodeSaveState> graphNodes = new List<NodeSaveState>();
@@ -257,7 +257,7 @@ public class DialogueGraphView : GraphView
             // get node data and store it
             NodeSaveState tempNode = new NodeSaveState();
             List<DialoguePort> ports = new List<DialoguePort>();
-            
+
             tempNode.nodePos = node.GetPosition();
             tempNode.isEntryPoint = (node as DialogueNode).entrypoint;
             tempNode.dialogueText = (node as DialogueNode).DialogueText;
@@ -289,14 +289,10 @@ public class DialogueGraphView : GraphView
         save.nodes = graphNodes.ToArray();
         //save.connections = graphEdges.ToArray();
 
-        // if a folder does not exist, create one
-        if (!AssetDatabase.IsValidFolder("Assets/Resources"))
-            AssetDatabase.CreateFolder("Assets", "Resources");
-        if (!AssetDatabase.IsValidFolder("Assets/Resources/DialogueTrees"))
-            AssetDatabase.CreateFolder("Assets/Resources", "DialogueTrees");
-
+        string newpath = "Assets/" + path.Trim(Application.dataPath.ToCharArray()) + "asset";
+        Debug.Log($" Dialogue Tree saved to {newpath}");
         // save the scriptableObject to a file
-        AssetDatabase.CreateAsset(save, $"Assets/Resources/DialogueTrees/{filename}.asset");
+        AssetDatabase.CreateAsset(save,newpath);
         AssetDatabase.SaveAssets();
 
 
