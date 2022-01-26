@@ -162,7 +162,7 @@ public class DialogueGraphView : GraphView
         newNode.RefreshPorts();
 
         // set position of new node
-        newNode.SetPosition(new Rect(defaultNodePos, defaultNodeSize));
+        newNode.SetPosition(new Rect( new Vector2(-contentViewContainer.transform.position.x, -contentViewContainer.transform.position.y) + defaultNodePos, defaultNodeSize));
 
         return newNode;
     }
