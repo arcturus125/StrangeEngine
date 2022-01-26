@@ -12,6 +12,7 @@ public class EnemyComponent : MonoBehaviour
     public float maxSpeed = 2; // the fastest the enemy can possibly move
     public float steerStrength = 2; // the speed the enemy can turn around
     public float wanderStrength = 0.1f; // the frequency a new direction to move is picked (higher = more errattic , lower = smoother movement)
+    public Transform head; //raycasts for LOS checks are done from thsi transform
 
     //### set by the code
 
@@ -114,12 +115,13 @@ public class EnemyComponent : MonoBehaviour
             {
                 RaycastHit hit;
                 Vector3 direction = StrangeEnemySystem.singleton.playerGameObject.transform.position - this.transform.position;
-                if (Physics.Raycast(this.transform.position, direction, out hit, enemyReference.aggroRange))
+                Vector3 raycastStart = head == null ? this.transform.position : head.position;
+                if (Physics.Raycast(raycastStart, direction, out hit, enemyReference.aggroRange))
                 {
                     if (hit.collider.transform.IsChildOf(StrangeEnemySystem.singleton.playerGameObject.transform))
                     {
                         // if LOS to player
-                        Debug.DrawRay(this.transform.position, direction, Color.green);
+                        Debug.DrawRay(raycastStart, direction, Color.green);
 
                         if (enemyReference.isFlyingEnemy)
                             ChasePlayer3D();
@@ -129,7 +131,7 @@ public class EnemyComponent : MonoBehaviour
                     else
                     {
                         // if LOS to player is broken
-                        Debug.DrawRay(this.transform.position, direction, Color.red);
+                        Debug.DrawRay(raycastStart, direction, Color.red);
                         if (enemyReference.isFlyingEnemy)
                             Wander3D();
                         else
