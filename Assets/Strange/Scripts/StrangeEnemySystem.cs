@@ -12,6 +12,7 @@ public class StrangeEnemySystem : MonoBehaviour
     void Start()
     {
         singleton = this;
+        if (playerGameObject == null) StrangeLogger.LogError("Strange enemy system is missing a reference to the player");
     }
 
     void Update()

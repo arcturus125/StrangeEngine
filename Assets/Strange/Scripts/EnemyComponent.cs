@@ -37,6 +37,13 @@ public class EnemyComponent : MonoBehaviour
 
     protected virtual void Start()
     {
+        // if there is no StrangeEnemySystem in the scene, throw an error and disable all enemy scripts to stop continuously throwing thsi error.
+        if (StrangeEnemySystem.singleton == null)
+        {
+            StrangeLogger.LogError("Attempting to use an Enemy without StrangeEnemySystem present in scene. Please drag StrangeEnemySystem into the scene");
+            Destroy(this);
+            if (parentSpawner) Destroy(parentSpawner);
+        }
         position = new Vector2(transform.position.x, transform.position.z);
         position3d = transform.position;
 
