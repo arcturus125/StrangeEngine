@@ -17,6 +17,8 @@ MonoBehaviour:
   enemyName: enemy
   speed: 1
   aggroRange: 15
+  attackRange: 5
+  attackCooldown: 3
   yOffset: 0.5
   enraged: 0
   giddiness: 1

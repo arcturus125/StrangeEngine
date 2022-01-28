@@ -27,6 +27,10 @@ public class Enemy : ScriptableObject
     public float speed;
     [Tooltip("The range at which the enemy will target the player")]
     public float aggroRange;
+    [Tooltip("The range that the enemy stops chasing the player and attacks instead")]
+    public float attackRange;
+    [Tooltip("The time in seconds between attacks")]
+    public float attackCooldown;
 
     public float yOffset = 0;
 

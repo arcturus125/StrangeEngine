@@ -9,7 +9,7 @@ public class StrangeEnemySystem : MonoBehaviour
     [Header("Drag the player in here so that enemies can track the players position")]
     public GameObject playerGameObject;
 
-    void Start()
+    void Awake()
     {
         singleton = this;
         if (playerGameObject == null) StrangeLogger.LogError("Strange enemy system is missing a reference to the player");

@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fd375df79251d6c4db9eb75623b6af5e, type: 3}
-  m_Name: Item
+  m_Name: Item 1
   m_EditorClassIdentifier: 
   ID: 0
-  itemName: Stick
+  itemName: 
   info: 
   worth: 0
   isStackable: 0

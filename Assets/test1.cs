@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class #SCRIPTNAME# : EnemyComponent
+public class test1 : EnemyComponent
 {
 
     //  ##############################################################################
@@ -49,8 +49,12 @@ public class #SCRIPTNAME# : EnemyComponent
     protected override void Movement3D(Vector3 directionOfMovement) { base.Movement3D(directionOfMovement); }
 
     // attacking
-    protected override void AttackState() { base.AttackState(); }
-    protected override void Attack() { base.Attack(); }
+    protected override void AttackState() { base.AttackState();
+
+    }
+    protected override void Attack() { base.Attack();
+        Debug.Log("Attack");
+    }
 
     // typically used for animating models
     protected override void WhileDosile() { base.WhileDosile(); }

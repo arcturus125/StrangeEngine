@@ -128,12 +128,21 @@ public class EnemyComponent : MonoBehaviour
                     if (hit.collider.transform.IsChildOf(StrangeEnemySystem.singleton.playerGameObject.transform))
                     {
                         // if LOS to player
-                        Debug.DrawRay(raycastStart, direction, Color.green);
 
-                        if (enemyReference.isFlyingEnemy)
-                            ChasePlayer3D();
+                        float distance = Vector3.Distance(raycastStart, hit.point);
+                        if (distance < enemyReference.attackRange)
+                        {
+                            Debug.DrawRay(raycastStart, direction, Color.blue);
+                            AttackState();
+                        }
                         else
-                            ChasePlayer2D();
+                        {
+                            Debug.DrawRay(raycastStart, direction, Color.green);
+                            if (enemyReference.isFlyingEnemy)
+                                ChasePlayer3D();
+                            else
+                                ChasePlayer2D();
+                        }
                     }
                     else
                     {
@@ -314,10 +323,26 @@ public class EnemyComponent : MonoBehaviour
     }
 
 
+    // ##### Attacking #####
+
+    float attackCooldown = 0;
+    protected virtual void AttackState()
+    {
+        if(attackCooldown <= 0)
+        {
+            Attack();
+            attackCooldown = enemyReference.attackCooldown;
+        }
+        else
+        {
+            attackCooldown -= Time.deltaTime;
+        }
+    }
     // ##### Interface Functions #####
 
     protected virtual void WhileDosile() { }
     protected virtual void WhileMoving(Vector3 velocity) { }
+    protected virtual void Attack() { }
 
 
     private void OnDestroy()
@@ -347,5 +372,6 @@ public class EnemyComponent : MonoBehaviour
             }
         }
     }
+    
 
 }
