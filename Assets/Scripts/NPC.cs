@@ -1,50 +1,39 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class NPC : MonoBehaviour
+public class NPC : Interactible
 {
     public DialogueTree dtree;
 
 
-    public void Use()
+    // Unity Monobehaviour Functions
+    public override void Start()
+    {
+
+    }
+    public override void Update()
+    {
+        base.Update();
+    }
+
+
+    // Strange Interactible Functions
+    public override void Use()
     {
         if (!StrangeChatSystem.isInDialogue)
         {
             dtree.Play();
         }
     }
-
-
-
-    //boiler plate code
-
-    void Update()
+    public override void WhileNearby()
     {
-        if (InteractionEngine.ClosestInteractible) // error avoidance
-        {
-            // if this object is is the closest interactible
-            if (this.gameObject == InteractionEngine.ClosestInteractible)
-            {
-                //display the  UI interaction button
-                InteractionEngine.singleton.interactionButtonLocation = this.transform;
-            }
-        }
     }
-
-    public void OnNearby()
+    public override void OnNearby()
     {
-        //add this gameobject to a list of interactible objects
-        InteractionEngine.AddInteractible(this.gameObject);
+        base.OnNearby();
     }
-
-    public void NoLongerNearby()
+    public override void NoLongerNearby()
     {
-        // remove this objecct from the list of interactibles
-        InteractionEngine.RemoveInteractible(this.gameObject);
-    }
-
-    public void WhileNearby()
-    {
-
+        base.NoLongerNearby();
     }
 }

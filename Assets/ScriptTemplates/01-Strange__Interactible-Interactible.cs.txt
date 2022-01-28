@@ -1,45 +1,32 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class #SCRIPTNAME# : MonoBehaviour
+public class #SCRIPTNAME# : Interactible
 {
-
-    void Start()
+    // Unity Monobehaviour Functions
+    public override void Start()
     {
     }
-
-    void Update()
+    public override void Update()
     {
-        if (InteractionEngine.ClosestInteractible) // error avoidance
-        {
-            // if this object is is the closest interactible
-            if (this.gameObject == InteractionEngine.ClosestInteractible)
-            {
-                //display the  UI interaction button
-                InteractionEngine.singleton.interactionButtonLocation = this.transform;
-            }
-        }
-    
-    
+        base.Update();
     }
 
-    public void OnNearby()
+
+    // Strange Interactible Functions
+    public override void Use()
     {
-        //add this gameobject to a list of interactible objects
-        InteractionEngine.AddInteractible(this.gameObject);
     }
-
-    public void NoLongerNearby()
+    public override void WhileNearby()
     {
-        // remove this objecct from the list of interactibles
-        InteractionEngine.RemoveInteractible(this.gameObject);
     }
-
-    public void WhileNearby()
+    public override void OnNearby()
     {
-
+        base.OnNearby();
     }
-    public void Use()
+    public override void NoLongerNearby()
     {
-
+        base.NoLongerNearby();
     }
 }
