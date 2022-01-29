@@ -4,6 +4,8 @@ using UnityEngine;
 public class NPC : Interactible
 {
     public DialogueTree dtree;
+    public Item i;
+    public StrangeInventory playerInventory;
 
 
     // Unity Monobehaviour Functions
@@ -14,6 +16,11 @@ public class NPC : Interactible
     public override void Update()
     {
         base.Update();
+        if(Input.GetKeyDown(KeyCode.G))
+        {
+            playerInventory.AddItem(i);
+        }
+
     }
 
 
