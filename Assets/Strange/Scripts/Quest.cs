@@ -65,6 +65,11 @@ public class Quest : ScriptableObject
               
             }
             UpdateQuestUI();
+
+            for (int i = 0; i < objectives.Count; i++)
+            {
+                objectives[i].QuestTriggered();
+            }
             
 
             // when a quest is triggered, check if the quest contains any FetchQuests and if so, check if the user already has the neccessary items to complete the objective

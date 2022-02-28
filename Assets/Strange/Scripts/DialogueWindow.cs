@@ -37,7 +37,7 @@ public class DialogueWindow : MonoBehaviour
     public Text chatButtonTooltipText; // the text on top of the chat tooltip
 
     //public static bool isInDialogue = false; // true only when the player has a dialogue on their screen
-    public static Dialogue currentDialogue; // holds the instance of dialogue the player is in
+    //public static Dialogue currentDialogue; // holds the instance of dialogue the player is in
 
 
 
@@ -55,30 +55,30 @@ public class DialogueWindow : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(currentDialogue == null) StrangeChatSystem.isInDialogue = false; // by changing this at the start of the frame rather than the end of the frame, this shoudl stop dialogue loops
+        if(StrangeChatSystem.currentDialogue == null) StrangeChatSystem.isInDialogue = false; // by changing this at the start of the frame rather than the end of the frame, this shoudl stop dialogue loops
 
 
         if (StrangeChatSystem.isInDialogue)
         {
             // basic dialogue chains
-            if (!currentDialogue.isDialogueChoice)
+            if (!StrangeChatSystem.currentDialogue.isDialogueChoice)
             {
                 if (Input.GetKeyDown(chatKey))
                 {
-                    if (currentDialogue.nextDialogue == null)
+                    if (StrangeChatSystem.currentDialogue.nextDialogue == null)
                     {
                         HideDialogue();
                     }
                     else
                     {
-                        currentDialogue.nextDialogue.Play();
+                        StrangeChatSystem.currentDialogue.nextDialogue.Play();
                     }
                 }
             }
             // dialogue branches
             else
             {
-                if ( (((DialogueChoice)currentDialogue).lastChoice == -1) || ((DialogueChoice)currentDialogue).allowMultipleChoices)
+                if ( (((DialogueChoice)StrangeChatSystem.currentDialogue).lastChoice == -1) || ((DialogueChoice)StrangeChatSystem.currentDialogue).allowMultipleChoices)
                 {
                     if (Input.GetKeyDown(choice1)) ChooseDialogue(1);
                     if (Input.GetKeyDown(choice2)) ChooseDialogue(2);
@@ -90,14 +90,14 @@ public class DialogueWindow : MonoBehaviour
                 // when the player runs a dialogue choice for a second time, the choices are taken away from them and the choice they picked last time is used
                 else
                 {
-                    if (Input.GetKeyDown(chatKey)) ChooseDialogue(((DialogueChoice)currentDialogue).lastChoice);
+                    if (Input.GetKeyDown(chatKey)) ChooseDialogue(((DialogueChoice)StrangeChatSystem.currentDialogue).lastChoice);
                 }
             }
             // back key pressed
             if(Input.GetKeyDown(backKey))
             {
-                if(currentDialogue.previousDialogue != null)
-                    currentDialogue.previousDialogue.Play();
+                if(StrangeChatSystem.currentDialogue.previousDialogue != null)
+                    StrangeChatSystem.currentDialogue.previousDialogue.Play();
             }
         }
     }
@@ -111,11 +111,11 @@ public class DialogueWindow : MonoBehaviour
         StrangeChatSystem.isInDialogue = true;
         chatWindow.SetActive(true);
         chatWindow.GetComponentInChildren<Text>().text = dialogue.text;
-        currentDialogue = dialogue;
+        StrangeChatSystem.currentDialogue = dialogue;
         if (dialogue.isDialogueChoice)
         {
 
-            if ((((DialogueChoice)currentDialogue).lastChoice == -1) || ((DialogueChoice)currentDialogue).allowMultipleChoices)
+            if ((((DialogueChoice)StrangeChatSystem.currentDialogue).lastChoice == -1) || ((DialogueChoice)StrangeChatSystem.currentDialogue).allowMultipleChoices)
                 ShowDialogueChoices((DialogueChoice)dialogue);
             // if the user has already run this dialogue choice, do not let them choose again, hide the wheel and show them the tooltip: pressign F will run the last choice they pickedS
             else
@@ -166,7 +166,7 @@ public class DialogueWindow : MonoBehaviour
     void HideDialogue()
     {
         chatWindow.SetActive(false);
-        currentDialogue = null;
+        StrangeChatSystem.currentDialogue = null;
         dialogueWheel.SetActive(false);
         chatTooltip.SetActive(false);
     }
@@ -196,9 +196,9 @@ public class DialogueWindow : MonoBehaviour
 
     public void ChooseDialogue(int dialogueNumber)
     {
-        if(currentDialogue.isDialogueChoice)
+        if(StrangeChatSystem.currentDialogue.isDialogueChoice)
         {
-            DialogueChoice dialogueCast = (DialogueChoice)currentDialogue;
+            DialogueChoice dialogueCast = (DialogueChoice)StrangeChatSystem.currentDialogue;
             if (dialogueCast.branches[dialogueNumber-1] != null)
             {
                 dialogueCast.branches[dialogueNumber - 1].Play();

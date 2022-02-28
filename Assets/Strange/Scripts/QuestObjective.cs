@@ -31,6 +31,11 @@ public class QuestObjective : ScriptableObject
         title = pTitle;
     }
 
+    public virtual void QuestTriggered()
+    {
+
+    }
+
     public void attachParent(Quest parent)
     {
         parentQuest = parent;

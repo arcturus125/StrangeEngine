@@ -5,9 +5,12 @@ using UnityEngine;
 public class StrangeEnemySystem : MonoBehaviour
 {
     public static StrangeEnemySystem singleton;
+    public GameObject damageIndicatorPrefab;
 
-    [Header("Drag the player in here so that enemies can track the players position")]
+    [Header("Drag the WHOLE player in here so that enemies can track the players position")]
     public GameObject playerGameObject;
+    [Header("Drag the player's enemy target in here")]
+    public Transform enemyTarget;
 
     void Awake()
     {

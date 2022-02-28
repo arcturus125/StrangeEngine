@@ -51,7 +51,7 @@ public class EnemyComponent : MonoBehaviour
         currentHealth = enemyReference.health;
         AI_type = enemyReference.AI_type;
         maxSpeed = enemyReference.speed;
-
+        steerStrength = enemyReference.steerStrength;
         InvokeRepeating("CalculateGiddiness", 1, enemyReference.agitatedness);
     }
 
@@ -121,8 +121,8 @@ public class EnemyComponent : MonoBehaviour
             else if (AI_type == Enemy.AIType.Agressive || runAgressive)
             {
                 RaycastHit hit;
-                Vector3 direction = StrangeEnemySystem.singleton.playerGameObject.transform.position - this.transform.position;
                 Vector3 raycastStart = head == null ? this.transform.position : head.position;
+                Vector3 direction = StrangeEnemySystem.singleton.enemyTarget.transform.position - raycastStart;
                 if (Physics.Raycast(raycastStart, direction, out hit, enemyReference.aggroRange))
                 {
                     if (hit.collider.transform.IsChildOf(StrangeEnemySystem.singleton.playerGameObject.transform))
@@ -156,6 +156,8 @@ public class EnemyComponent : MonoBehaviour
                 }
                 else
                 {
+
+                    Debug.DrawRay(raycastStart, direction.normalized * enemyReference.attackRange , Color.grey);
                     if (enemyReference.isFlyingEnemy)
                         Wander3D();
                     else
@@ -235,7 +237,7 @@ public class EnemyComponent : MonoBehaviour
         WhileMoving(velocity);
 
         float angle = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg;
-        transform.SetPositionAndRotation(new Vector3(position.x, transform.position.y, position.y), Quaternion.Euler(0, -angle, 0));
+        transform.SetPositionAndRotation(new Vector3(position.x, transform.position.y, position.y), Quaternion.Euler(0, -angle + 90, 0));
     }
 
 
@@ -344,7 +346,15 @@ public class EnemyComponent : MonoBehaviour
     protected virtual void WhileMoving(Vector3 velocity) { }
     protected virtual void Attack() { }
 
+    public virtual void Damage(float d)
+    {
+        currentHealth -= d;
+        if(currentHealth <=0)
+        {
+            Destroy(this.gameObject);
+        }
 
+    }
     private void OnDestroy()
     {
         OnKilled();
@@ -361,11 +371,14 @@ public class EnemyComponent : MonoBehaviour
         // search through all the active quests
         for (int i = 0; i < StrangeQuestSystem.activeQuests.Count; i++)
         {
+
             // seach through the objectives of each quest
             for (int y = 0; y < StrangeQuestSystem.activeQuests[i].objectives.Count; y++)
             {
-                if(StrangeQuestSystem.activeQuests[i].objectives[y].objectiveType == QuestObjective.ObjectiveType.KillQuest)
+
+                if (StrangeQuestSystem.activeQuests[i].objectives[y].objectiveType == QuestObjective.ObjectiveType.KillQuest)
                 {
+
                     KillQuest typecast = (KillQuest)(StrangeQuestSystem.activeQuests[i].objectives[y]);
                     typecast.CheckEnemyKill(enemyReference);
                 }

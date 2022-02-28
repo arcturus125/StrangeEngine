@@ -11,6 +11,12 @@ public class KillQuest : QuestObjective
     [HideInInspector]
     public int killCounter;
 
+    public override void QuestTriggered()
+    {
+        objectiveType = ObjectiveType.KillQuest;
+        UpdateObjectiveTitle(" [" + killCounter + "/" + requiredKills + "]");
+    }
+
     // create a killquest with one target
     public KillQuest(string pTitle, Enemy target, int pRequiredkills) : base(pTitle)
     {
@@ -44,6 +50,7 @@ public class KillQuest : QuestObjective
     {
         if (targetEnemies.Contains(enemyType))
         {
+
             killCounter++;
             if (killCounter >= requiredKills)
             {
