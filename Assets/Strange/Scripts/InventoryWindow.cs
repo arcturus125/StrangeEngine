@@ -23,6 +23,13 @@ public class InventoryWindow : MonoBehaviour
     {
 
         this.transform.GetChild(0).gameObject.SetActive(false);
+
+        if(playerInventory == null)
+        {
+            StrangeLogger.LogError("The inventory window has not been given a reference to an inventory and therefore will not work");
+            // remove this script so it does not comtinue to cause errors
+            Destroy(this);
+        }
     }
 
     // Update is called once per frame

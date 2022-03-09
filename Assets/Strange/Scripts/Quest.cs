@@ -92,6 +92,11 @@ public class Quest : ScriptableObject
         {
             OnComplete();
         }
+        else
+        {
+            // reset the quest status if it is givem multiple times
+            if (complete) complete = false;
+        }
 
         UpdateQuestUI();
     }

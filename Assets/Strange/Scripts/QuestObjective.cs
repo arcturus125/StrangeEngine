@@ -13,7 +13,8 @@ public class QuestObjective : ScriptableObject
         Null,                                                // this uses a variable where a simple if statement is run to determine what type of
         TalkQuest,                                           // quest objective this is
         FetchQuest,                                          //
-        KillQuest                                            //
+        KillQuest,                                           //
+        DiscoveryQuest                                       //
     }                                                        //
     [HideInInspector]
     public ObjectiveType objectiveType = ObjectiveType.Null; //
@@ -33,7 +34,8 @@ public class QuestObjective : ScriptableObject
 
     public virtual void QuestTriggered()
     {
-
+        objectiveComplete = false;
+        parentQuest.UpdateQuestStatus();
     }
 
     public void attachParent(Quest parent)
@@ -45,6 +47,10 @@ public class QuestObjective : ScriptableObject
     protected void UpdateObjectiveTitle(string newSuffix)
     {
         title = baseTitle + newSuffix;
+    }
+    protected void UpdateObjectiveTitle()
+    {
+        title = baseTitle;
     }
 
     protected void CompleteObjective()

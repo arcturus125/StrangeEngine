@@ -18,7 +18,7 @@ public class EnemyComponent : MonoBehaviour
 
     public EnemySpawner parentSpawner; // the reference to the spawner that spawned this enemy
 
-    float currentHealth;
+    public float currentHealth;
     bool returnToSpawner = false;
     bool isDosile = false;
 
@@ -31,6 +31,8 @@ public class EnemyComponent : MonoBehaviour
     Vector3 position3d;         //} used in enemy movement code for flying enemies
     Vector3 velocity3d;         //} using forces that counter out 
     Vector3 desiredDirection3d; //} for more realistic movement
+
+    private const string healthbarResourcePath = "Healthbar.prefab";
 
 
 
@@ -285,8 +287,7 @@ public class EnemyComponent : MonoBehaviour
     }
     protected virtual void ChasePlayer3D()
     {
-        desiredDirection3d = (StrangeEnemySystem.singleton.playerGameObject.transform.position - position3d).normalized;
-        Debug.DrawRay(position3d, StrangeEnemySystem.singleton.playerGameObject.transform.position, Color.red);
+        desiredDirection3d = (StrangeEnemySystem.singleton.enemyTarget.transform.position - position3d).normalized;
         Movement3D(desiredDirection3d);
     }
     protected virtual void SpawnerRecall3D()
@@ -319,8 +320,8 @@ public class EnemyComponent : MonoBehaviour
         }
         else
         {
-            float angle = Mathf.Atan2(velocity3d.y, velocity3d.x) * Mathf.Rad2Deg;
-            transform.SetPositionAndRotation(new Vector3(position3d.x, position3d.y, position3d.z), Quaternion.Euler(0, -angle, 0));
+            float angle = Mathf.Atan2(velocity3d.z, velocity3d.x) * Mathf.Rad2Deg;
+            transform.SetPositionAndRotation(new Vector3(position3d.x, position3d.y, position3d.z), Quaternion.Euler(0, -angle + 90, 0));
         }
     }
 
@@ -352,6 +353,18 @@ public class EnemyComponent : MonoBehaviour
         if(currentHealth <=0)
         {
             Destroy(this.gameObject);
+        }
+
+        HealthBar hb = GetComponentInChildren<HealthBar>();
+        // if the enemy has no health bar
+        if (hb == null)
+        {
+           GameObject healthbarObject = Instantiate(StrangeEnemySystem.singleton.HealthbarPrefab, this.gameObject.transform);
+        }
+        // if the enemy has a healthbar already
+        else
+        {
+            hb.UpdateHealth(this);
         }
 
     }

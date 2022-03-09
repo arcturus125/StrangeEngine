@@ -18,6 +18,8 @@ public class StrangeQuestSystem : MonoBehaviour
 
     [Header("access to the player's inventory is required to give quest rewards")]
     public StrangeInventory playerInventory;
+    [Header("access to the player's position to track discovery quests")]
+    public Transform playerTransform;
 
 
     [Header("Drag all UI scripts Here")]
@@ -28,7 +30,12 @@ public class StrangeQuestSystem : MonoBehaviour
         singleton = this;
 
         if (playerInventory == null)
-            StrangeLogger.LogError("StrangeQuestSystem has no access to the players inventory, this will cause errors when you try and turn in quests... please drag StrangePlayer into the 'PlayerInventory' box inthe inspector");
+            StrangeLogger.LogError("StrangeQuestSystem has no access to the players inventory, this will cause errors when you try to turn in quests... please drag StrangePlayer into the 'PlayerInventory' box in the inspector");
+        if (playerTransform == null)
+            StrangeLogger.LogError("StrangeQuestSystem has no access to the players position, this will cause errors when you use DiscoveryQuests... please drag StrangePlayer into the 'PlayerTransform' box in the inspector");
+
+        // every 5 seconds, call CheckForDiscoveryQuestCompletion()
+        InvokeRepeating("CheckForDiscoveryQuestCompletion", 5, 5);
     }
 
     public static void SetTrackedQuest(Quest q)
@@ -38,7 +45,6 @@ public class StrangeQuestSystem : MonoBehaviour
 
     void Update() 
     {
-        //CheckForFetchQuestCompletion();
     }
 
     public void CheckForFetchQuestCompletion()
@@ -54,6 +60,22 @@ public class StrangeQuestSystem : MonoBehaviour
 
                     int numberOfItemsCollected = playerInventory.GetNumberOfItems(itemToCheckFor);
                     castedQuestObjective.ItemCollected(numberOfItemsCollected);
+                }
+            }
+        }
+    }
+
+    public void CheckForDiscoveryQuestCompletion()
+    {
+        foreach (Quest activeQuest in StrangeQuestSystem.activeQuests)
+        {
+            foreach (QuestObjective qo in activeQuest.objectives)
+            {
+                if (qo.objectiveType == QuestObjective.ObjectiveType.DiscoveryQuest)
+                {
+                    DiscoveryQuest castedQuestObjective = (DiscoveryQuest)qo;
+
+                    castedQuestObjective.CheckLocation(playerTransform.position);
                 }
             }
         }

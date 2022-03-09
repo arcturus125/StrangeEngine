@@ -13,6 +13,8 @@ public class KillQuest : QuestObjective
 
     public override void QuestTriggered()
     {
+        base.QuestTriggered();
+        killCounter = 0; // when the quest is given, reset the obejctive
         objectiveType = ObjectiveType.KillQuest;
         UpdateObjectiveTitle(" [" + killCounter + "/" + requiredKills + "]");
     }

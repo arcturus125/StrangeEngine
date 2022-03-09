@@ -6,6 +6,7 @@ public class StrangeEnemySystem : MonoBehaviour
 {
     public static StrangeEnemySystem singleton;
     public GameObject damageIndicatorPrefab;
+    public GameObject HealthbarPrefab;
 
     [Header("Drag the WHOLE player in here so that enemies can track the players position")]
     public GameObject playerGameObject;
