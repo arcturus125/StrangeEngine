@@ -26,7 +26,16 @@ public class InteractionEngine : MonoBehaviour
     {
         singleton = this;
     }
-    
+    private void Start()
+    {
+        if (playerTransform == null)
+        {
+            StrangeLogger.LogError("InteractionEngine is missing a reference to the PlayerTransform and will not work. Please drag your Player GameObject into 'playerTransform' slot on InteractionEngine ");
+            //remove this script before it continues to cause errors
+            Destroy(this);
+        }
+    }
+
 
     void LateUpdate()
     {

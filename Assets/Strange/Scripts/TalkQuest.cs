@@ -6,8 +6,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "TalkQuest Objective", menuName = "Strange/TalkQuest Objective", order = 4)]
 public class TalkQuest : QuestObjective
 {
-    //public Dialogue questedDialogue;
-    public string quetedDialogueGUID;
+    [Header("Right click a dialogue to get its GUID")]
+    public string questedDialogueGUID;
 
     private void OnEnable()
     {
@@ -18,7 +18,7 @@ public class TalkQuest : QuestObjective
     public TalkQuest(string pTitle, Dialogue pQuestedDialogue) : base(pTitle)
     {
         objectiveType = ObjectiveType.TalkQuest;
-        quetedDialogueGUID = pQuestedDialogue.GUID;
+        questedDialogueGUID = pQuestedDialogue.GUID;
 
         if (pQuestedDialogue == null)
         {

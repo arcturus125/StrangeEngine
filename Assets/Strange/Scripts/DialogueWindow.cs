@@ -155,7 +155,7 @@ public class DialogueWindow : MonoBehaviour
                 // if any of these objectives are TalkQuests, run the follwoing code
                 if (qo.objectiveType == QuestObjective.ObjectiveType.TalkQuest)
                 {
-                    if(((TalkQuest)qo).quetedDialogueGUID == dialogue.GUID)
+                    if(((TalkQuest)qo).questedDialogueGUID == dialogue.GUID)
                     {
                         ((TalkQuest)qo).QuestedDialogueRun();
                     }

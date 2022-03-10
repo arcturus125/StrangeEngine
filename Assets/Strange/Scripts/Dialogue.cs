@@ -15,17 +15,27 @@ public class Dialogue
         public bool firstRun;
     }
 
+    // what does the NPC say?
+    public string text;
+    // the ID of this Dialogue
     public string GUID;
+    // can the player come back to this dialogue and make a different reply?
+    // (only applies to Dialogues with Multiple Responses)
     public bool allowMultipleChoices = false;
+    // does this dialogue have multiple responses
+    // (if so, check the Derived class, DialogueChoice)
     public bool isDialogueChoice = false;
 
+    // the dialogue before this in the dialogue tree
     public Dialogue previousDialogue = null;
+    // the dialogue after this in the dialogue tree
     public Dialogue nextDialogue = null;
+    // the quest that should be triggered when this dialogue is run
     public Quest triggeredQuest = null;
 
-    public bool firstRun = true; // after this dialogue has been run for the first time, this changes to false
+    private bool firstRun = true; // after this dialogue has been run for the first time, this changes to false
 
-    public string text;
+
 
     // Create a basic dialogue with no linked dialogues
     public Dialogue(string dialogueText)

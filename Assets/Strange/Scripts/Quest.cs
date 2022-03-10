@@ -50,6 +50,12 @@ public class Quest : ScriptableObject
 
     public void TriggerQuest()
     {
+        if(StrangeQuestSystem.singleton == null)
+        {
+            StrangeLogger.LogError("Cannot trigger Quest Properly. Please drag StrangeQuestSystem into the Scene and update its properties");
+            return;
+        }
+
         if (StrangeQuestSystem.activeQuests.Contains(this))
         {
             StrangeLogger.LogWarning("user attempting to give player a quest they already have, aborting");
