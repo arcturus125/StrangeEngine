@@ -49,15 +49,15 @@ MonoBehaviour:
   vertexHeight: 255
   heightMultiplier: 200
   size: 2
-  detail: 1
-  renderDistance: 1
+  detail: 1.2
+  renderDistance: 3
   normalize: 1
   heightCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0.0008544922
-      value: -0.09613037
+      time: 0
+      value: 0
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -65,31 +65,22 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
-      time: 0.3138212
-      value: 0.019207109
-      inSlope: 0.45169917
-      outSlope: 0.45169917
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.9805621
-      outWeight: 0.18707114
-    - serializedVersion: 3
-      time: 0.44090128
-      value: 0.0657216
-      inSlope: 0.285363
-      outSlope: 0.285363
+      time: 0.49223113
+      value: 0.4278402
+      inSlope: 1.0699115
+      outSlope: 1.0699115
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
-      outWeight: 0.0576765
+      outWeight: 0.33333334
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 2.560372
-      outSlope: 2.560372
+      inSlope: 2
+      outSlope: 2
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.052351423
+      inWeight: 0
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -126,7 +117,54 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   colourGradientSensitivity: 0.97
   globalOffset: {x: -31.15, y: 203}
+  falloffCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: -7.1612425
+      outSlope: -7.1612425
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.020964453
+    - serializedVersion: 3
+      time: 0.1057483
+      value: 0.50539
+      inSlope: -0.92304575
+      outSlope: -0.92304575
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.049545743
+    - serializedVersion: 3
+      time: 0.73827934
+      value: 0.19190715
+      inSlope: -0.55430293
+      outSlope: -0.55430293
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1.0001493
+      value: 0.00009046547
+      inSlope: -0.73248845
+      outSlope: -0.73248845
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  useFalloffMap: 0
+  mapOrigin: {x: 255, y: 255}
+  falloffDistance: 360.62445
   autoUpdate: 0
+  noOfOctaves: 4
+  Smoothness: 1
   octaves:
   - amplitude: 5
     frequency: 150

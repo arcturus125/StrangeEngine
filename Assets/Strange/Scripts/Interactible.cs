@@ -5,6 +5,8 @@ using UnityEngine;
 public class Interactible : MonoBehaviour
 {
 
+    public Transform InteractionButtonLocation;
+
     public virtual void Start()
     {
     }

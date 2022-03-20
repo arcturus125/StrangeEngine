@@ -47,6 +47,7 @@ public class QuestObjective : ScriptableObject
     protected void UpdateObjectiveTitle(string newSuffix)
     {
         title = baseTitle + newSuffix;
+        parentQuest.UpdateQuestUI();
     }
     protected void UpdateObjectiveTitle()
     {

@@ -17,7 +17,7 @@ public class HealthBar : MonoBehaviour
     void Start()
     {
         EnemyComponent e = GetComponentInParent<EnemyComponent>();
-        UItext.text = e.enemyReference.name;
+        UItext.text = e.enemyReference.enemyName;
 
 
         float percent = e.currentHealth / e.enemyReference.health;

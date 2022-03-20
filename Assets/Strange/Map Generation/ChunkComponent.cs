@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Windows;
-using static MapGenChunk;
+using static MapGenChunk; // requird to access MeshData struct
 
 
 [ExecuteInEditMode]
@@ -40,7 +40,7 @@ public class ChunkComponent : MonoBehaviour
         mesh.RecalculateNormals();
     }
 
-
+#if UNITY_EDITOR
     public void GetImage()
     {
         Texture2D tex = new Texture2D(width, height);
@@ -155,9 +155,11 @@ public class ChunkComponent : MonoBehaviour
     void OnEnable()                                   //
     {                                                 //
         EditorApplication.wantsToQuit += WantsToQuit; //
-    }                                                 //
+    }
 
+#endif//
 
+#if UNITY_EDITOR
     private void OnDestroy()
     {
         if (Time.frameCount == 0 || EditorApplicationQuit) // without this if statement, onDestroy is also called at the start and end of tha game - this fixes that
@@ -165,4 +167,5 @@ public class ChunkComponent : MonoBehaviour
 
         AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(dataFile));
     }
+#endif
 }

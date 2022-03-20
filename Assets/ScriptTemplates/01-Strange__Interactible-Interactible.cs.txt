@@ -23,10 +23,18 @@ public class #SCRIPTNAME# : Interactible
     }
     public override void OnNearby()
     {
-        base.OnNearby();
+        base.OnNearby(); // tells Strange to show the interaction button (See DevNote 1 at bottom of file)
     }
     public override void NoLongerNearby()
     {
-        base.NoLongerNearby();
+        base.NoLongerNearby(); // tells Strange to hide the interaction button (See DevNote 1 at bottom of file)
     }
 }
+
+// DevNote 1:
+//  base.OnNearby() and base.NoLongerNearby() send data to the InteractionEngine that the interaction button should be shown or hidden.
+//    and adds/removes this object to a global list of interactibles.
+//  when there are multiple interactibles within interactionRange, only the closest interactible will show the interaction button
+//    because there can only be one interaction button
+//  if you wish for this interactible to not show the interaction button, you may comment out 'base.OnNearby()' and 'base.NoLongerNearby()'
+//    however, this will also disable the Use() function

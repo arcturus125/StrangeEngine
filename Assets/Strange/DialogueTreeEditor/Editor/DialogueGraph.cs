@@ -13,6 +13,7 @@ public class DialogueGraph : EditorWindow
     const string _MenuTitle = "Dialogue Editor";
 
     private DialogueGraphView graphView;
+    Toggle checkbox;
 
     [MenuItem("StangeEngine/ Dialogue Visual Editor")] // adds this function to the unity menu
 
@@ -85,7 +86,7 @@ public class DialogueGraph : EditorWindow
         // add the button to the toolbar 
         toolbar.Add(toolbarButton);
 
-        Toggle checkbox = new Toggle("                              Autosave");
+        checkbox = new Toggle("                              Autosave");
 
         checkbox.RegisterValueChangedCallback(evt =>
         {
@@ -102,22 +103,27 @@ public class DialogueGraph : EditorWindow
     private void Clear()
     {
         graphView.ClearGraph();
+        checkbox.value = false;
     }
 
 
     public void LoadData(string filename)
     {
         graphView.Load(filename);
+        checkbox.value = true;
     }
     private void SaveBtnCLicked()
     {
         string path  = EditorUtility.SaveFilePanel("Save Dialogue", $"{Application.dataPath}/Resources/DialogueTrees", "DialogueTree", "asset");
 
         string filename =  System.IO.Path.GetFileName(path);
-        if(filename == "")
+        if (filename == "")
             Debug.Log("File was not saved!");
         else
+        {
             graphView.Save(path);
+            checkbox.value = true;
+        }
 
     }
 }

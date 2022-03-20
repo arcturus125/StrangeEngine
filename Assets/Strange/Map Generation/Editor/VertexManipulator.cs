@@ -1,3 +1,4 @@
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,7 +17,7 @@ public class VertexManipulator : MonoBehaviour
 
 
     public float radius = 25;
-    public AnimationCurve curve;
+    public AnimationCurve curve = AnimationCurve.Linear(0, 0, 1, 1);
     [Range(0.01f, 1f)]
     public float brushStrength = 0.2f;
 

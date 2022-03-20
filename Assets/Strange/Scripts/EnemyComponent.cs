@@ -367,6 +367,13 @@ public class EnemyComponent : MonoBehaviour
             hb.UpdateHealth(this);
         }
 
+
+
+        GameObject splashtext = Instantiate(StrangeEnemySystem.singleton.damageIndicatorPrefab);
+        splashtext.transform.position = this.transform.position;
+        TextMesh text = splashtext.GetComponent<TextMesh>();
+        text.text = d.ToString();
+
     }
     private void OnDestroy()
     {
@@ -395,6 +402,15 @@ public class EnemyComponent : MonoBehaviour
                     KillQuest typecast = (KillQuest)(StrangeQuestSystem.activeQuests[i].objectives[y]);
                     typecast.CheckEnemyKill(enemyReference);
                 }
+            }
+        }
+
+        for (int i = 0; i < enemyReference.drops.Length; i++)
+        {
+            float percent = Random.Range(0.0f, 1.0f);
+            if(percent < enemyReference.dropChances[i])
+            {
+                StrangeEnemySystem.singleton.playerInventory.AddItem(enemyReference.drops[i]);
             }
         }
     }

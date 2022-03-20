@@ -144,7 +144,7 @@ MonoBehaviour:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
     m_FontSize: 60
     m_FontStyle: 0
-    m_BestFit: 0
+    m_BestFit: 1
     m_MinSize: 0
     m_MaxSize: 70
     m_Alignment: 3
@@ -153,9 +153,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Quest Objective
-
-'
+  m_Text: Quest Objective
 --- !u!1 &7891213639566419105
 GameObject:
   m_ObjectHideFlags: 0
@@ -246,6 +244,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02bd144962d69774797c321e1b7884de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  objective: {fileID: 0}
   title: {fileID: 8925104505806620915}
   icon: {fileID: 3837469812358255678}
   incompleteObjectiveIcon: {fileID: 21300000, guid: 9c84c847cd9d8cb4b9702447d2b06fd5, type: 3}

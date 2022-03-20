@@ -13,4 +13,12 @@ public class StrangeChatSystem : MonoBehaviour
     {
         singleton = this;
     }
+
+    public void HideDialogueWindow()
+    {
+        foreach (GameObject UI in singleton.dialogueUI)
+        {
+            UI.SendMessage("HideDialogue", SendMessageOptions.DontRequireReceiver);
+        }
+    }
 }

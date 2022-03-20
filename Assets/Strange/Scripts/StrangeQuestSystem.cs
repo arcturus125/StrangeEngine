@@ -35,7 +35,7 @@ public class StrangeQuestSystem : MonoBehaviour
             StrangeLogger.LogError("StrangeQuestSystem has no access to the players position, this will cause errors when you use DiscoveryQuests... please drag StrangePlayer into the 'PlayerTransform' box in the inspector");
 
         // every 5 seconds, call CheckForDiscoveryQuestCompletion()
-        InvokeRepeating("CheckForDiscoveryQuestCompletion", 5, 5);
+        InvokeRepeating("CheckForDiscoveryQuestCompletion", 5, 1);
     }
 
     public static void SetTrackedQuest(Quest q)
@@ -51,6 +51,8 @@ public class StrangeQuestSystem : MonoBehaviour
     {
         foreach (Quest activeQuest in StrangeQuestSystem.activeQuests)
         {
+            if (activeQuest.complete) continue;
+
             foreach (QuestObjective qo in activeQuest.objectives)
             {
                 if (qo.objectiveType == QuestObjective.ObjectiveType.FetchQuest)
@@ -69,8 +71,12 @@ public class StrangeQuestSystem : MonoBehaviour
     {
         foreach (Quest activeQuest in StrangeQuestSystem.activeQuests)
         {
+            if (activeQuest.complete) continue;
+
             foreach (QuestObjective qo in activeQuest.objectives)
             {
+                if (qo.objectiveComplete) continue;
+
                 if (qo.objectiveType == QuestObjective.ObjectiveType.DiscoveryQuest)
                 {
                     DiscoveryQuest castedQuestObjective = (DiscoveryQuest)qo;

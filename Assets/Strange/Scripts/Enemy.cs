@@ -31,6 +31,8 @@ public class Enemy : ScriptableObject
     public float attackRange;
     [Tooltip("The time in seconds between attacks")]
     public float attackCooldown;
+    [Tooltip("Thow much damage does this enemy do?")]
+    public float attackDamage;
     [Tooltip("The speed the enemy can turn around")]
     public float steerStrength;
 

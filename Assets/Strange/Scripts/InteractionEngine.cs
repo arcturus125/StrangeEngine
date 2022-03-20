@@ -173,7 +173,12 @@ public class InteractionEngine : MonoBehaviour
         if (ClosestInteractible != null) // if there is an interactible in range
         {
             // get position of the interactible on the screen
-            Vector3 UIButtonPosition = Camera.main.WorldToScreenPoint(ClosestInteractible.transform.position);
+            Vector3 UIButtonPosition;
+            if (ClosestInteractible.GetComponent<Interactible>().InteractionButtonLocation == null)
+                UIButtonPosition = Camera.main.WorldToScreenPoint(ClosestInteractible.transform.position);
+            else
+                UIButtonPosition = Camera.main.WorldToScreenPoint(ClosestInteractible.GetComponent<Interactible>().InteractionButtonLocation.position);
+
             // destroy any old interaction buttons if needed
             if (interactionSymbol) Destroy(interactionSymbol);
             // create a new interaction button

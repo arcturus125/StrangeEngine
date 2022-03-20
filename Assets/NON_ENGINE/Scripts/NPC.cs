@@ -3,34 +3,30 @@ using UnityEngine;
 
 public class NPC : Interactible
 {
-    public DialogueTree dtree;
-    public Item i;
-    public StrangeInventory playerInventory;
+    Quest q1;
+    Quest q2;
 
 
     // Unity Monobehaviour Functions
     public override void Start()
     {
-
+        q1.TriggerQuest();
     }
     public override void Update()
     {
         base.Update();
+
+
         if(Input.GetKeyDown(KeyCode.G))
         {
-            playerInventory.AddItem(i);
+            q2.TriggerQuest();
         }
-
     }
 
 
     // Strange Interactible Functions
     public override void Use()
     {
-        if (!StrangeChatSystem.isInDialogue)
-        {
-            dtree.Play();
-        }
     }
     public override void WhileNearby()
     {

@@ -1,3 +1,4 @@
+
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,7 +33,7 @@ public class MapGenChunk : ScriptableObject
         mapGenSettings = mapGenerator;
     }
 
-
+#if UNITY_EDITOR
     public void GenerateMapChunk(GameObject chunkObject = null)
     {
         chunkObject = GameObject.Find($"Chunk {x} {y}");
@@ -269,7 +270,7 @@ public class MapGenChunk : ScriptableObject
 
         return meshData;
     }
-
+#endif
     /// <summary>
     /// processes a list of colours and returns the average of all these colours
     /// </summary>

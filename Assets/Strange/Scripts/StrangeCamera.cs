@@ -26,6 +26,8 @@ public class StrangeCamera : MonoBehaviour
     public float maxSpringarmLength = 10.0f;
     public float antiClip = 0.2f;
 
+    public static bool disableMouse = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -38,26 +40,29 @@ public class StrangeCamera : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        this.transform.position = target.position;
-
-
-        float mouseX = Input.GetAxis("Mouse X");
-        float mouseY = Input.GetAxis("Mouse Y");
-
-        // accumulate Y rotation for clamping
-        rotY += mouseY;
-        rotY = Mathf.Clamp(rotY, -maxCameraClamp, -minCameraClamp);
-
-        if (mouseX != 0)
+        if (!disableMouse)
         {
-            player.Rotate(0, mouseX * turningSpeed, 0);
-            transform.RotateAround(target.position, Vector3.up, mouseX);
-        }
-        if (mouseY != 0)
-        {
-            // rotate the camera back to default, then to the new location
-            transform.RotateAround(target.position, target.transform.right, oldRotY);
-            transform.RotateAround(target.position, target.transform.right, -rotY);
+            this.transform.position = target.position;
+
+
+            float mouseX = Input.GetAxis("Mouse X");
+            float mouseY = Input.GetAxis("Mouse Y");
+
+            // accumulate Y rotation for clamping
+            rotY += mouseY;
+            rotY = Mathf.Clamp(rotY, -maxCameraClamp, -minCameraClamp);
+
+            if (mouseX != 0)
+            {
+                player.Rotate(0, mouseX * turningSpeed, 0);
+                transform.RotateAround(target.position, Vector3.up, mouseX);
+            }
+            if (mouseY != 0)
+            {
+                // rotate the camera back to default, then to the new location
+                transform.RotateAround(target.position, target.transform.right, oldRotY);
+                transform.RotateAround(target.position, target.transform.right, -rotY);
+            }
         }
 
         oldRotY = rotY;
@@ -72,15 +77,15 @@ public class StrangeCamera : MonoBehaviour
                 GetComponentInChildren<Camera>().gameObject.transform.localPosition = new Vector3(0, 0, -length + antiClip);
             }
         }
-
-
-        // if the maxSpringarmLength is changed during runtime. this will update the camera's position immediately if neccessary
-        if(GetComponentInChildren<Camera>().gameObject.transform.position.z < -maxSpringarmLength)
+        else
         {
+            // if the maxSpringarmLength is changed during runtime. this will update the camera's position immediately if neccessary
             GetComponentInChildren<Camera>().gameObject.transform.localPosition = new Vector3(0, 0, -maxSpringarmLength);
         }
 
-        
+
+
+
         ESChit();
     }
 

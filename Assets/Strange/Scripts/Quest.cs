@@ -12,6 +12,7 @@ public class Quest : ScriptableObject
     public bool isTurnedIn = false; // true when the quest is turned in
 
     public string title = "Quest Title";
+    [TextArea(3, 10)]
     public string info = "Quest Info";
     public List<QuestObjective> objectives = new List<QuestObjective>();
     public List<Item> rewards = new List<Item>();
@@ -50,7 +51,14 @@ public class Quest : ScriptableObject
 
     public void TriggerQuest()
     {
-        if(StrangeQuestSystem.singleton == null)
+        // make sure all quest objectives have this quest set as their parent
+        foreach (QuestObjective qo in objectives)
+        {
+            qo.attachParent(this);
+        }
+
+
+        if (StrangeQuestSystem.singleton == null)
         {
             StrangeLogger.LogError("Cannot trigger Quest Properly. Please drag StrangeQuestSystem into the Scene and update its properties");
             return;
@@ -172,14 +180,5 @@ public class Quest : ScriptableObject
     }
 
 
-    /// <summary>
-    /// when quest objectives are dragged into a quest in the inspector, the objectives still have a null parentQuest. this fixes that :)
-    /// </summary>
-    private void OnValidate()
-    {
-        foreach(QuestObjective qo in objectives)
-        {
-            qo.attachParent(this);
-        }
-    }
+    
 }

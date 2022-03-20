@@ -7,7 +7,7 @@ public class MapBrush: MonoBehaviour
 {
     public Color color;
     public float radius = 25;
-    public AnimationCurve curve;
+    public AnimationCurve curve = AnimationCurve.Linear(0,0,1,1);
 
     GameObject brush;
 

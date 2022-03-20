@@ -12,6 +12,8 @@ public class StrangeEnemySystem : MonoBehaviour
     public GameObject playerGameObject;
     [Header("Drag the player's enemy target in here")]
     public Transform enemyTarget;
+    [Header("Drag the player here: access to the players inventory is needed to give drops from enemies")]
+    public StrangeInventory playerInventory;
 
     void Awake()
     {

@@ -17,6 +17,8 @@ public class StrangeLogger
     }
     public static void LogError(string logInfo)
     {
+#if UNITY_EDITOR // this code only runs in the unity editor, not the build
         UnityEditor.EditorUtility.DisplayDialog(StrangeErrorPrefix, logInfo, "okay");
+#endif
     }
 }

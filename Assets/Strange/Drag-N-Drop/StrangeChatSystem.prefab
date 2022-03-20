@@ -139,7 +139,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1465174026758040489, guid: da0a69a46a560064f97f26bf34900296, type: 3}
       propertyPath: m_Name
-      value: Strange Chat
+      value: Template Dialogue Screen
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: da0a69a46a560064f97f26bf34900296, type: 3}

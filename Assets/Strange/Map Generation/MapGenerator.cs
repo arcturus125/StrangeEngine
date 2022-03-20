@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -53,7 +54,7 @@ public class MapGenerator : MonoBehaviour
 
     [Header("Falloff map")]
     public AnimationCurve falloffCurve;
-    public bool useFalloffMap = true;
+    public bool useFalloffMap = false;
     [HideInInspector]
     public Vector2 mapOrigin;
     [HideInInspector]
@@ -200,8 +201,10 @@ static class ChunkManager
 
     public static void Generate(int x ,int y, MapGenerator mapGen, bool forceUpdate)
     {
+#if UNITY_EDITOR
         if (!AssetDatabase.IsValidFolder(MapGenDataPath))
             AssetDatabase.CreateFolder(MapGenDataParentFolder, MapGenDataFolderName);
+
 
 
         MapGenChunk chunk;
@@ -233,8 +236,8 @@ static class ChunkManager
                 Debug.Log($"loading chunk {x} {y} from file");
             }
         }
-        
 
+#endif
     }
 
     public static bool DoesChunkExist(int x, int y)
@@ -248,12 +251,13 @@ static class ChunkManager
         }
         return false;
     }
+
+#if UNITY_EDITOR // this is an editor-only function and does not need compiling into the game build
     public static MapGenChunk LoadChunk(int x, int y)
     {
-         return Resources.Load<MapGenChunk>($"{MapGenDataFolderName}/chunk {x} {y}");
+        return Resources.Load<MapGenChunk>($"{MapGenDataFolderName}/chunk {x} {y}");
     }
-
-
+#endif
 }
 
 
