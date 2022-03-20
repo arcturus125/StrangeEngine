@@ -41,6 +41,7 @@ public class StrangeQuestSystem : MonoBehaviour
     public static void SetTrackedQuest(Quest q)
     {
         trackedQuest = q;
+        UpdateGUI();
     }
 
     void Update() 
@@ -83,6 +84,22 @@ public class StrangeQuestSystem : MonoBehaviour
 
                     castedQuestObjective.CheckLocation(playerTransform.position);
                 }
+            }
+        }
+    }
+
+    public static void UpdateGUI()
+    {
+        if (singleton != null)
+        {
+            foreach (GameObject UI in singleton.QuestUI)
+            {
+                if (!UI.activeInHierarchy)
+                {
+                    StrangeLogger.LogWarning($"Cannot Update Quest UI {UI.name} as it was disabled");
+                }
+                else
+                    UI.SendMessage("UpdateGUI");
             }
         }
     }

@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class NPC : Interactible
 {
-    Quest q1;
-    Quest q2;
+    public Quest q1;
+    public Quest q2;
 
 
     // Unity Monobehaviour Functions

@@ -23,6 +23,8 @@ public class QuestLog : MonoBehaviour
     private Text questTitle;
     [SerializeField]
     private Text questInfo;
+    [SerializeField]
+    private Button trackThisQuest;
 
     [Header("Positioning: you may need to change these if you implement your own custom UI")]
     [SerializeField]
@@ -60,6 +62,24 @@ public class QuestLog : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(selectedQuest == null)
+        {
+            questTitle.text = "";
+            questInfo.text = "Please select a quest to see its information";
+        }
+        else
+        {
+            if(selectedQuestList == QuestLists.Active
+               && selectedQuest != StrangeQuestSystem.trackedQuest)
+            {
+                trackThisQuest.gameObject.SetActive(true);
+            }
+            else
+            {
+                trackThisQuest.gameObject.SetActive(false);
+            }
+        }
+
         if(Input.GetKeyDown(toggleQuestLog))
         {
             isMenuOpen = !isMenuOpen;
@@ -157,5 +177,10 @@ public class QuestLog : MonoBehaviour
             questInfo.text = pSelectedQuest.info;
 
         }
+    }
+
+    public void TrackThisQuestClicked()
+    {
+        StrangeQuestSystem.SetTrackedQuest(selectedQuest);
     }
 }

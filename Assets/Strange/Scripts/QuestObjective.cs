@@ -41,13 +41,14 @@ public class QuestObjective : ScriptableObject
     public void attachParent(Quest parent)
     {
         parentQuest = parent;
-        parentQuest.UpdateQuestUI(); // if the title is changed, it cannot be updated until now
+        StrangeQuestSystem.UpdateGUI(); // if the title is changed, it cannot be updated until now
     }
 
     protected void UpdateObjectiveTitle(string newSuffix)
     {
         title = baseTitle + newSuffix;
-        parentQuest.UpdateQuestUI();
+        StrangeQuestSystem.UpdateGUI();
+
     }
     protected void UpdateObjectiveTitle()
     {

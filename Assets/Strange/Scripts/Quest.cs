@@ -76,9 +76,9 @@ public class Quest : ScriptableObject
             if(StrangeQuestSystem.trackedQuest == null)
             {
                 StrangeQuestSystem.SetTrackedQuest(this);
-              
+
             }
-            UpdateQuestUI();
+            StrangeQuestSystem.UpdateGUI();
 
             for (int i = 0; i < objectives.Count; i++)
             {
@@ -112,23 +112,8 @@ public class Quest : ScriptableObject
             if (complete) complete = false;
         }
 
-        UpdateQuestUI();
-    }
 
-    public void UpdateQuestUI()
-    {
-        if (StrangeQuestSystem.singleton != null)
-        {
-            foreach (GameObject UI in StrangeQuestSystem.singleton.QuestUI)
-            {
-                if (!UI.activeInHierarchy)
-                {
-                    StrangeLogger.LogWarning($"Cannot Update Quest UI {UI.name} as it was disabled");
-                }
-                else
-                    UI.SendMessage("UpdateGUI");
-            }
-        }
+        StrangeQuestSystem.UpdateGUI();
     }
 
     private void OnComplete()
@@ -145,7 +130,8 @@ public class Quest : ScriptableObject
             StrangeQuestSystem.activeQuests.Remove(this);
             StrangeQuestSystem.failedQuests.Add(this);
 
-            UpdateQuestUI();
+
+            StrangeQuestSystem.UpdateGUI();
         }
         else
         {
