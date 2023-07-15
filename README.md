@@ -13,10 +13,6 @@ Coming Soon:
  - use a questing system alongside the dialogue system to give the player tasks and rewards for completing tasks
  - create shops for the user to buy and sell items
 
-## History
-
-this project used to be called 'StrangeEngine', but since then i have begun working on my own standalone engine in directx11 called StrangeEngine so this project was renamed to 'StrangeUnity', or just 'Strange' for short
-
 ## Why use Strange?
 
 Strange was built with speedy game development in mind. If you are a decent programmer, you can probably build a better system that is more purpose-built for the game you want to make. but this takes a lot of experience planning a time.
